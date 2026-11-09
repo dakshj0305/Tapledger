@@ -1,22 +1,18 @@
-# VOLTURA — Money in Motion
+# VOLTURA
 
-A local-first personal finance workspace. The app runs as a static website/PWA and stores ledger data in IndexedDB on the current browser/device.
+Static, local-first personal finance workspace.
 
-## Run locally
-Use `RUN-LOCAL-WINDOWS.bat` on Windows, or serve this folder with any static HTTP server. Use HTTPS when testing NFC URL cards on a phone. Opening `index.html` directly as a `file://` URL is not a supported production setup.
+## Publish on GitHub Pages
+Upload the contents of this folder to the existing `dakshj0305.github.io/Tapledger` repository and publish from the repository root. This release is configured for `https://dakshj0305.github.io/Tapledger/` (no custom domain).
 
 ## NFC quick expense
-1. Publish the app to HTTPS and open Automations.
-2. Copy the Expense URL shown there (`?a=1`).
-3. In NFC Tools, choose Write → Add a record → URL/URI, paste the URL and write it to the card. Do not permanently lock the tag.
-4. With the phone unlocked, scan the card. The browser opens VOLTURA and the quick expense window appears.
-5. Enter the amount, confirm category/account, optionally enter merchant/note, and tap Save expense.
-6. The record is saved to the same local ledger used by Overview and Ledger.
+Write this URL as an NFC URI record: `https://dakshj0305.github.io/Tapledger/?a=1`
 
-The card stores a URL shortcut, not the transaction itself. A browser must open the URL; the page cannot display a dialog over a locked phone or closed browser without OS/browser cooperation. The data is local to the browser/device unless the user exports a backup.
+In NFC Tools: Write → Add a record → URL/URI → paste URL → Write. If the tag is detected as `NdefFormatable` only, format it as NDEF first (NFC Tools → Other → Format memory, if offered), then write the URI. Never choose Lock/Make read-only.
 
-## Data compatibility
-IndexedDB remains `tapledger-db` schema version 3 to preserve existing TapLedger/Vellum/Voltura records in the same browser origin. Keep backups before replacing a deployed release.
+The MIFARE Ultralight EV1 has 48 bytes of user memory. The URI is 43 UTF-8 bytes as text and is typically stored more compactly as an NDEF URI record; if the writer reports insufficient space, use a shorter HTTPS redirect URL or a higher-capacity NTAG215/216 tag.
 
-## Custom domain: voltura.finance
-This release includes a root `CNAME`, root-scoped PWA manifest, canonical metadata and a step-by-step DNS/GitHub Pages guide in `CUSTOM-DOMAIN-SETUP.md`. Configure the custom domain in the repository's Settings → Pages and at your domain registrar before updating the NFC card. Browser storage is origin-specific: export a JSON backup from the old GitHub Pages origin and restore it on `https://voltura.finance/`.
+Scan with the phone unlocked. The browser opens VOLTURA; `?a=1` opens quick expense capture. Saving adds an ordinary expense to the same local ledger. NFC does not bypass the phone lock screen or store transaction data.
+
+## Data
+Transactions are stored locally in the browser. Export a JSON backup periodically. Browser storage is origin-specific.

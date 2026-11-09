@@ -1,9 +1,9 @@
-# VOLTURA v17 QA report
+# VOLTURA QA report
 
-- Package prepared for custom apex domain `voltura.finance`.
-- Root CNAME file present.
-- PWA manifest start_url and scope set to `/` for the apex-domain root deployment.
-- Canonical URL and Open Graph URL set to `https://voltura.finance/`.
-- NFC URL generation remains relative to the live origin and therefore resolves to `https://voltura.finance/?a=1` after deployment.
-- IndexedDB database remains `tapledger-db`, schema version 3. Note: browser storage is origin-specific; JSON export/import is required to move records from the GitHub Pages origin.
-- DNS, GitHub Pages custom-domain verification, HTTPS certificate issuance and live deployment require the user's registrar and GitHub account; they are not claimed as completed here.
+- Release configured for the existing GitHub Pages URL `https://dakshj0305.github.io/Tapledger/`.
+- Removed custom-domain CNAME and updated canonical/Open Graph URLs.
+- PWA manifest start URL and scope set to `/Tapledger/`.
+- NFC shortcut is generated from the current page origin/path and uses `?a=1` for quick expense.
+- Quick expense uses the existing local transaction store and labels records `source: "nfc"`.
+- IndexedDB database/schema preserved: `tapledger-db`, version 3.
+- Source-level package inspection only; no live deployment, physical NFC write, or real-phone scan is claimed as tested.
