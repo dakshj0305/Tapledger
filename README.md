@@ -1,56 +1,85 @@
-# Vellum v7 — Personal Finance Studio
+# Vellum v11 — Local-first Personal Finance Studio
 
-**Tagline:** Every rupee, in perspective.
+**Brand:** Vellum  
+**Tagline:** Every rupee, in perspective.  
+**Runtime:** Static HTML, CSS and JavaScript. No build step, npm install, React runtime or third-party component package is required.
 
-Vellum is a local-first personal finance workspace. This release adds a tracked-account balance model and hardens data handling while retaining the existing `tapledger-db` database and NFC URL pattern.
+Vellum is a local-first personal finance PWA for recording income, expenses and transfers; managing accounts, budgets and savings goals; and viewing explainable spending patterns. It is designed for INR and Indian number formatting.
 
-## Modules
-- Overview: current-month income, expenses, net cash flow, 6/12-month chart, expense category mix, overall/category budgets, recent entries and a goal snapshot.
-- Ledger: income, expenses and transfers; add, edit, delete, search, filter and sort. “Clear this month” removes current-month activity only after confirmation; budgets and savings goals remain intact.
-- Accounts: cash/bank/wallet assets and credit/loan liabilities. Balances are derived from opening balances and ledger movements. Legacy pre-account transactions are grouped into an “Imported history” account and excluded from live net-position calculations because their starting balances are unknown. Transfers move value between tracked accounts and do not count as income or expense.
-- Budgets: overall and category monthly limits.
-- Savings goals: targets, saved-so-far, target dates and manual progress contributions. Contributions are goal progress only; they do not move money between accounts.
-- Intelligence: savings rate, daily spend pace, same-period prior-month comparison, simple month-end pace estimate, category observations and heuristic repeat-merchant review.
-- Automations: NFC expense URL `?a=1`, NFC income URL `?i=1`, optional browser speech-to-form prefill, merchant category suggestions and repeat-merchant review.
-- Data: CSV export, JSON backup/restore, confirmed local data deletion.
-- PWA: app-shell caching for offline use after first successful load.
+## Run locally on Windows
 
-## Important data model
-- Monetary values are integer paise internally; individual inputs are capped at ₹10 crore to keep values within the app’s safe integer range. Input parsing avoids floating-point conversion drift and displays up to two fractional rupees when present.
-- Transfers are excluded from income, expenses and net cash flow. They affect the source and destination account balances.
-- Asset account balance = opening balance + income − expenses + transfers in − transfers out.
-- Liability balance (amount owed) = opening amount owed − credits/refunds − payments + card purchases.
-- Net tracked position = sum of asset balances − sum of liability balances.
-- Opening balances must be entered by the user. Default accounts start at zero; this app does not fetch real bank balances.
-- Savings goal contributions are not bank transfers and are not included in cash-flow calculations.
+1. Extract this folder to a normal directory, for example `C:\\Vellum`.
+2. Double-click `RUN-LOCAL-WINDOWS.bat`.
+3. Keep the black terminal window open while using the app.
+4. Visit `http://localhost:8000/` in Chrome or Edge.
+5. Stop the local server with `Ctrl+C` in the terminal.
 
-## Upgrade your existing GitHub Pages site
-Your existing repository is `dakshj0305/Tapledger`; preserve the repository URL and path so the existing card URL and browser database continue to work.
+The script uses Python's built-in static HTTP server (`py` or `python`). Opening `index.html` directly with `file://` is not recommended because service workers and some browser storage features require a secure context. `localhost` is treated as a secure development origin by modern browsers.
 
-1. Open the current Vellum site in the same browser profile and download a JSON backup.
-2. Extract this ZIP on Windows.
-3. Upload the **contents** of the `vellum-finance-v7` folder to the root of `dakshj0305/Tapledger`, replacing the prior app files. Keep the `icons/` folder.
-4. Commit to `main`; wait for the GitHub Pages deployment action to succeed.
-5. Open `https://dakshj0305.github.io/Tapledger/` and hard-refresh with `Ctrl+Shift+R`. The service worker cache key is bumped to v7.
-6. Check that existing transactions remain. Keep the JSON backup; do not clear browser site data.
+## Deploy to the existing GitHub Pages site
 
-## Migration and compatibility
-- Uses IndexedDB database `tapledger-db`; upgrades to DB version 3 and creates an `accounts` store without deleting `expenses` or `settings`.
-- Migrates legacy TapLedger expenses and `monthlyBudgetPaise` settings once, using the `migration-v3-complete` marker and stable legacy IDs. When a v5-era expense record is still present in the old `expenses` store, its matching ledger entry is reclassified as historical without changing its amount/date/category. Deleted ledger entries are not recreated after migration has completed.
-- Preserves current transaction records, budgets and goals from the v3/v4/v5 database schema.
-- JSON import accepts backups tagged `TapLedger`, `Cairn` or `Vellum`, including legacy `{expenses, monthlyBudgetPaise}` backups and newer `{transactions, budgets, goals, accounts}` backups. Imports are validated before writing.
-- Restore is a merge by record ID/name, not a destructive replace.
+The established repository/site URL is intended to remain `dakshj0305/Tapledger` / `https://dakshj0305.github.io/Tapledger/`.
 
-## NFC card
-The existing expense shortcut remains `https://dakshj0305.github.io/Tapledger/?a=1`; income shortcut is the same URL with `?i=1`. The card only stores a URL, not financial records. MIFARE Ultralight EV1 has 48 bytes of user memory; actual NDEF fit depends on URI compression and record overhead. Let NFC Tools confirm the write and read it back. Do not lock the tag.
+1. Open the existing Vellum site in the same browser profile.
+2. In Data & privacy, use **Backup JSON** and keep the downloaded file outside the repository.
+3. Extract this ZIP.
+4. Open the existing `dakshj0305/Tapledger` repository.
+5. Upload the **contents** of the `vellum-finance-v11` folder to the repository root. Do not upload the containing folder as a nested directory.
+6. Replace the existing app files and commit to `main`.
+7. Wait for the latest GitHub Pages workflow to complete successfully.
+8. Open the existing site and hard-refresh with `Ctrl+Shift+R`.
+9. If an older service worker is still controlling the page, use DevTools → Application → Service Workers → unregister the old worker, then reload. Do not clear IndexedDB or all site data just to refresh the UI.
 
-## Privacy and limitations
-- Records stay in IndexedDB in the current browser profile. There is no login, bank connection, server-side storage or cross-device sync.
-- Clearing browser site data can erase records; export backups regularly.
-- Voice entry uses Web Speech API if supported; it only pre-fills a form and requires user review. Browser speech services may process audio externally.
-- Repeat-merchant detection is a heuristic, not confirmed subscription detection.
-- Month-end estimates extrapolate the current daily average and are not predictions. Spending observations are prompts, not financial advice.
-- The app shell is available offline after successful initial caching, but first-time NFC opening requires the website to be reachable. The service worker only removes older Vellum cache versions; it does not delete unrelated caches on the same GitHub Pages origin.
+The base URL and NFC action query parameters remain unchanged. Existing physical NFC cards should not need rewriting if they already point to this same site URL with a supported action query.
 
-## Quality checks
-The supplied project is intended for static hosting via GitHub Pages. Test actual Android NFC writes and live GitHub Pages behavior on your hardware. This package does not claim a zero-defect guarantee.
+## Integrated visual interactions
+
+- **GlyphPortal-inspired wordmark:** the VELLUM letters enter with a staggered reveal and respond to pointer movement with a damped spring. The supplied wrapper referenced a `GlyphPortal` implementation that was not included; Vellum implements the observable wordmark direction natively, not the unavailable component's internal scroll/annotation behavior.
+- **GlassWorkspace-inspired material:** the real Vellum cash-flow surface supports Quiet, Forest and Deep presets plus blur, tint blend, saturation and edge controls. Settings are stored locally in IndexedDB under `glass-material-v1`; they do not change financial records.
+- **KineticGrid-inspired portal:** a Canvas 2D grid uses edge pinning, pointer displacement, exponentially smoothed movement, decaying radial ripples and a damped-spring letter response. It is decorative and not required to use the app. It respects `prefers-reduced-motion`, pauses when the page is hidden and stops its animation loop when the pointer and springs have settled.
+
+The effect is a physics-inspired visual simulation. It is not a physical measurement, financial forecast or claim of exact fluid dynamics.
+
+## Compatibility kept
+
+- IndexedDB database: `tapledger-db`.
+- IndexedDB schema version: `3` (unchanged).
+- Existing stores and migration behavior retained.
+- NFC expense shortcut: `?a=1`.
+- NFC income shortcut: `?i=1`.
+- Legacy expense shortcut: `?add=1`.
+- Vellum, Cairn and TapLedger JSON restore compatibility retained.
+- Existing voice-consent, data-export and delete-all flows retained.
+- Glass appearance is stored in the existing `settings` store; no schema upgrade is made.
+
+## Local storage and privacy summary
+
+- Financial records are stored in IndexedDB in the browser profile for this site.
+- The service worker caches only the static same-origin app shell in Cache Storage.
+- The app source does not set or read cookies, localStorage or sessionStorage.
+- No analytics, advertising, remote images, web fonts, external scripts, social widgets or third-party component libraries are included.
+- The app's service worker uses `fetch` only for same-origin app-shell requests. It does not upload ledger records.
+- Optional voice entry uses the browser's SpeechRecognition API after explicit user opt-in. The browser/vendor speech service may process microphone audio or recognized speech outside this device. Voice is optional; manual and NFC entry do not require it.
+- Clipboard access is only used after the user selects a copy-shortcut action, and copies the Vellum NFC URL.
+
+See `privacy.html`, `terms.html` and `cookies.html`. These are drafts and must be reviewed by a lawyer qualified in Indian law before publishing. Complete publisher/contact/effective-date placeholders before publishing legal pages.
+
+## Files
+
+- `index.html`, `style.css`, `app.js` — static app.
+- `sw.js` — service worker and app-shell cache `vellum-platform-v11`.
+- `manifest.webmanifest` — PWA metadata.
+- `privacy.html`, `terms.html`, `cookies.html`, `legal.css` — legal drafts.
+- `icons/` — locally packaged Vellum app icons and mark.
+- `BRAND.md` — visual identity.
+- `COMPONENT-INTEGRATION.md` — source-to-app integration notes.
+- `INTEGRATION-NOTES.md` — architecture and implementation boundaries.
+- `QA-REPORT.md` — checks performed and items still requiring device/live testing.
+- `RELEASE.md` — release summary.
+
+## Important use notes
+
+- Account balances are calculated from opening balances and records entered by the user; Vellum is not connected to a bank and does not verify balances.
+- Goal contributions update goal progress only; the UI explains that they do not create a bank transfer.
+- Recurring-merchant and spending observations are heuristic, descriptive prompts. Review them rather than treating them as confirmed subscriptions or financial advice.
+- Export backups periodically. Clearing browser site data can erase local records.
