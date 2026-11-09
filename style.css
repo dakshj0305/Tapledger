@@ -284,3 +284,194 @@ input:disabled,select:disabled,button:disabled{color:#59636F!important;backgroun
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.balance-hero{background:linear-gradient(128deg,#1D3049,#14243A)}.glass-preview{background:#1D3049}}
 @media(max-width:560px){.material-settings{padding:13px}.material-controls{grid-template-columns:1fr;gap:10px}.material-footer{align-items:flex-start;flex-direction:column}.material-footer #glassSettingsStatus{text-align:left}.glass-presets{gap:5px}.glass-preset{flex:1;min-width:0}}
 @media(prefers-reduced-motion:reduce){.glass-preview,.balance-hero,.balance-stat{scroll-behavior:auto}}
+
+
+/* VELLUM v12 — bold editorial / flat-first / dimensional hero art direction.
+   Keeps the existing DOM, data bindings, navigation and finance workflows intact. */
+:root{
+  --ink:#14243A;--paper:#F4EBDD;--surface:#FFFCF5;--forest:#234638;--forest-2:#315E4B;
+  --gold:#B69B70;--terracotta:#B94E3C;--muted:#526174;--line:#D5C9B8;
+  --shadow-hard:7px 7px 0 rgba(20,36,58,.12);--radius:3px;
+}
+html{background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.app-frame{background:var(--paper);gap:0}
+.sidebar{background:var(--ink);border-right:0;color:#F8F4EA;box-shadow:8px 0 0 rgba(20,36,58,.035)}
+.brand{padding:27px 22px 32px}
+.brand-symbol{background:var(--gold);color:var(--ink);border:0;border-radius:2px;box-shadow:4px 4px 0 rgba(255,255,255,.12)}
+.brand-word{font-weight:800;letter-spacing:-.075em;font-size:25px;color:#FFF9EE}
+.brand-word small{color:#D6C9B5;letter-spacing:.17em;font-size:8px}
+.sidebar-label{color:#B9C5C2;letter-spacing:.19em}
+.nav-item{border-radius:2px;color:#D7DED9;min-height:47px;margin:3px 12px;width:calc(100% - 24px);border-left:3px solid transparent}
+.nav-item.active{background:var(--paper);color:var(--ink);border-left-color:var(--gold);font-weight:800}
+.nav-item.active kbd{color:var(--forest)}
+.nav-item:hover{background:#2C4056;color:#fff}
+.privacy-card{background:#20364B;border:1px solid #496075;border-radius:2px;padding:14px}
+.privacy-icon{color:#D7BD8D}
+.sidebar-foot{color:#C6D0D8}
+.main-content{background:var(--paper);padding:0 clamp(18px,3.2vw,54px) 38px;min-width:0}
+.topbar{min-height:68px;border-bottom:2px solid var(--ink);background:var(--paper);position:relative}
+.breadcrumb{font-weight:800;letter-spacing:.15em;color:#526174}
+.breadcrumb strong{color:var(--ink)}
+.icon-button{border:1px solid var(--ink);border-radius:2px;background:transparent;color:var(--ink)}
+.icon-button:hover{background:var(--ink);color:var(--paper)}
+.button{border-radius:2px;font-weight:800;letter-spacing:.015em;box-shadow:3px 3px 0 rgba(20,36,58,.13);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(20,36,58,.16)}
+.button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(20,36,58,.15)}
+.button-primary{background:var(--forest);border:2px solid var(--forest);color:#fff}
+.button-primary:hover{background:#17382C;color:#fff}
+.button-light{background:#E3D7C5;color:var(--ink);border:1px solid var(--ink)}
+.button-quiet{border:1px solid #738091;color:var(--ink);background:transparent}
+.page-intro{padding:42px 0 26px;align-items:center;gap:28px}
+.page-intro h1,.page-headline h1{font-size:clamp(54px,7.2vw,96px);line-height:.91;letter-spacing:-.075em;font-weight:900;color:var(--ink);max-width:720px}
+.page-intro h1 em{font-style:normal;color:var(--forest);display:inline-block;position:relative}
+.page-intro h1 em::after{content:"";display:block;height:9px;background:var(--gold);width:72%;margin-top:9px;transform:skewX(-22deg)}
+.eyebrow,.panel-kicker{font-weight:800;letter-spacing:.18em;color:#526174}
+.eyebrow-rule{background:var(--terracotta);width:28px;height:3px}
+.intro-copy{font-size:15px;line-height:1.6;max-width:510px;color:#46566A}
+.intro-side.kinetic-intro{width:min(390px,40%)}
+.date-mark{background:var(--gold);color:var(--ink);padding:9px 13px;border-radius:2px;font-weight:900;letter-spacing:.14em}
+.kinetic-portal{height:190px;border:2px solid var(--ink);border-radius:2px;background:#1B3048;box-shadow:9px 9px 0 var(--forest);overflow:hidden;transform:perspective(900px) rotateY(-7deg) rotateX(3deg);transform-style:preserve-3d;transition:transform .35s ease,box-shadow .35s ease}
+.kinetic-portal:hover{transform:perspective(900px) rotateY(0) rotateX(0) translateY(-3px);box-shadow:12px 13px 0 var(--forest)}
+.kinetic-portal::after{content:"";position:absolute;z-index:2;width:112px;height:112px;right:26px;top:36px;border-radius:50%;background:radial-gradient(circle at 32% 27%,#F6E8C9 0 4%,#D6BC8D 13%,#9C8056 38%,#294A3A 67%,#14243A 100%);box-shadow:inset -14px -12px 24px #09172588, inset 9px 8px 18px #fff7, 14px 17px 24px #06101c99;transform:translateZ(38px) rotate(-18deg);animation:vellumOrbFloat 6s ease-in-out infinite;pointer-events:none}
+.kinetic-portal::before{content:"";position:absolute;z-index:2;width:154px;height:154px;right:5px;top:15px;border:1px solid #D7BD8D99;border-radius:50%;transform:rotateX(68deg) rotateZ(-22deg);box-shadow:0 0 0 11px #D7BD8D12,0 0 0 24px #D7BD8D0A;pointer-events:none}
+.kinetic-portal-word{justify-content:flex-start;padding-left:22px;font-size:clamp(25px,3vw,38px);letter-spacing:.12em;text-shadow:0 4px 0 #071523}
+.kinetic-portal-caption{top:14px;text-align:left;left:22px;color:#E8D7B7}
+.kinetic-portal-hint{bottom:14px;text-align:left;left:22px;color:#D6E0DA}
+.kinetic-grid-canvas{opacity:.56}
+@keyframes vellumOrbFloat{0%,100%{transform:translate3d(0,0,38px) rotate(-18deg)}50%{transform:translate3d(-5px,-10px,50px) rotate(-7deg)}}
+.balance-hero{position:relative;overflow:hidden;border:2px solid var(--ink);border-radius:2px;background:var(--ink);padding:30px 32px;min-height:205px;box-shadow:9px 9px 0 var(--gold);isolation:isolate}
+.balance-hero::before{content:"";position:absolute;z-index:-1;right:5%;top:-90px;width:330px;height:330px;border:1px solid #E9DDBA55;border-radius:50%;box-shadow:0 0 0 22px #E9DDBA0B,0 0 0 50px #E9DDBA0A,0 0 0 84px #E9DDBA08;opacity:1}
+.balance-hero::after{content:"V";position:absolute;z-index:-1;right:7%;top:-65px;font:900 260px/1 Georgia,serif;color:#F5EBDD0B;transform:rotate(-13deg);pointer-events:none}
+.balance-value{font-size:clamp(42px,5.2vw,68px);font-weight:900;letter-spacing:-.065em;line-height:1.05;color:#FFF9EF}
+.balance-main{position:relative;z-index:1}
+.balance-stat{background:#263B50;border:1px solid #627084;border-radius:2px;backdrop-filter:none;-webkit-backdrop-filter:none;padding:15px;box-shadow:4px 4px 0 #0C1B2B}
+.balance-stat strong{font-size:clamp(22px,2.2vw,30px);font-weight:800;letter-spacing:-.04em}
+.balance-divider{background:#718092}
+.balance-ornament{opacity:.7}
+.pill-dark{background:#D7BD8D;color:var(--ink);border-radius:2px;font-weight:900}
+.section-heading{margin-top:49px;margin-bottom:18px}
+.section-heading h2,.section-heading h3{font-size:clamp(25px,3vw,36px);font-weight:900;letter-spacing:-.045em;color:var(--ink)}
+.section-heading h2 span,.section-heading h3 span{color:var(--terracotta)}
+.overview-grid{gap:20px}
+.panel{background:var(--surface);border:1.5px solid var(--ink);border-radius:2px;box-shadow:5px 5px 0 #14243A12;padding:22px}
+.panel-head{padding-bottom:14px;border-bottom:1px solid var(--line)}
+.panel-sub{font-size:14px;font-weight:700;color:var(--ink)}
+.chart-legend{font-weight:700}
+.cashflow-chart{min-height:220px}
+.budget-snapshot{background:#E7DDCC}
+.budget-total{font-size:39px;font-weight:900;letter-spacing:-.055em;color:var(--ink)}
+.budget-progress{height:12px;border:1px solid var(--ink);border-radius:0;background:#D3C7B5;overflow:hidden}
+.budget-progress span{border-radius:0;background:var(--forest)}
+.budget-summary{font-weight:700;color:var(--ink)}
+.category-panel{background:#E8E0D1}
+.donut{filter:drop-shadow(5px 5px 0 #14243A16)}
+.recent-panel{background:var(--surface)}
+.recent-item,.recent-row{border-bottom:1px solid var(--line)}
+.bottom-feature-grid{gap:20px;margin-top:20px}
+.insight-feature{background:var(--forest);border:2px solid var(--ink);border-radius:2px;box-shadow:7px 7px 0 var(--gold);padding:25px;color:#fff}
+.insight-feature h3{font-size:clamp(25px,3vw,35px);line-height:1.05;letter-spacing:-.04em;font-weight:800;color:#FFF9EF}
+.insight-feature p:not(.eyebrow){color:#E1E9E2}
+.insight-feature .eyebrow{color:#E2CFA7}
+.feature-orbit{background:#D7BD8D;color:var(--ink);border:0;border-radius:50%;box-shadow:7px 7px 0 #122D24}
+.feature-link{color:#F0DDB9;font-weight:800}
+.goal-feature{background:#E5D9C7;border:2px solid var(--ink);border-radius:2px;box-shadow:7px 7px 0 #14243A18;padding:23px}
+.goal-feature .goal-empty strong{font-size:22px;font-weight:800;color:var(--ink)}
+.goal-feature .goal-empty p{color:#526174}
+.page-headline{padding:44px 0 24px}
+.page-title{font-size:clamp(45px,6vw,76px);font-weight:900;letter-spacing:-.07em;line-height:.98;color:var(--ink)}
+.page-title span{color:var(--terracotta)}
+.table-wrap,.ledger-panel{border-radius:2px}
+.ledger-table th{background:#E8E0D1;color:#40516A;font-weight:900;letter-spacing:.13em}
+.ledger-table td{border-bottom:1px solid var(--line)}
+.search-field,.ledger-toolbar select,.form-field input,.form-field select,.rupee-input{border-radius:2px;background:#FFFCF5;border:1px solid #87919B}
+.search-field:focus-within{outline:3px solid var(--gold);outline-offset:2px}
+.metric-card,.stat-card,.shortcut-card,.goal-card,.insight-card,.account-card,.budget-card{border-radius:2px;border:1.5px solid var(--ink);box-shadow:4px 4px 0 #14243A12}
+.metric-card{background:#E9E1D3}
+.stat-card:nth-child(2n){background:#E2E9E1}
+.account-card{background:#FFFCF5}
+.account-card h3{font-weight:800}
+.budget-card{background:#E9E1D3}
+.goal-card{background:#E2E9E1}
+.insight-card{background:#FFFCF5}
+.dialog{border:2px solid var(--ink);border-radius:3px;box-shadow:10px 10px 0 #14243A35}
+.dialog-card{background:#F8F3E9}
+.dialog-top h2{font-weight:900;letter-spacing:-.04em}
+.dialog-close{border-radius:2px}
+.toast{border:1px solid #D7BD8D;border-radius:2px;box-shadow:5px 5px 0 #14243A35}
+.app-footer{border-top:2px solid var(--ink);margin-top:35px;padding-top:15px}
+/* Keep the 3D hero as the one expressive motion anchor; make all working surfaces flat and fast. */
+.glass-preview,.balance-stat{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.glass-preview{border-radius:2px;box-shadow:5px 5px 0 #14243A1A}
+.glass-preset,.material-control select{border-radius:2px}
+@media(max-width:900px){.page-intro{align-items:flex-start}.intro-side.kinetic-intro{width:38%}.balance-hero{grid-template-columns:1fr 1fr}.balance-main{grid-column:1/-1}.balance-divider{display:none}}
+@media(max-width:650px){.main-content{padding-left:16px;padding-right:16px}.topbar{gap:8px}.page-intro{padding-top:30px}.page-intro h1{font-size:clamp(48px,14vw,72px)}.intro-side.kinetic-intro{width:100%}.kinetic-portal{height:135px;transform:none;box-shadow:6px 6px 0 var(--forest)}.kinetic-portal::after{width:82px;height:82px;right:24px;top:28px}.kinetic-portal::before{width:118px;height:118px;right:6px;top:10px}.balance-hero{grid-template-columns:1fr 1fr;padding:21px 18px;gap:14px;box-shadow:6px 6px 0 var(--gold)}.balance-value{font-size:clamp(36px,10vw,54px)}.balance-stat{padding:12px}.overview-grid,.lower-grid,.bottom-feature-grid{grid-template-columns:1fr}.panel{padding:17px}.section-heading{margin-top:38px}.page-headline{padding-top:30px}}
+@media(prefers-reduced-motion:reduce){.kinetic-portal,.kinetic-portal::after,.button,.view{animation:none!important;transition:none!important;transform:none!important}.portal-letter{animation:none!important}}
+
+/* VELLUM v13 — one visual language: THE ORBITING LEDGER.
+   A continuous route + one waypoint represents money moving with intention.
+   Keep the motif structural and sparse; all working surfaces remain flat. */
+:root{
+  --orbit-ink:#14243A;
+  --orbit-green:#234638;
+  --orbit-brass:#B69B70;
+  --orbit-clay:#B85E49;
+  --orbit-line:rgba(182,155,112,.58);
+  --orbit-paper:#F4EBDD;
+}
+/* Brand mark: the waypoint sits on a single orbital route. */
+.brand-symbol{border:1px solid var(--orbit-brass);box-shadow:inset 0 0 0 4px rgba(182,155,112,.08)}
+.brand-symbol:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:var(--orbit-brass);right:2px;top:5px;box-shadow:0 0 0 3px var(--orbit-ink)}
+.brand-word{letter-spacing:-1.1px}
+/* Navigation uses the same route as a quiet active-state marker. */
+.nav-item{position:relative;border-radius:2px;padding-left:15px}
+.nav-item:before{content:"";position:absolute;left:0;top:50%;width:0;height:1px;background:var(--orbit-brass);transition:width .22s ease}
+.nav-item.active:before{width:9px}
+.nav-item.active{box-shadow:none;background:#E9E1D3;color:var(--orbit-ink)}
+/* The hero orbit: one ellipse, one waypoint, no extra competing ornament. */
+.kinetic-portal{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(182,155,112,.65);background:var(--orbit-ink);box-shadow:7px 7px 0 var(--orbit-green)}
+.kinetic-portal:before{content:"";position:absolute;z-index:2;width:148px;height:74px;right:17%;top:19%;border:1px solid rgba(221,199,158,.58);border-radius:50%;transform:rotate(-28deg);pointer-events:none}
+.kinetic-portal:after{content:"";position:absolute;z-index:3;width:13px;height:13px;right:calc(17% + 5px);top:calc(19% + 27px);border-radius:50%;background:var(--orbit-brass);border:3px solid var(--orbit-ink);box-shadow:0 0 0 1px var(--orbit-brass);animation:ledgerWaypoint 7s ease-in-out infinite;pointer-events:none}
+@keyframes ledgerWaypoint{0%,100%{transform:translate(0,0)}50%{transform:translate(106px,-20px)}}
+/* A small route marker links section headings to the hero without repeating graphics. */
+.eyebrow{display:flex;align-items:center;gap:8px;letter-spacing:1.35px}
+.eyebrow-rule{width:24px;height:1px;background:var(--orbit-brass);position:relative;margin:0 3px 0 0;flex:none}
+.eyebrow-rule:after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:var(--orbit-brass);right:0;top:-2px}
+.section-heading .eyebrow:before,.page-headline .eyebrow:before{content:"";width:6px;height:6px;border:1px solid var(--orbit-brass);border-radius:50%;display:inline-block;flex:none}
+/* Main cash-flow card carries the orbit as a thin baseline with one waypoint. */
+.balance-hero{border:1px solid rgba(182,155,112,.6);box-shadow:7px 7px 0 var(--orbit-brass)}
+.balance-hero:before{width:310px;height:160px;right:8%;top:-95px;border:1px solid rgba(182,155,112,.35);box-shadow:0 0 0 20px rgba(182,155,112,.055),0 0 0 42px rgba(182,155,112,.035)}
+.balance-hero:after{content:"";position:absolute;width:8px;height:8px;right:calc(8% + 34px);top:38px;border-radius:50%;background:var(--orbit-brass);box-shadow:0 0 0 4px rgba(182,155,112,.13)}
+.balance-ornament{display:none}
+/* Repeat the path as a shared edge language, not as glass or gradients. */
+.panel{border-radius:2px;border-top:2px solid var(--orbit-green);box-shadow:3px 3px 0 rgba(20,36,58,.07)}
+.panel-head{position:relative}
+.panel-kicker{letter-spacing:1.35px}
+.legend-income,.bar.income{background:var(--orbit-green)}
+.legend-expense,.bar.expense{background:var(--orbit-clay)}
+.bar-pair{border-bottom:1px solid var(--orbit-line)}
+.budget-progress{height:5px;background:#DED4C4;border-radius:0}
+.budget-progress span{background:var(--orbit-green);position:relative}
+.budget-progress span:after{content:"";position:absolute;right:0;top:-2px;width:9px;height:9px;border-radius:50%;background:var(--orbit-brass);border:1px solid var(--orbit-ink)}
+.donut{outline:1px solid rgba(182,155,112,.5);outline-offset:5px}
+.text-action{color:var(--orbit-clay);font-weight:700}
+.button-primary{background:var(--orbit-green);border:1px solid var(--orbit-green);box-shadow:3px 3px 0 var(--orbit-brass)}
+.button-primary:hover{background:#315F4E;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--orbit-brass)}
+.button:focus-visible,.nav-item:focus-visible,.icon-button:focus-visible{outline:2px solid var(--orbit-brass);outline-offset:3px}
+.feature-orbit{position:relative;border-radius:50%;background:var(--orbit-brass);box-shadow:none}
+.feature-orbit:before{content:"";position:absolute;inset:-8px;border:1px solid var(--orbit-brass);border-radius:50%;transform:rotate(-24deg) scaleX(1.35)}
+.goal-feature{border-top:2px solid var(--orbit-green)}
+.app-footer{position:relative}
+.app-footer:before{content:"";display:block;width:42px;height:1px;background:var(--orbit-brass);margin-bottom:12px}
+/* The rest of the app inherits the same waypoint language on cards and controls. */
+.metric-card,.stat-card,.shortcut-card,.goal-card,.insight-card,.account-card,.budget-card{border-radius:2px;box-shadow:3px 3px 0 rgba(20,36,58,.07)}
+.account-card,.budget-card,.goal-card,.insight-card{border-top:2px solid var(--orbit-green)}
+.range-switch{border-radius:2px;border-color:var(--orbit-brass)}
+.range-btn.active{background:var(--orbit-ink)}
+.search-field:focus-within,.form-field input:focus,.form-field select:focus{outline:2px solid var(--orbit-brass);outline-offset:2px}
+@media(max-width:650px){
+ .kinetic-portal:before{width:118px;height:59px;right:17%;top:22%}
+ .kinetic-portal:after{right:calc(17% + 5px);top:calc(22% + 20px)}
+ .balance-hero{box-shadow:5px 5px 0 var(--orbit-brass)}
+}
+@media(prefers-reduced-motion:reduce){.kinetic-portal:after{animation:none}}

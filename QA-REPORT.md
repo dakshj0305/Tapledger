@@ -50,3 +50,17 @@ The runtime uses inline SVG paths, locally packaged Vellum SVG/PNG icons, system
 6. Legal sufficiency under Indian law; have an Indian-law-qualified lawyer review every legal draft before publication.
 
 This report does not guarantee that no defects remain. Export a JSON backup before updating and test on the live site before relying on Vellum for important records.
+
+
+## v13 visual regression scope
+- CSS-only redesign plus updated cache version and visible release label.
+- Existing DOM IDs and application JavaScript are unchanged.
+- No external images, fonts, scripts, APIs or tracking requests were added.
+- Responsive overrides cover desktop and narrow mobile layouts; reduced-motion override disables the new orb motion.
+- Visual appearance still requires real browser review at desktop and Android viewport sizes.
+
+## v13 motif pass
+- Visual motif is implemented with CSS and existing markup; no new runtime dependency.
+- Reduced-motion override disables the waypoint animation.
+- Existing data IDs and JavaScript logic are retained from v12.
+- Automated checks cover JavaScript syntax, HTML parsing, duplicate IDs and ZIP integrity; full browser/device visual QA remains a manual step.

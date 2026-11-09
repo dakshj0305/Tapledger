@@ -1,4 +1,4 @@
-const CACHE='vellum-platform-v11';
+const CACHE='vellum-platform-v13';
 const APP_FILES=['','index.html','style.css','app.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/vellum-mark.svg'];
 const appURL=file=>new URL(file||'./',self.registration.scope).href;
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL))).then(()=>self.skipWaiting())));

@@ -24,7 +24,7 @@ The established repository/site URL is intended to remain `dakshj0305/Tapledger`
 2. In Data & privacy, use **Backup JSON** and keep the downloaded file outside the repository.
 3. Extract this ZIP.
 4. Open the existing `dakshj0305/Tapledger` repository.
-5. Upload the **contents** of the `vellum-finance-v11` folder to the repository root. Do not upload the containing folder as a nested directory.
+5. Upload the **contents** of the `vellum-finance-v13` folder to the repository root. Do not upload the containing folder as a nested directory.
 6. Replace the existing app files and commit to `main`.
 7. Wait for the latest GitHub Pages workflow to complete successfully.
 8. Open the existing site and hard-refresh with `Ctrl+Shift+R`.
@@ -83,3 +83,13 @@ See `privacy.html`, `terms.html` and `cookies.html`. These are drafts and must b
 - Goal contributions update goal progress only; the UI explains that they do not create a bank transfer.
 - Recurring-merchant and spending observations are heuristic, descriptive prompts. Review them rather than treating them as confirmed subscriptions or financial advice.
 - Export backups periodically. Clearing browser site data can erase local records.
+
+
+## Vellum v13 visual redesign
+
+This release applies a bold editorial art direction: flat parchment surfaces, strong navy typography, forest-green feature panels, antique-brass accents, hard-edged cards and a single CSS 3D orb as the visual centrepiece. It retains the existing application structure, IndexedDB database name (`tapledger-db`), schema version 3, migration code, NFC URL parameters, and backup/restore implementation. No new third-party assets or runtime dependencies are introduced.
+
+The 3D orb and kinetic canvas are decorative only. Financial information remains readable without animation; reduced-motion preferences are respected.
+
+## v13 — The Orbiting Ledger
+The visual system is unified around one motif: a continuous orbit with one waypoint, representing money moving through the ledger. The route appears consistently in the brand mark, active navigation, section markers, overview hero and progress details. Surfaces remain flat and editorial; the hero waypoint is the only ambient motion accent. Reduced-motion preferences are respected. See `MOTIF-SYSTEM.md`.

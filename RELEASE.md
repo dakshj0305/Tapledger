@@ -18,7 +18,18 @@
 - Voice remains optional and subject to an explicit opt-in notice.
 
 ## Install
-Upload the contents of the extracted `vellum-finance-v11` folder to the root of the existing GitHub Pages repository, commit to `main`, verify the Pages workflow, then hard-refresh. Keep the same origin/path to preserve browser IndexedDB data and existing NFC URLs. Back up JSON before deployment.
+Upload the contents of the extracted `vellum-finance-v13` folder to the root of the existing GitHub Pages repository, commit to `main`, verify the Pages workflow, then hard-refresh. Keep the same origin/path to preserve browser IndexedDB data and existing NFC URLs. Back up JSON before deployment.
 
 ## Verification limits
 Static syntax, structure, local asset references, manifest and archive checks are included in `QA-REPORT.md`. Physical NFC card behavior, live GitHub Pages update behavior, actual Android speech-provider behavior and assistive-technology testing on target devices remain to be verified by the site owner.
+
+
+## v13 design update
+- Replaced the diffuse glass-heavy visual treatment with bold, flat editorial surfaces.
+- Increased typographic scale and hierarchy on the overview dashboard.
+- Added a restrained CSS 3D metallic orb and orbital rings to the brand portal.
+- Simplified visual language: square corners, hard shadows, fewer translucent layers.
+- Preserved the existing finance workflows and local data contracts.
+
+## v13 — Motif coherence pass
+Introduces the Orbiting Ledger motif across the brand, navigation, page markers, overview hero and progress states. This is a CSS-only visual refinement; the finance logic, IndexedDB schema, storage keys and NFC URL actions remain unchanged.
