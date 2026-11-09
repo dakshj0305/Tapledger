@@ -11,3 +11,9 @@ The URL shortcut requires the published site to be available over HTTPS (or loca
 ## Data compatibility
 
 Database remains `tapledger-db`, schema version 3. No database migration is introduced. Back up before deployment as standard practice.
+
+## v17 custom domain preparation
+- Prepared for `https://voltura.finance/` with root `CNAME`, canonical URL metadata and root PWA scope/start URL.
+- Added GitHub Pages DNS and deployment instructions.
+- NFC shortcut remains generated from the current host, so after deployment it will generate `https://voltura.finance/?a=1`.
+- No GitHub repository settings or registrar DNS records were changed by this local package build; those require account access.

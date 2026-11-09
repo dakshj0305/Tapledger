@@ -17,3 +17,6 @@ The card stores a URL shortcut, not the transaction itself. A browser must open 
 
 ## Data compatibility
 IndexedDB remains `tapledger-db` schema version 3 to preserve existing TapLedger/Vellum/Voltura records in the same browser origin. Keep backups before replacing a deployed release.
+
+## Custom domain: voltura.finance
+This release includes a root `CNAME`, root-scoped PWA manifest, canonical metadata and a step-by-step DNS/GitHub Pages guide in `CUSTOM-DOMAIN-SETUP.md`. Configure the custom domain in the repository's Settings → Pages and at your domain registrar before updating the NFC card. Browser storage is origin-specific: export a JSON backup from the old GitHub Pages origin and restore it on `https://voltura.finance/`.
