@@ -1,26 +1,29 @@
-# Vellum v13 motif system — The Orbiting Ledger
+# VOLTURA v14 motif system — The Volt Orbit
 
 ## Core idea
-One continuous orbit and one waypoint: a visual shorthand for money moving through a system with intention. It is a single motif, not a collection of decorative symbols.
+A single continuous route with one electric waypoint. This is the visual shorthand for money moving through the user's financial system. The orbit is also the core of the VOLTURA mark.
 
-## Where it appears
-- **Brand mark:** circular route with a brass waypoint.
-- **Navigation:** the active view receives a short route marker.
-- **Page and section labels:** the waypoint terminates the eyebrow rule.
-- **Overview hero:** the orbital path is the visual anchor; its moving point is the only ambient motion.
-- **Cash-flow and budget visuals:** income/expense colours map to forest/clay; budget progress ends in the same brass waypoint.
-- **Cards and controls:** restrained green top edge, brass focus ring, squared geometry.
+## Placement
+- **Logo:** orbit line and electric waypoint inside the graphite tile; VOLTURA wordmark adjacent.
+- **Hero:** larger orbital trace around the VOLTURA wordmark; single waypoint movement.
+- **Navigation:** active item uses a short route marker in Volt lime.
+- **Section labels:** thin route rule ending in the waypoint.
+- **Progress:** a crisp endpoint on the budget/goal track.
+- **Chart colour:** teal for money in, signal coral for money out. These colours represent data, not decorative motif alternatives.
 
 ## Rules
-1. Do not introduce a second decorative motif (stars, blobs, random gradients, glass panels or unrelated 3D objects).
-2. Use the orbit only at key transitions; leave whitespace around it.
-3. Keep all data surfaces flat, high-contrast and readable.
-4. Motion is slow and ambient, never required to understand the interface; reduced-motion preferences disable it.
-5. The motif must never obscure values, controls, keyboard focus or chart information.
+1. No unrelated stars, blobs, random gradients or decorative 3D objects.
+2. Matte graphite and mineral surfaces dominate; metallic/anodized details are reserved for the logo, main hero and primary action.
+3. Keep the orbit visible at key transitions only; leave data surfaces calm.
+4. Motion is ambient, low amplitude and never required to interpret a financial figure.
+5. Reduced-motion settings remove ambient motion without hiding the brand mark.
+6. The motif must never obscure values, controls, keyboard focus or chart information.
 
 ## Palette
-- Midnight: `#14243A`
-- Forest: `#234638`
-- Brass: `#B69B70`
-- Clay: `#B85E49`
-- Parchment: `#F4EBDD`
+- Graphite: `#111820`
+- Volt lime: `#D7FF3F`
+- Mineral paper: `#EFF1E9`
+- Porcelain: `#FAFBF6`
+- Satin steel: `#B9C3C5`
+- Incoming: `#087D64`
+- Outgoing: `#E95B49`

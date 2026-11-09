@@ -1,10 +1,10 @@
-# Vellum v11 — Architecture and integration notes
+# VOLTURA v14 — Architecture and integration notes
 
 ## Runtime architecture
 
-Vellum is a static client-side application:
+Voltura is a static client-side application:
 - `index.html` is the app shell and all screen markup.
-- `style.css` contains the editorial navy/parchment/forest design system and responsive behavior.
+- `style.css` contains the matte graphite/mineral design system with electric-lime and satin-steel accents and responsive behavior.
 - `app.js` owns view rendering, validation, IndexedDB access, ledger calculations, NFC query handling, export/restore, optional voice entry and the native visual interactions.
 - `sw.js` caches the static same-origin app shell for repeat/offline loads.
 - `manifest.webmanifest` and local icons enable PWA installation.
@@ -13,7 +13,7 @@ There is no server-side API or bank connection in this package.
 
 ## Data and migration
 
-Database name and schema are intentionally unchanged: `tapledger-db`, version `3`. Existing stores are retained. The legacy `expenses` store is read by the migration code and old expense records are placed into an `Imported history` account so that an unknown historical starting balance is not incorrectly inferred. The migration marker is stored in the existing `settings` store. Visual settings are also stored in `settings` without a schema upgrade.
+Database name and schema are intentionally unchanged: `tapledger-db`, version `3`. Existing stores are retained. The legacy `expenses` store is read by the migration code and old expense records are placed into an `Imported history` account so that an unknown historical starting balance is not incorrectly inferred. The migration marker is stored in the existing `settings` store. Appearance preferences (including finish, tint, saturation and edge highlight) are stored in `settings` without a schema upgrade.
 
 ## NFC routing
 

@@ -1,95 +1,62 @@
-# Vellum v11 — Local-first Personal Finance Studio
+# VOLTURA v14 — Money in motion
 
-**Brand:** Vellum  
-**Tagline:** Every rupee, in perspective.  
+**Brand:** VOLTURA  
+**Tagline:** Money in motion.  
 **Runtime:** Static HTML, CSS and JavaScript. No build step, npm install, React runtime or third-party component package is required.
 
-Vellum is a local-first personal finance PWA for recording income, expenses and transfers; managing accounts, budgets and savings goals; and viewing explainable spending patterns. It is designed for INR and Indian number formatting.
+VOLTURA is a local-first personal finance PWA for recording income, expenses and transfers; managing accounts, budgets and savings goals; and viewing spending patterns. It is designed for INR and Indian number formatting. Your transactions, accounts, budgets and goals stay in this browser's IndexedDB storage; VOLTURA does not connect to banks or initiate payments.
 
 ## Run locally on Windows
 
-1. Extract this folder to a normal directory, for example `C:\\Vellum`.
+1. Extract this folder to a normal directory, for example `C:\Voltura`.
 2. Double-click `RUN-LOCAL-WINDOWS.bat`.
-3. Keep the black terminal window open while using the app.
+3. Keep the terminal window open while using the app.
 4. Visit `http://localhost:8000/` in Chrome or Edge.
-5. Stop the local server with `Ctrl+C` in the terminal.
+5. Stop the server with `Ctrl+C`.
 
-The script uses Python's built-in static HTTP server (`py` or `python`). Opening `index.html` directly with `file://` is not recommended because service workers and some browser storage features require a secure context. `localhost` is treated as a secure development origin by modern browsers.
+Opening `index.html` directly with `file://` is not recommended because service workers and some browser storage features require a secure context. `localhost` is treated as a secure development origin by modern browsers.
 
-## Deploy to the existing GitHub Pages site
+## Deploy to the existing GitHub Pages project
 
-The established repository/site URL is intended to remain `dakshj0305/Tapledger` / `https://dakshj0305.github.io/Tapledger/`.
+The established GitHub Pages URL is `https://dakshj0305.github.io/Tapledger/`. The public URL/repository slug is intentionally not changed in this package; changing a GitHub Pages project slug would be a separate hosting migration.
 
-1. Open the existing Vellum site in the same browser profile.
-2. In Data & privacy, use **Backup JSON** and keep the downloaded file outside the repository.
+1. Open the currently deployed app in the same browser profile.
+2. In **Data & settings**, choose **Backup JSON** and store the file outside the repository.
 3. Extract this ZIP.
 4. Open the existing `dakshj0305/Tapledger` repository.
-5. Upload the **contents** of the `vellum-finance-v13` folder to the repository root. Do not upload the containing folder as a nested directory.
+5. Upload the **contents** of the `voltura-finance-v14` folder to the repository root (not the enclosing folder).
 6. Replace the existing app files and commit to `main`.
-7. Wait for the latest GitHub Pages workflow to complete successfully.
-8. Open the existing site and hard-refresh with `Ctrl+Shift+R`.
-9. If an older service worker is still controlling the page, use DevTools → Application → Service Workers → unregister the old worker, then reload. Do not clear IndexedDB or all site data just to refresh the UI.
+7. Wait for the GitHub Pages workflow to complete, then open the URL and hard-refresh (`Ctrl+Shift+R`).
+8. If an old service worker remains, unregister it in DevTools → Application → Service Workers and reload. Do not clear IndexedDB just to refresh the UI.
 
-The base URL and NFC action query parameters remain unchanged. Existing physical NFC cards should not need rewriting if they already point to this same site URL with a supported action query.
+## Preserved behaviour and compatibility
 
-## Integrated visual interactions
-
-- **GlyphPortal-inspired wordmark:** the VELLUM letters enter with a staggered reveal and respond to pointer movement with a damped spring. The supplied wrapper referenced a `GlyphPortal` implementation that was not included; Vellum implements the observable wordmark direction natively, not the unavailable component's internal scroll/annotation behavior.
-- **GlassWorkspace-inspired material:** the real Vellum cash-flow surface supports Quiet, Forest and Deep presets plus blur, tint blend, saturation and edge controls. Settings are stored locally in IndexedDB under `glass-material-v1`; they do not change financial records.
-- **KineticGrid-inspired portal:** a Canvas 2D grid uses edge pinning, pointer displacement, exponentially smoothed movement, decaying radial ripples and a damped-spring letter response. It is decorative and not required to use the app. It respects `prefers-reduced-motion`, pauses when the page is hidden and stops its animation loop when the pointer and springs have settled.
-
-The effect is a physics-inspired visual simulation. It is not a physical measurement, financial forecast or claim of exact fluid dynamics.
-
-## Compatibility kept
-
-- IndexedDB database: `tapledger-db`.
-- IndexedDB schema version: `3` (unchanged).
-- Existing stores and migration behavior retained.
+- IndexedDB database: `tapledger-db` (kept intentionally to retain existing local data).
+- IndexedDB schema version: `3` (no schema migration needed).
 - NFC expense shortcut: `?a=1`.
 - NFC income shortcut: `?i=1`.
 - Legacy expense shortcut: `?add=1`.
-- Vellum, Cairn and TapLedger JSON restore compatibility retained.
-- Existing voice-consent, data-export and delete-all flows retained.
-- Glass appearance is stored in the existing `settings` store; no schema upgrade is made.
+- JSON import supports VOLTURA plus legacy Vellum, Cairn and TapLedger backups.
+- CSV and JSON exports are named `voltura-*` and new JSON backups identify the app as `Voltura`.
+- Existing voice consent, export, restore and delete-all flows remain.
+- New service-worker cache: `voltura-platform-v14`; it cleans old Vellum/VOLTURA app-shell caches during activation but does not clear IndexedDB.
 
-## Local storage and privacy summary
+## Main features
 
-- Financial records are stored in IndexedDB in the browser profile for this site.
-- The service worker caches only the static same-origin app shell in Cache Storage.
-- The app source does not set or read cookies, localStorage or sessionStorage.
-- No analytics, advertising, remote images, web fonts, external scripts, social widgets or third-party component libraries are included.
-- The app's service worker uses `fetch` only for same-origin app-shell requests. It does not upload ledger records.
-- Optional voice entry uses the browser's SpeechRecognition API after explicit user opt-in. The browser/vendor speech service may process microphone audio or recognized speech outside this device. Voice is optional; manual and NFC entry do not require it.
-- Clipboard access is only used after the user selects a copy-shortcut action, and copies the Vellum NFC URL.
+- Income, expense and transfer entries.
+- Account balances from opening balances and entries recorded in the app.
+- Monthly and category budgets with progress states.
+- Savings goals and goal contributions.
+- Cash-flow charts, category breakdowns and recent ledger activity.
+- Search, sorting, CSV export and JSON backup/restore.
+- NFC URL shortcuts for quick entry.
+- Optional voice entry only after explicit user consent.
+- Responsive layout, keyboard focus states and reduced-motion support.
 
-See `privacy.html`, `terms.html` and `cookies.html`. These are drafts and must be reviewed by a lawyer qualified in Indian law before publishing. Complete publisher/contact/effective-date placeholders before publishing legal pages.
+## Important limitations
 
-## Files
+VOLTURA is a manual record-keeping tool, not a bank, payment processor, tax adviser or investment adviser. It does not fetch balances or verify transactions. Accuracy depends on the records entered. Browser storage can be removed by clearing site data or losing the browser profile; export backups regularly. Voice recognition may use an external browser/vendor service when enabled.
 
-- `index.html`, `style.css`, `app.js` — static app.
-- `sw.js` — service worker and app-shell cache `vellum-platform-v11`.
-- `manifest.webmanifest` — PWA metadata.
-- `privacy.html`, `terms.html`, `cookies.html`, `legal.css` — legal drafts.
-- `icons/` — locally packaged Vellum app icons and mark.
-- `BRAND.md` — visual identity.
-- `COMPONENT-INTEGRATION.md` — source-to-app integration notes.
-- `INTEGRATION-NOTES.md` — architecture and implementation boundaries.
-- `QA-REPORT.md` — checks performed and items still requiring device/live testing.
-- `RELEASE.md` — release summary.
+## QA
 
-## Important use notes
-
-- Account balances are calculated from opening balances and records entered by the user; Vellum is not connected to a bank and does not verify balances.
-- Goal contributions update goal progress only; the UI explains that they do not create a bank transfer.
-- Recurring-merchant and spending observations are heuristic, descriptive prompts. Review them rather than treating them as confirmed subscriptions or financial advice.
-- Export backups periodically. Clearing browser site data can erase local records.
-
-
-## Vellum v13 visual redesign
-
-This release applies a bold editorial art direction: flat parchment surfaces, strong navy typography, forest-green feature panels, antique-brass accents, hard-edged cards and a single CSS 3D orb as the visual centrepiece. It retains the existing application structure, IndexedDB database name (`tapledger-db`), schema version 3, migration code, NFC URL parameters, and backup/restore implementation. No new third-party assets or runtime dependencies are introduced.
-
-The 3D orb and kinetic canvas are decorative only. Financial information remains readable without animation; reduced-motion preferences are respected.
-
-## v13 — The Orbiting Ledger
-The visual system is unified around one motif: a continuous orbit with one waypoint, representing money moving through the ledger. The route appears consistently in the brand mark, active navigation, section markers, overview hero and progress details. Surfaces remain flat and editorial; the hero waypoint is the only ambient motion accent. Reduced-motion preferences are respected. See `MOTIF-SYSTEM.md`.
+See `QA-REPORT.md` for the release checks performed on this package. The report distinguishes code-level/browser interaction tests from hosting checks that require deployment to the GitHub Pages project.

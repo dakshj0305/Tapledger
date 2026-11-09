@@ -1,12 +1,12 @@
 {
-  "name": "Vellum — Personal Finance Studio",
-  "short_name": "Vellum",
-  "description": "Every rupee, in perspective. A private personal finance workspace with NFC quick capture.",
+  "name": "VOLTURA \u2014 Personal Finance",
+  "short_name": "VOLTURA",
+  "description": "Money in motion. A private, local-first personal finance workspace with NFC quick capture.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#E9E1D3",
-  "theme_color": "#14243A",
+  "background_color": "#F0F1E9",
+  "theme_color": "#D7FF3F",
   "icons": [
     {
       "src": "./icons/icon-192.png",

@@ -1,46 +1,38 @@
-# VELLUM — Brand system (v9)
+# VOLTURA — Brand system v14
 
-**Positioning:** A considered personal finance studio for people who want clarity, not noise.
+**Positioning:** A bold, local-first personal finance cockpit that turns daily money movement into a clear operating picture.
 
-**Tagline:** Every rupee, in perspective.
+**Tagline:** Money in motion.
 
-## Core palette
-- Midnight ink `#14243A` — primary structure and navigation.
-- Deep navy `#1D3049` — elevated dark surfaces.
-- Warm parchment `#E9E1D3` — page canvas.
-- Porcelain `#F8F6F1` — working surfaces.
-- Forest `#234638` — primary actions and positive financial progress.
-- Slate `#405A74` — accessible secondary links and headings.
-- Accessible neutral `#59636F` — secondary text on light surfaces.
-- Antique brass `#B69B70` — decorative accent only, not small body text.
-- Clay `#853F32` — accessible expense/error text on light surfaces.
-- Light-on-dark `#C6D0C8` — secondary copy on navy/forest dark surfaces.
+## The signature motif — The Volt Orbit
+One continuous orbit and one electric waypoint. It stands for the movement of money through the ledger and onward to accounts, budgets and goals. The mark belongs to VOLTURA; it is not a generic decoration.
+
+## Palette
+- Graphite `#111820` — navigation, hero, logo and core structure.
+- Volt lime `#D7FF3F` — the single signature waypoint and primary action accent.
+- Mineral paper `#EFF1E9` — main canvas.
+- Porcelain `#FAFBF6` — working surfaces.
+- Satin steel `#B9C3C5` — restrained metallic detail and dividers.
+- Volt teal `#087D64` — incoming money and positive progress.
+- Signal coral `#E95B49` — outgoing money and warnings.
+- Deep olive `#4D6310` — accessible lime-derived text and focus states on light surfaces.
+
+## Finish and composition
+- Matte graphite and mineral surfaces are the default; no full-screen glass, glow haze or generic gradients.
+- The logo and hero get the controlled metallic / anodized treatment: one orbit line, one waypoint, a crisp specular edge.
+- The dashboard uses bold, uppercase editorial typography, strong rectangular silhouettes and offset shadows.
+- White space and data density remain balanced. Noise is not a substitute for information architecture.
 
 ## Typography
-- Display: local system serif stack (Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia).
-- Interface: local system sans-serif stack (system UI, Segoe UI, Arial).
+- Interface: system sans-serif stack (system UI, Segoe UI, Arial), bold weights for headings.
 - Figures: local system monospace stack (SFMono-Regular, Consolas, Liberation Mono).
-- No font files or web-font downloads are bundled. The operating system supplies the selected font.
+- No font files or web-font downloads are bundled.
 
-## Motion and physics-inspired interaction
-The overview hero includes a decorative canvas grid and a kinetic VELLUM wordmark. Grid nodes are modelled as damped spring systems using `a = F - kx - cv`; pointer proximity applies a short-lived radial force, and a pointer press launches a decaying radial wave. The animation is local to the page, uses no remote component or physics package, and is disabled when `prefers-reduced-motion: reduce` is active. This is a small visual interaction, not a financial model or scientific measurement.
+## Motion
+The hero portal uses local Canvas 2D motion, pointer warp and decaying ripple. The logo waypoint is the only persistent ambient path animation. Motion is decorative, pauses when the page is hidden, and is disabled by `prefers-reduced-motion`.
 
-## Component direction
-- The dashboard is data-driven from the user's IndexedDB records. It does not use the supplied sample transactions, demo person or USD figures from the React reference.
-- Translucent layered surfaces are limited to the cash-flow summary; the app remains primarily editorial and readable.
-- The kinetic grid is decorative and `aria-hidden`; charts and financial meaning remain available as text/table content.
-- No generic gradient backgrounds, random glowing effects, remote background images or external fonts are used.
-
-## Assets and provenance
-- `icons/vellum-mark.svg`: simple V monogram authored for this Vellum project.
-- `icons/icon-192.png`, `icons/icon-512.png` and maskable variants: locally generated raster exports of the Vellum monogram.
-- All interface icons are inline SVG symbols authored in `index.html`.
-- No stock photography, third-party illustration, external image, icon font or bundled font file is used.
-- The supplied Glyph Portal font and Glass Workspace remote background image were not reused. Their external CDN origins and licence terms were not included with the supplied snippets.
-
-
-## Native interactive surface
-- The overview wordmark portal uses a local Canvas 2D grid and letter movement.
-- The grid uses a damped spring response and expanding radial ripple as a decorative interaction. These are visual simulations, not a claim of exact physical modeling.
-- Glass material controls affect the summary surface only. They are an on-device visual preference stored under `settings` key `glass-material-v1`; they do not affect ledger calculations.
-- Reduced-motion preferences disable the kinetic animation. The wordmark remains visible without motion.
+## Product and data integrity
+- Static HTML, CSS and JavaScript. No build step, npm install, React runtime or third-party component package.
+- Existing database identity remains `tapledger-db`, schema version `3`, preserving prior Vellum/TapLedger data on this browser profile.
+- JSON import remains backward compatible with Voltura, Vellum, Cairn and TapLedger exports.
+- All financial records remain local in IndexedDB; the design layer does not change calculation or storage behavior.

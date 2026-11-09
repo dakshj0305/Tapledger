@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 echo.
-echo VELLUM - Local preview
+echo Voltura - Local preview
  echo Keep this window open while using the app.
 echo Open: http://localhost:8000/
 echo Stop the server with Ctrl+C.

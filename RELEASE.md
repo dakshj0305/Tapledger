@@ -1,35 +1,20 @@
-# Vellum v11 — Release notes
+# VOLTURA v14 release notes
 
-## Delivered
-- Integrated the supplied GlyphPortal, GlassWorkspace and KineticGrid visual directions as native static browser code.
-- Kept the Vellum identity, local data-driven financial workspace and existing native dashboard.
-- Added a responsive kinetic grid/wordmark interaction with edge pinning, pointer smoothing, damped-spring lettering, decaying radial ripples, max DPR 2, reduced-motion handling and page-visibility pause.
-- Fixed the animation scheduler so a stationary pointer does not cause a continuous requestAnimationFrame loop.
-- Added pointer-up handling for touch/pen interactions so the visual field relaxes after touch.
-- Retained adjustable glass-material presets and controls in the existing Data & privacy dialog.
-- Kept the static HTML/CSS/JavaScript deployment model and removed any need for the React/GSAP/Lucide runtime.
-- Added `RUN-LOCAL-WINDOWS.bat` for local HTTPS-context-compatible testing through localhost.
+## Brand and visual system
+- Rebranded the visible product to VOLTURA across the app, legal pages, install metadata and package docs.
+- Added a custom Voltura orbit mark, matching SVG favicon and PWA icon set.
+- Introduced the Volt Orbit motif: one path and one moving waypoint across logo, hero, navigation, section markers and progress states.
+- Reworked the visual system around matte graphite/mineral surfaces, electric-lime anodized accents, satin-steel detail, teal income and coral expenses.
+- Tightened typography and rectangular surfaces for a loud, flat editorial dashboard.
 
-## Compatibility retained
-- `tapledger-db`, IndexedDB schema version 3 and existing stores/migration.
-- `?a=1`, `?i=1` and legacy `?add=1` URL actions.
-- Existing Vellum/Cairn/TapLedger JSON import compatibility and CSV/JSON export.
-- Existing privacy, terms and cookies draft pages.
-- Voice remains optional and subject to an explicit opt-in notice.
+## Product integrity
+- Kept the IndexedDB database name `tapledger-db` and schema version `3`; prior local records remain in the same browser database.
+- Kept existing NFC query shortcuts (`?a=1`, `?i=1`, `?add=1`).
+- New JSON backup identity is `Voltura`; restore remains compatible with older `Vellum`, `Cairn` and `TapLedger` backups.
+- Export filenames now use the `voltura-*` prefix.
+- Service-worker cache version is now `voltura-platform-v14`.
 
-## Install
-Upload the contents of the extracted `vellum-finance-v13` folder to the root of the existing GitHub Pages repository, commit to `main`, verify the Pages workflow, then hard-refresh. Keep the same origin/path to preserve browser IndexedDB data and existing NFC URLs. Back up JSON before deployment.
-
-## Verification limits
-Static syntax, structure, local asset references, manifest and archive checks are included in `QA-REPORT.md`. Physical NFC card behavior, live GitHub Pages update behavior, actual Android speech-provider behavior and assistive-technology testing on target devices remain to be verified by the site owner.
-
-
-## v13 design update
-- Replaced the diffuse glass-heavy visual treatment with bold, flat editorial surfaces.
-- Increased typographic scale and hierarchy on the overview dashboard.
-- Added a restrained CSS 3D metallic orb and orbital rings to the brand portal.
-- Simplified visual language: square corners, hard shadows, fewer translucent layers.
-- Preserved the existing finance workflows and local data contracts.
-
-## v13 — Motif coherence pass
-Introduces the Orbiting Ledger motif across the brand, navigation, page markers, overview hero and progress states. This is a CSS-only visual refinement; the finance logic, IndexedDB schema, storage keys and NFC URL actions remain unchanged.
+## Runtime
+- Still a static app; no build chain or remote dependency added.
+- Added the Voltura SVG mark and refreshed PWA icons.
+- Added mobile-specific layout tuning and reduced-motion handling for the rebranded hero.

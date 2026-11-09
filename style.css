@@ -8,7 +8,7 @@
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
-/* VELLUM v5 — considered editorial finish */
+/* VOLTURA v5 — considered editorial finish */
 :root{
  --paper:#E9E1D3;--paper-deep:#DDD2C1;--surface:#F8F6F1;
  --ink:#14243A;--ink-2:#1D3049;--muted:#777D82;--muted-2:#9A978F;
@@ -87,7 +87,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .ledger-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.button-danger-quiet{background:transparent;border:1px solid #d9b7ad;color:#a45b4a}.button-danger-quiet:hover{background:#f3e4df}
 
 
-/* VELLUM v8 — accessibility, privacy and resilient responsive controls. */
+/* VOLTURA v8 — accessibility, privacy and resilient responsive controls. */
 :root{
   --muted:#59636F; --muted-2:#59636F; --line:#C7BFB3; --control-border:#6C777D;
   --accent-text:#405A74; --forest-text:#234638; --danger-text:#853F32;
@@ -215,7 +215,7 @@ input:disabled,select:disabled,button:disabled{color:#59636F!important;backgroun
 }
 
 
-/* VELLUM v9 — local Glyph Portal + damped-spring kinetic grid.
+/* VOLTURA v9 — local Glyph Portal + damped-spring kinetic grid.
    The decorative canvas uses no image/font/third-party service. */
 .kinetic-intro{width:min(370px,39%);gap:13px;align-items:flex-end}
 .kinetic-intro .date-mark{align-self:flex-end}
@@ -245,7 +245,7 @@ input:disabled,select:disabled,button:disabled{color:#59636F!important;backgroun
 @media(max-width:560px){.topbar-actions #topSearchButton{display:none}.topbar-actions #topSettingsButton{display:grid;min-width:44px;min-height:44px}}
 
 
-/* Vellum v10 — native glass-workspace material controls. The effect is limited
+/* VOLTURA v10 — native glass-workspace material controls. The effect is limited
    to the summary surface and preview; the editorial ledger remains opaque. */
 :root{
   --v-glass-blur:16px;
@@ -286,7 +286,7 @@ input:disabled,select:disabled,button:disabled{color:#59636F!important;backgroun
 @media(prefers-reduced-motion:reduce){.glass-preview,.balance-hero,.balance-stat{scroll-behavior:auto}}
 
 
-/* VELLUM v12 — bold editorial / flat-first / dimensional hero art direction.
+/* VOLTURA v12 — bold editorial / flat-first / dimensional hero art direction.
    Keeps the existing DOM, data bindings, navigation and finance workflows intact. */
 :root{
   --ink:#14243A;--paper:#F4EBDD;--surface:#FFFCF5;--forest:#234638;--forest-2:#315E4B;
@@ -333,13 +333,13 @@ body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-s
 .date-mark{background:var(--gold);color:var(--ink);padding:9px 13px;border-radius:2px;font-weight:900;letter-spacing:.14em}
 .kinetic-portal{height:190px;border:2px solid var(--ink);border-radius:2px;background:#1B3048;box-shadow:9px 9px 0 var(--forest);overflow:hidden;transform:perspective(900px) rotateY(-7deg) rotateX(3deg);transform-style:preserve-3d;transition:transform .35s ease,box-shadow .35s ease}
 .kinetic-portal:hover{transform:perspective(900px) rotateY(0) rotateX(0) translateY(-3px);box-shadow:12px 13px 0 var(--forest)}
-.kinetic-portal::after{content:"";position:absolute;z-index:2;width:112px;height:112px;right:26px;top:36px;border-radius:50%;background:radial-gradient(circle at 32% 27%,#F6E8C9 0 4%,#D6BC8D 13%,#9C8056 38%,#294A3A 67%,#14243A 100%);box-shadow:inset -14px -12px 24px #09172588, inset 9px 8px 18px #fff7, 14px 17px 24px #06101c99;transform:translateZ(38px) rotate(-18deg);animation:vellumOrbFloat 6s ease-in-out infinite;pointer-events:none}
+.kinetic-portal::after{content:"";position:absolute;z-index:2;width:112px;height:112px;right:26px;top:36px;border-radius:50%;background:radial-gradient(circle at 32% 27%,#F6E8C9 0 4%,#D6BC8D 13%,#9C8056 38%,#294A3A 67%,#14243A 100%);box-shadow:inset -14px -12px 24px #09172588, inset 9px 8px 18px #fff7, 14px 17px 24px #06101c99;transform:translateZ(38px) rotate(-18deg);animation:volturaOrbFloat 6s ease-in-out infinite;pointer-events:none}
 .kinetic-portal::before{content:"";position:absolute;z-index:2;width:154px;height:154px;right:5px;top:15px;border:1px solid #D7BD8D99;border-radius:50%;transform:rotateX(68deg) rotateZ(-22deg);box-shadow:0 0 0 11px #D7BD8D12,0 0 0 24px #D7BD8D0A;pointer-events:none}
 .kinetic-portal-word{justify-content:flex-start;padding-left:22px;font-size:clamp(25px,3vw,38px);letter-spacing:.12em;text-shadow:0 4px 0 #071523}
 .kinetic-portal-caption{top:14px;text-align:left;left:22px;color:#E8D7B7}
 .kinetic-portal-hint{bottom:14px;text-align:left;left:22px;color:#D6E0DA}
 .kinetic-grid-canvas{opacity:.56}
-@keyframes vellumOrbFloat{0%,100%{transform:translate3d(0,0,38px) rotate(-18deg)}50%{transform:translate3d(-5px,-10px,50px) rotate(-7deg)}}
+@keyframes volturaOrbFloat{0%,100%{transform:translate3d(0,0,38px) rotate(-18deg)}50%{transform:translate3d(-5px,-10px,50px) rotate(-7deg)}}
 .balance-hero{position:relative;overflow:hidden;border:2px solid var(--ink);border-radius:2px;background:var(--ink);padding:30px 32px;min-height:205px;box-shadow:9px 9px 0 var(--gold);isolation:isolate}
 .balance-hero::before{content:"";position:absolute;z-index:-1;right:5%;top:-90px;width:330px;height:330px;border:1px solid #E9DDBA55;border-radius:50%;box-shadow:0 0 0 22px #E9DDBA0B,0 0 0 50px #E9DDBA0A,0 0 0 84px #E9DDBA08;opacity:1}
 .balance-hero::after{content:"V";position:absolute;z-index:-1;right:7%;top:-65px;font:900 260px/1 Georgia,serif;color:#F5EBDD0B;transform:rotate(-13deg);pointer-events:none}
@@ -408,7 +408,7 @@ body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-s
 @media(max-width:650px){.main-content{padding-left:16px;padding-right:16px}.topbar{gap:8px}.page-intro{padding-top:30px}.page-intro h1{font-size:clamp(48px,14vw,72px)}.intro-side.kinetic-intro{width:100%}.kinetic-portal{height:135px;transform:none;box-shadow:6px 6px 0 var(--forest)}.kinetic-portal::after{width:82px;height:82px;right:24px;top:28px}.kinetic-portal::before{width:118px;height:118px;right:6px;top:10px}.balance-hero{grid-template-columns:1fr 1fr;padding:21px 18px;gap:14px;box-shadow:6px 6px 0 var(--gold)}.balance-value{font-size:clamp(36px,10vw,54px)}.balance-stat{padding:12px}.overview-grid,.lower-grid,.bottom-feature-grid{grid-template-columns:1fr}.panel{padding:17px}.section-heading{margin-top:38px}.page-headline{padding-top:30px}}
 @media(prefers-reduced-motion:reduce){.kinetic-portal,.kinetic-portal::after,.button,.view{animation:none!important;transition:none!important;transform:none!important}.portal-letter{animation:none!important}}
 
-/* VELLUM v13 — one visual language: THE ORBITING LEDGER.
+/* VOLTURA v13 — one visual language: THE ORBITING LEDGER.
    A continuous route + one waypoint represents money moving with intention.
    Keep the motif structural and sparse; all working surfaces remain flat. */
 :root{
@@ -475,3 +475,184 @@ body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-s
  .balance-hero{box-shadow:5px 5px 0 var(--orbit-brass)}
 }
 @media(prefers-reduced-motion:reduce){.kinetic-portal:after{animation:none}}
+
+/* VOLTURA v14 — Electric Orbit: matte graphite, mineral white, anodized volt.
+   One orbit/waypoint signature is shared by the mark, hero, section rules and progress states. */
+:root{
+  --volt-ink:#111820;
+  --volt-ink-2:#202A31;
+  --volt-paper:#EFF1E9;
+  --volt-surface:#FAFBF6;
+  --volt-matte:#E0E4DA;
+  --volt-silver:#B9C3C5;
+  --volt-steel:#74848B;
+  --volt-lime:#D7FF3F;
+  --volt-lime-deep:#4D6310;
+  --volt-teal:#087D64;
+  --volt-orange:#E95B49;
+  --volt-line:#C4CBC2;
+  --paper:var(--volt-paper);
+  --paper-deep:#DDE2D8;
+  --surface:var(--volt-surface);
+  --ink:var(--volt-ink);
+  --ink-2:var(--volt-ink-2);
+  --muted:#59666A;
+  --muted-2:#758083;
+  --line:var(--volt-line);
+  --forest:var(--volt-teal);
+  --forest-2:#0A9B7A;
+  --accent:#526C27;
+  --accent-soft:#E4EEC6;
+  --sage:#879A81;
+  --sage-soft:#E3E9DE;
+  --blue:#31556D;
+  --blue-soft:#E0E9ED;
+  --gold:#A3B0B1;
+  --gold-soft:#E7ECEA;
+  --rose:#9B655B;
+  --orbit-ink:var(--volt-ink);
+  --orbit-green:var(--volt-teal);
+  --orbit-brass:var(--volt-lime);
+  --orbit-clay:var(--volt-orange);
+  --orbit-paper:var(--volt-paper);
+  --focus:var(--volt-lime-deep);
+  --shadow:0 5px 0 rgba(17,24,32,.055);
+  --shadow-strong:0 10px 0 rgba(17,24,32,.13);
+}
+html{scroll-behavior:smooth;background:var(--volt-paper)}
+body{background:var(--volt-paper);color:var(--volt-ink);font-family:var(--sans);font-size:14px}
+/* Strong, unmistakable masthead: the emblem is the product's anchor. */
+.sidebar{background:var(--volt-ink);border-right:0;box-shadow:7px 0 0 rgba(17,24,32,.06);color:#F5F7F0}
+.brand{padding:28px 18px 36px;gap:13px}
+.brand-symbol{width:48px;height:48px;border-radius:4px;background:var(--volt-lime);border:2px solid var(--volt-lime);color:var(--volt-ink);box-shadow:4px 4px 0 #F4F7EC;overflow:visible}
+.brand-symbol svg{width:37px;height:37px;stroke:var(--volt-ink);stroke-width:1.6;overflow:visible}
+.brand-word{font:900 25px/1 var(--sans);letter-spacing:-1.7px;color:#F8FAF2}
+.brand-word>span{color:var(--volt-lime);font-size:10px;vertical-align:top;margin-left:2px;letter-spacing:0}
+.brand-word small{color:#B9C3C5;font:800 8px var(--mono);letter-spacing:2.1px;margin-top:7px}
+.sidebar-label{color:#AAB5B7;font-weight:700;letter-spacing:2px}
+.nav-item{color:#D6DEDA;border-radius:2px;min-height:47px;margin:3px 9px;width:calc(100% - 18px);border-left:3px solid transparent;font-weight:650}
+.nav-item:hover{background:#26343A;color:#fff}
+.nav-item.active{background:var(--volt-lime);color:var(--volt-ink);border-left-color:var(--volt-lime);font-weight:900;box-shadow:4px 4px 0 rgba(215,255,63,.15)}
+.nav-item.active kbd{color:#3C4D15}
+.nav-item:before{background:var(--volt-ink)}
+.privacy-card{border:1px solid #47545A;background:#1A252C;border-radius:2px}
+.privacy-icon{border:1px solid var(--volt-lime);border-radius:2px}.privacy-icon svg{stroke:var(--volt-lime)}
+.sidebar-foot{border-color:#3A464C;color:#AAB5B7}.status-dot{background:var(--volt-lime);box-shadow:0 0 0 3px #D7FF3F24}
+.main-content{background:var(--volt-paper)}
+.topbar{border-bottom:2px solid var(--volt-ink);background:var(--volt-paper)}
+.breadcrumb{color:#647176}.breadcrumb strong{color:var(--volt-ink);font-weight:900}
+.icon-button{border:1.5px solid var(--volt-ink);border-radius:2px;color:var(--volt-ink);background:var(--volt-surface);box-shadow:2px 2px 0 #11182018}
+.icon-button:hover{background:var(--volt-lime);color:var(--volt-ink)}
+.button{border-radius:2px;font-weight:850;letter-spacing:.035em;box-shadow:3px 3px 0 rgba(17,24,32,.14)}
+.button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(17,24,32,.16)}
+.button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(17,24,32,.16)}
+.button-primary{background:var(--volt-lime);color:var(--volt-ink);border:2px solid var(--volt-ink);box-shadow:3px 3px 0 var(--volt-ink)}
+.button-primary:hover{background:#E5FF82;color:var(--volt-ink)}
+.button-light{background:#E0E4DA;color:var(--volt-ink);border:1.5px solid var(--volt-ink)}
+.button-quiet{background:transparent;color:var(--volt-ink);border:1.5px solid #748187}
+.button-danger{background:#FFF0EC;color:#8B2D22;border:1.5px solid #8B2D22}
+.button:focus-visible,.nav-item:focus-visible,.icon-button:focus-visible,.feature-link:focus-visible{outline:3px solid var(--volt-lime-deep);outline-offset:3px}
+.view{animation:volturaEnter .24s ease both}@keyframes volturaEnter{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page-intro{padding-top:42px}
+.eyebrow{color:#56656A;font-weight:800;letter-spacing:1.8px}
+.eyebrow-rule{background:var(--volt-lime-deep);height:3px;width:28px}
+.eyebrow-rule:after{background:var(--volt-lime);width:8px;height:8px;top:-2.5px;border:1px solid var(--volt-ink)}
+.page-intro h1,.page-headline h1{font:950 clamp(46px,5.2vw,72px)/.9 var(--sans);letter-spacing:-.075em;color:var(--volt-ink);text-transform:uppercase}
+.page-intro h1 em{font-style:normal;color:#596F21;-webkit-text-stroke:.5px #596F21}
+.intro-copy{color:#536064;font-size:13px;line-height:1.65;font-weight:520}
+.date-mark{color:var(--volt-ink);border:1.5px solid var(--volt-ink);background:var(--volt-lime);font-weight:900}
+/* Signature panel: one orbit, one waypoint. Everything else stays deliberately flat. */
+.kinetic-portal{height:190px;border:2px solid var(--volt-ink);border-radius:2px;background:var(--volt-ink);box-shadow:8px 8px 0 var(--volt-lime);transform:none;isolation:isolate}
+.kinetic-portal:before{width:168px;height:82px;right:15%;top:20%;border:2px solid #E7EEE5;opacity:.9;transform:rotate(-28deg)}
+.kinetic-portal:after{width:15px;height:15px;right:calc(15% + 6px);top:calc(20% + 31px);background:var(--volt-lime);border:3px solid var(--volt-ink);box-shadow:0 0 0 2px var(--volt-lime);animation:ledgerWaypoint 8s ease-in-out infinite}
+.kinetic-portal-word{justify-content:flex-start;padding-left:22px;font:950 clamp(29px,3.7vw,46px)/1 var(--sans);letter-spacing:-.07em;color:#F5F7F0;text-shadow:3px 3px 0 #344147}
+.portal-letter{animation-duration:.45s}
+.kinetic-portal-caption{top:14px;left:22px;text-align:left;color:var(--volt-lime);font-weight:900;letter-spacing:1.4px}
+.kinetic-portal-hint{bottom:14px;left:22px;text-align:left;color:#CBD5D1;font-weight:700;letter-spacing:1px}
+.balance-hero{background:#111820;color:#F5F7F0;border:2px solid #111820;border-radius:2px;box-shadow:9px 9px 0 var(--volt-lime);padding:28px 32px;min-height:192px}
+.balance-hero:before{width:420px;height:420px;right:20px;top:-220px;border-color:#D7FF3F28;box-shadow:0 0 0 26px #D7FF3F0C,0 0 0 54px #D7FF3F08}
+.metric-label{color:#5B696E;font-weight:850}.light-label{color:#B4C0BB}
+.balance-value{font:900 clamp(37px,5.2vw,57px)/1 var(--sans);letter-spacing:-.075em;color:#fff}
+.balance-trend{color:var(--volt-lime);font-weight:900}.pill-dark{border-color:#6F7F7F;color:var(--volt-lime);font-weight:900}
+.balance-stat strong{font:850 24px var(--sans);letter-spacing:-1px;color:#F8FAF4}
+.balance-stat small{color:#B8C3BE}.balance-divider{background:#D7FF3F55}
+.balance-ornament{border-color:#D7FF3F42;color:var(--volt-lime)}
+.section-heading{margin:38px 0 15px}
+.section-heading h2{font:900 23px var(--sans);letter-spacing:-.8px;text-transform:uppercase}
+.section-heading h2 span{color:#596F21}
+.panel{background:var(--volt-surface);border:1.5px solid var(--volt-ink);border-top:4px solid var(--volt-ink);border-radius:2px;box-shadow:4px 4px 0 #11182012;padding:22px}
+.panel-head{border-bottom:1px solid #CFD5CC}
+.panel-kicker{color:#5C696D;font-weight:850}
+.panel-sub{font:850 16px var(--sans);color:var(--volt-ink);letter-spacing:-.3px}
+.cashflow-panel,.budget-snapshot,.category-panel,.recent-panel{box-shadow:4px 4px 0 #11182012}
+.legend-income,.bar.income{background:var(--volt-teal)}.legend-expense,.bar.expense{background:var(--volt-orange)}
+.bar{border-radius:0;box-shadow:inset 1px 0 #FFFFFF4A}
+.budget-progress,.budget-bar,.goal-track,.goal-mini-bar{background:#DEE4D8;border:1px solid #B9C3B5;border-radius:0}
+.budget-progress span,.budget-bar i,.goal-track i,.goal-mini-bar i{background:var(--volt-lime);border-right:2px solid var(--volt-ink);border-radius:0}
+.budget-progress i.warn,.budget-bar i.warn{background:var(--volt-orange)}
+.stat-card,.metric-card,.shortcut-card,.goal-card,.insight-card,.account-card,.budget-card{border:1.5px solid var(--volt-ink);border-radius:2px;box-shadow:4px 4px 0 #11182012}
+.stat-card:nth-child(2n){background:#E1E8D8}
+.account-card,.budget-card,.goal-card,.insight-card{border-top:4px solid var(--volt-lime-deep)}
+.range-switch{border:1.5px solid var(--volt-ink);border-radius:2px;background:var(--volt-surface)}
+.range-btn{color:#59666A;font-weight:800}.range-btn.active{background:var(--volt-ink);color:var(--volt-lime)}
+.text-action{color:#9B382B;font-weight:900}.text-action:hover{color:#6E211B}
+.feature-orbit{background:var(--volt-lime);border:2px solid var(--volt-ink);box-shadow:none}
+.feature-orbit:before{border:2px solid var(--volt-lime-deep)}
+.insight-feature{background:#DDE5D8;border:1.5px solid var(--volt-ink);border-top:4px solid var(--volt-lime-deep);border-radius:2px;box-shadow:4px 4px 0 #11182012}
+.goal-feature{background:#F9FAF5;border:1.5px solid var(--volt-ink);border-top:4px solid var(--volt-lime);border-radius:2px;box-shadow:4px 4px 0 #11182012}
+.app-footer{border-top:2px solid var(--volt-ink);color:#59666A;font-weight:800}
+.app-footer:before{width:52px;height:4px;background:var(--volt-lime-deep)}
+/* Dialogs, forms and dense tables use the same matte mineral finish. */
+.dialog-card{background:#F9FAF5;border:2px solid var(--volt-ink);border-radius:2px;box-shadow:10px 10px 0 #11182026}
+.dialog-top{border-bottom:1.5px solid #C7D0C8}
+.form-field input,.form-field select,.search-field,.ledger-toolbar select{border:1.5px solid #7D8989;border-radius:2px;background:#fff;color:var(--volt-ink)}
+.form-field input:focus,.form-field select:focus,.search-field:focus-within{outline:3px solid var(--volt-lime-deep);outline-offset:2px;border-color:var(--volt-ink)}
+.ledger-table thead{background:#E2E7DD;color:#425052}
+.ledger-table th{font-weight:900;letter-spacing:1px}
+.ledger-table tbody tr:hover{background:#F0F4E7}
+.toast{background:var(--volt-ink);color:#F5F7F0;border:1px solid var(--volt-lime);box-shadow:5px 5px 0 #11182020}
+.material-settings{background:#E4E9DF;border:1.5px solid var(--volt-ink);border-radius:2px}
+.glass-preview{background:#111820;color:#F4F7F0;border:1px solid #829094;border-radius:2px;box-shadow:5px 5px 0 var(--volt-lime)}
+.glass-preview:before{background:repeating-radial-gradient(ellipse at 18% 20%,transparent 0 26px,rgba(215,255,63,.09) 27px 28px,transparent 29px 50px)}
+.glass-preview-mark{border:1px solid var(--volt-lime);color:var(--volt-lime);font:950 22px var(--sans)}
+.glass-preview-copy strong{font:900 13px var(--sans);color:#F6F8F1}.glass-preview-copy small{color:#C5D0CC}.glass-preview-value{color:var(--volt-lime)}
+.glass-preset,.material-control select{border-radius:2px;border:1.5px solid var(--volt-ink);font-weight:850}
+.glass-preset[aria-pressed="true"]{background:var(--volt-lime);color:var(--volt-ink);border-color:var(--volt-ink)}
+.material-control input[type=range]{accent-color:var(--volt-lime-deep)}
+/* The orbit endpoint recurs in navigation, section rules and progress — no competing decoration. */
+.nav-item.active:before{background:var(--volt-ink);height:3px;width:10px}
+.section-heading .eyebrow:before,.page-headline .eyebrow:before{border-color:var(--volt-lime-deep)}
+.section-heading .eyebrow:after,.page-headline .eyebrow:after{background:var(--volt-lime);border:1px solid var(--volt-ink)}
+.donut{outline:2px solid #A8B5AA;outline-offset:5px}
+@media(max-width:900px){.main-content{padding-left:28px;padding-right:28px}.balance-hero{box-shadow:7px 7px 0 var(--volt-lime)}}
+@media(max-width:650px){
+ .sidebar{background:var(--volt-ink);border-top:2px solid var(--volt-lime);height:64px}
+ .nav-item.active{background:var(--volt-lime);color:var(--volt-ink);box-shadow:none}
+ .main-content{background:var(--volt-paper);padding-left:16px;padding-right:16px;padding-bottom:82px}
+ .page-intro{padding-top:28px}
+ .page-intro h1{font-size:clamp(43px,13vw,68px)}
+ .intro-side.kinetic-intro{display:flex;width:100%;flex-direction:row;align-items:center;gap:10px;padding:0}
+ .kinetic-intro .date-mark{align-self:flex-start;flex:0 0 auto}
+ .kinetic-portal{height:114px;flex:1;min-width:0;box-shadow:5px 5px 0 var(--volt-lime)}
+ .kinetic-portal-word{padding-left:13px;font-size:clamp(21px,6vw,30px);gap:2px}
+ .kinetic-portal-caption{left:13px;top:8px;font-size:6px}
+ .kinetic-portal-hint{left:13px;bottom:8px;font-size:6px}
+ .kinetic-portal:before{width:110px;height:55px;right:11%;top:24%}
+ .kinetic-portal:after{width:10px;height:10px;right:calc(11% + 4px);top:calc(24% + 20px)}
+ .balance-hero{box-shadow:5px 5px 0 var(--volt-lime);padding:19px 17px}
+ .panel{padding:17px 15px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.view{animation:none!important}.kinetic-portal:after{animation:none!important}.portal-letter{animation:none!important}.button,.nav-item{transition:none!important}}
+
+/* Final brand-mark cleanup: the SVG already contains the waypoint. */
+.brand-symbol:after{display:none!important}
+.feature-orbit i{display:none}
+.nfc-card-top span{font-weight:950;letter-spacing:.14em}
+.nfc-card-top b{color:var(--volt-lime);font-size:12px}
+.glass-preview-mark svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.6}
+
+/* The local appearance controls remain functional while preserving the matte finish. */
+.balance-hero{background:color-mix(in srgb,var(--v-glass-tint) var(--v-glass-mix),#111820);filter:saturate(var(--v-glass-saturation));border-color:color-mix(in srgb,var(--volt-lime) calc(var(--v-glass-edge)*.2),#111820);box-shadow:0 0 calc(var(--v-glass-blur)*.45) rgba(17,24,32,.14),9px 9px 0 var(--volt-lime)}
+.balance-stat{background:color-mix(in srgb,var(--v-glass-tint) 32%,#26343A);border-color:color-mix(in srgb,#F5F7F0 calc(var(--v-glass-edge)*.38),#26343A)}
+.glass-preview{background:color-mix(in srgb,var(--v-glass-tint) var(--v-glass-mix),#111820);filter:saturate(var(--v-glass-saturation))}
+.glass-preview:after{border:1px solid rgba(215,255,63,var(--v-glass-edge))}
