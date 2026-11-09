@@ -1,103 +1,58 @@
-# TapLedger — NFC Expense Logger
+# TapLedger v3 — Personal Finance Studio
 
-TapLedger is a small, offline-first Progressive Web App (PWA) for quickly recording purchases. A rewritable NFC tag stores a URL. Tapping it with an Android phone opens the TapLedger quick-entry form. Expense records are stored locally in the browser's IndexedDB database.
+**Direction:** hybrid editorial light + cinematic dark. Warm ivory working surface, deep forest-green navigation and hero panels, terracotta accents, champagne details, Cormorant Garamond display type, Manrope UI typography and IBM Plex Mono financial labels.
 
-## What is included
+TapLedger v3 is a local-first personal finance web app designed for GitHub Pages and Android NFC quick capture.
 
-- NFC-friendly quick-add URL (`?add=1&source=nfc`)
-- Optional category/merchant presets in the URL
-- Local monthly total and transaction count
-- Monthly spending budget progress
-- Seven-day spending chart and category breakdown
-- Recent expense list, category filter, and delete
-- CSV export and JSON backup/restore
-- PWA installability and service-worker shell cache for offline use after the first successful visit
-- No login, analytics, backend, or third-party API
+## What's included
 
-## Architecture
+- Overview: monthly income, expenses, net cash flow, six/twelve-month cash-flow comparison, expense mix, budgets, recent activity and savings-goal snapshot.
+- Ledger: add, edit, delete, search, filter and sort income, expenses and transfers.
+- Budgets: overall and per-category monthly guardrails with progress and overspend indication.
+- Savings goals: target amount, amount already saved, target date, progress and contribution logging.
+- Intelligence: savings rate, daily spending pace, month-on-month pace comparison, category observations, budget pace, simple monthly projection and likely recurring-merchant detection.
+- Automations: NFC URLs for quick expense (`?a=1`) and quick income (`?i=1`), browser voice-entry prefill where Web Speech API is supported, plus merchant-based category suggestions.
+- Data controls: CSV export, JSON backup/restore and confirmed deletion of all local app data.
+- PWA manifest and service worker for installability and offline app-shell caching.
 
-```text
-Rewritable NFC tag (NDEF URL)
-        |
-        v
-Android NFC dispatch -> Chrome / installed web app
-        |
-        v
-TapLedger quick-add route (?add=1&source=nfc)
-        |
-        v
-Expense form -> validation -> IndexedDB (on this device)
-        |
-        +--> Dashboard totals / weekly chart / category totals
-        +--> CSV export / JSON backup
-```
+## Upgrade from your current TapLedger website
 
-The NFC tag is only a trigger. It does not contain expense records or sensitive information. The browser stores records on the device. Clearing Chrome site data, using a different browser/profile, or moving to another phone can make the local records unavailable unless you first export a JSON backup.
+Your published site is `https://dakshj0305.github.io/Tapledger/`.
 
-## Run locally
+1. **Back up first.** Open the current TapLedger site, use its JSON backup/export option and save the file somewhere safe.
+2. Download and extract this v3 ZIP on your Windows computer.
+3. Open the existing GitHub repository `dakshj0305/Tapledger`.
+4. Upload the contents of the extracted `tapledger-platform-v3` folder to the repository root. Replace `index.html`, `app.js`, `style.css`, `manifest.webmanifest`, `sw.js` and the `icons` folder with the new versions.
+5. Commit the changes to the `main` branch.
+6. Open the repository's **Actions** tab and confirm the latest GitHub Pages deployment succeeds.
+7. Visit `https://dakshj0305.github.io/Tapledger/` and force-refresh with `Ctrl + Shift + R`.
 
-A secure context (HTTPS or localhost) is required for full PWA/service-worker behaviour. From this directory, run a local server, for example:
+**Keep the same repository, origin, URL path and browser profile.** The app keeps the existing IndexedDB database name `tapledger-db`; on first launch it creates the new ledger stores and migrates old `expenses` and `monthlyBudgetPaise` data. It deliberately does not delete the old v1 store during migration.
 
-```bash
-python -m http.server 8000
-```
+Do not clear browser site data as a cache-refresh step; that can delete the locally stored financial records. Use a hard refresh first. Keep the JSON backup as your safety copy.
 
-Then open `http://localhost:8000` in Chrome on a desktop for layout testing. To test NFC on Android, deploy it to an HTTPS host first.
+## NFC setup
 
-## Deploy with GitHub Pages
+After v3 is live, use NFC Tools → Write → Add a record → URL/URI.
 
-1. Create a GitHub repository named `tapledger`.
-2. Upload the contents of this folder (the `index.html` file should be at the repository root).
-3. In the repository, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**, select `main` and `/(root)`, then save.
-5. Wait for GitHub Pages to publish the site. The URL will look like `https://YOUR-USERNAME.github.io/tapledger/`.
-6. Open that URL in Chrome on Android while online. Add it to the home screen / install it from Chrome's menu if offered. Open it once so the service worker can cache the app shell.
+- Quick expense: `https://dakshj0305.github.io/Tapledger/?a=1`
+- Quick income: `https://dakshj0305.github.io/Tapledger/?i=1`
 
-If you use a different host or repository path, use that exact published URL when programming the NFC tag. Keep HTTPS enabled.
+The MIFARE Ultralight EV1 has 48 bytes of user memory. NDEF URI prefix compression reduces the stored URL payload, and the short expense URL may fit, but the final byte count depends on NDEF record/TLV overhead and current tag formatting. Let NFC Tools confirm the write and then scan the tag again to verify. Do not permanently lock the tag. If it reports insufficient memory, use a shorter redirect URL on a domain you control or add a compatible larger NFC tag.
 
-## Identify and program the NFC tag
+## Data model
 
-1. Install **NFC Tools** and, optionally, **NXP TagInfo** on Android.
-2. Enable NFC in Android Settings.
-3. In NFC Tools, choose **Read** and scan the card. Check its technology/type and whether it exposes writable NDEF memory.
-4. Do not overwrite bank cards, transit cards, office badges, hotel keys, or any card whose function you need. Use a separate rewritable NFC tag if the card type or purpose is unclear.
-5. After deploying the site, copy its full HTTPS URL. In NFC Tools choose **Write → Add a record → URL/URI** and write:
+Transactions are stored as integer paise to avoid floating-point money arithmetic. Transaction types are `income`, `expense` and `transfer`. Transfers are visible in the ledger but are excluded from income, expenses and net cash-flow calculations. Savings-goal contributions are goal-progress records, not actual bank transfers; record the corresponding movement in the ledger when needed.
 
-   `https://YOUR-USERNAME.github.io/tapledger/?add=1&source=nfc`
+## Privacy and limitations
 
-6. Tap **Write**, then hold the rewritable tag against the NFC antenna area of the phone.
-7. Scan the tag again or tap it with the phone to verify that the quick-entry form opens.
+- Transactions, budgets and goals remain in the current browser's IndexedDB. There is no bank connection, cloud sync or TapLedger account.
+- Clearing browser site data can erase records. Export JSON backups regularly.
+- Voice capture uses the browser's Web Speech API where available; speech handling and availability depend on the browser and operating system and may involve their speech service.
+- Recurring-payment detection is a transparent heuristic: it flags a merchant appearing in at least two distinct months with amounts within roughly 15%. It is a review prompt, not a confirmed subscription detector.
+- Spending insights are deterministic descriptions of recorded history, not financial advice or guaranteed predictions.
+- The monthly pace projection extends the current daily average; it does not model seasonality or future events.
 
-For a preset tag, use a URL such as:
+## Technology
 
-- Food: `...?add=1&source=nfc&category=Food`
-- Transport: `...?add=1&source=nfc&category=Transport`
-- Shopping: `...?add=1&source=nfc&category=Shopping`
-
-You can optionally add a merchant preset, URL-encoded, e.g. `&merchant=Corner%20Cafe`. Do not put passwords, account numbers, medical data, or other secrets in an NFC URL.
-
-## Daily use
-
-1. Tap the NFC tag with the phone. Android may need the screen awake/unlocked; exact behaviour varies by device and browser.
-2. TapLedger opens a quick-entry form. Enter the amount, confirm the category/date, and optionally add merchant/note.
-3. Save. The dashboard updates immediately.
-4. Set a monthly budget from the dashboard.
-5. Export CSV for spreadsheet analysis. Use JSON backup before clearing browser data or migrating devices.
-
-## Important limits
-
-- The app defaults to INR (₹). To use another currency, change `CURRENCY` in `app.js` and the labels/backup metadata consistently before recording real data.
-- Data is local to the browser profile on the device. There is no cloud sync or automatic cross-device backup.
-- The NFC tag stores a URL and is not an authentication token. Anyone who scans or reads the tag can see that URL.
-- Tapping the tag normally opens the HTTPS page in Chrome. Whether Android launches an installed PWA as a standalone window depends on the device/browser's link handling; the web page still works in Chrome.
-- Offline opening works only after the app shell has been loaded online at least once and the service worker has successfully installed.
-- This starter does not connect to bank accounts or automatically detect purchases. You enter the amount yourself.
-
-## Next development steps
-
-1. Add category-specific budgets and month navigation.
-2. Add receipt photo attachment with local compression and storage limits.
-3. Add optional CSV import and duplicate detection.
-4. Add passphrase-encrypted backup files (the current JSON backup is plain text).
-5. Add optional cloud sync only after choosing an account/authentication model and privacy policy.
-6. If you later want NFC tags to launch a native Android activity directly, build a native Android wrapper and configure verified Android App Links for your own domain.
+Vanilla HTML, CSS and JavaScript; IndexedDB; inline SVG icons and CSS charts; PWA manifest; service worker. No analytics tracker, bank API or external chart library. Google Fonts are optional; local serif/sans/monospace fallbacks are defined.

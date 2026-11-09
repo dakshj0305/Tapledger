@@ -1,284 +1,159 @@
 'use strict';
 
-const DB_NAME = 'tapledger-db';
-const DB_VERSION = 1;
-const CURRENCY = 'INR';
-const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Health', 'Education', 'Entertainment', 'Other'];
-const CATEGORY_META = {
-  Food: { icon: '🍜' }, Transport: { icon: '🚕' }, Shopping: { icon: '🛍️' },
-  Bills: { icon: '🧾' }, Health: { icon: '💊' }, Education: { icon: '📚' },
-  Entertainment: { icon: '🎬' }, Other: { icon: '✦' }
+/* TapLedger v3 — local-first personal finance workspace.
+   Currency amounts are stored as integer paise to avoid floating point drift. */
+const DB_NAME='tapledger-db', DB_VERSION=2, CURRENCY='INR';
+const EXPENSE_CATEGORIES=['Food','Transport','Shopping','Bills','Health','Education','Entertainment','Home','Personal care','Other'];
+const INCOME_CATEGORIES=['Salary','Freelance','Business','Gift','Interest','Refund','Other'];
+const META={
+  Food:{icon:'◒',color:'#df684e'},Transport:{icon:'↗',color:'#607d91'},Shopping:{icon:'◇',color:'#c5a467'},Bills:{icon:'▤',color:'#8ea18a'},
+  Health:{icon:'✳',color:'#b87980'},Education:{icon:'⌑',color:'#7774a8'},Entertainment:{icon:'✦',color:'#bd8655'},Home:{icon:'⌂',color:'#74917c'},
+  'Personal care':{icon:'✧',color:'#9a82a7'},Other:{icon:'＋',color:'#8b8c82'},Salary:{icon:'↗',color:'#628769'},Freelance:{icon:'⌁',color:'#607d91'},
+  Business:{icon:'▥',color:'#8ea18a'},Gift:{icon:'✳',color:'#c5a467'},Interest:{icon:'％',color:'#74917c'},Refund:{icon:'↶',color:'#b87980'},Transfer:{icon:'⇄',color:'#9b998c'}
 };
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let db,transactions=[],budgets=[],goals=[],selectedView='overview',chartRange=6,toastTimer,sourceForNext='manual';
+const nowDate=()=>new Date();
+const dateKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const today=()=>dateKey(nowDate());
+const monthKey=s=>String(s||'').slice(0,7);
+const monthDate=key=>new Date(`${key}-01T12:00:00`);
+const thisMonth=()=>monthKey(today());
+const shiftMonth=(key,n)=>{const d=monthDate(key);d.setMonth(d.getMonth()+n);return monthKey(dateKey(d))};
+const paise=v=>Math.round(Number(v)*100);
+const money=p=>new Intl.NumberFormat('en-IN',{style:'currency',currency:CURRENCY,maximumFractionDigits:0}).format((Number(p)||0)/100);
+const moneyExact=p=>new Intl.NumberFormat('en-IN',{style:'currency',currency:CURRENCY,minimumFractionDigits:2,maximumFractionDigits:2}).format((Number(p)||0)/100);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate=s=>new Date(`${s}T12:00:00`).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+const sum=(arr,selector=x=>x.amountPaise)=>arr.reduce((a,x)=>a+(Number(selector(x))||0),0);
+const uuid=()=>crypto.randomUUID?crypto.randomUUID():`tl-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2600)}
+function monthLabel(key){return monthDate(key).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}
+function startOfMonth(key){return `${key}-01`}
+function safeAmount(v){const n=Number(v);return Number.isFinite(n)&&n>0&&n<=100000000?paise(n):null}
 
-let db;
-let expenses = [];
-let monthlyBudgetPaise = 0;
-let toastTimer;
-
-const $ = (selector) => document.querySelector(selector);
-const expenseDialog = $('#expenseDialog');
-const expenseForm = $('#expenseForm');
-
-function openDatabase() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => {
-      const database = request.result;
-      if (!database.objectStoreNames.contains('expenses')) {
-        const store = database.createObjectStore('expenses', { keyPath: 'id' });
-        store.createIndex('spentAt', 'spentAt', { unique: false });
-        store.createIndex('category', 'category', { unique: false });
-      }
-      if (!database.objectStoreNames.contains('settings')) database.createObjectStore('settings', { keyPath: 'key' });
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error || new Error('Could not open local database.'));
-  });
+// IndexedDB: upgrade adds new stores while preserving v1 expenses/settings.
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('expenses'))d.createObjectStore('expenses',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});if(!d.objectStoreNames.contains('transactions')){const s=d.createObjectStore('transactions',{keyPath:'id'});s.createIndex('date','date');s.createIndex('type','type');s.createIndex('category','category')}if(!d.objectStoreNames.contains('budgets'))d.createObjectStore('budgets',{keyPath:'id'});if(!d.objectStoreNames.contains('goals'))d.createObjectStore('goals',{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+function storeRequest(store,mode,method,value){return new Promise((resolve,reject)=>{const tx=db.transaction(store,mode),objectStore=tx.objectStore(store);let req;try{req=value===undefined?objectStore[method]():objectStore[method](value)}catch(e){reject(e);return}req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+const getAll=store=>storeRequest(store,'readonly','getAll');
+const put= (store,value)=>storeRequest(store,'readwrite','put',value);
+const del=(store,key)=>storeRequest(store,'readwrite','delete',key);
+const getSetting=key=>storeRequest('settings','readonly','get',key);
+const setSetting=(key,value)=>put('settings',{key,value});
+async function migrateLegacy(){
+  const done=await getSetting('migration-v3-complete');if(done?.value)return;
+  const legacy=await getAll('expenses');
+  if(legacy.length){for(const old of legacy){if(!old||!Number.isSafeInteger(old.amountPaise)||!old.spentAt)continue;const item={id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,currency:'INR',category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Everyday',source:old.source||'legacy',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};await put('transactions',item)}}
+  const oldBudget=await getSetting('monthlyBudgetPaise');if(oldBudget&&Number.isSafeInteger(oldBudget.value)&&oldBudget.value>0){await put('budgets',{id:'overall',category:'__overall',limitPaise:oldBudget.value,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})}
+  await setSetting('migration-v3-complete',true);
 }
+async function loadAll(){[transactions,budgets,goals]=await Promise.all([getAll('transactions'),getAll('budgets'),getAll('goals')]);transactions.sort((a,b)=>b.date.localeCompare(a.date)||String(b.createdAt).localeCompare(String(a.createdAt)));}
+function currentItems(){return transactions.filter(x=>monthKey(x.date)===thisMonth())}
+function validTransaction(t){return t&&typeof t.id==='string'&&['income','expense','transfer'].includes(t.type)&&Number.isSafeInteger(t.amountPaise)&&t.amountPaise>0&&/^\d{4}-\d{2}-\d{2}$/.test(t.date)&&(t.type!=='transfer'||(t.fromAccount&&t.toAccount&&t.fromAccount!==t.toAccount))}
 
-function storeRequest(storeName, mode, action) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(storeName, mode);
-    const store = tx.objectStore(storeName);
-    let req;
-    try { req = action(store); } catch (error) { reject(error); return; }
-    tx.oncomplete = () => resolve(req ? req.result : undefined);
-    tx.onerror = () => reject(tx.error || new Error('Database transaction failed.'));
-    tx.onabort = () => reject(tx.error || new Error('Database transaction was cancelled.'));
-  });
-}
+// Navigation
+function navigate(view){if(!['overview','ledger','budgets','goals','intelligence','automations'].includes(view))view='overview';selectedView=view;$$('.view').forEach(el=>el.classList.toggle('active',el.id===`view-${view}`));$$('.nav-item[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===view));$('#breadcrumbCurrent').textContent=view.toUpperCase().replace('-',' ');window.scrollTo({top:0,behavior:'smooth'});renderView(view)}
+function renderView(view){if(view==='overview')renderOverview();if(view==='ledger')renderLedger();if(view==='budgets')renderBudgets();if(view==='goals')renderGoals();if(view==='intelligence')renderIntelligence();if(view==='automations')renderAutomations()}
 
-const getAllExpenses = () => storeRequest('expenses', 'readonly', store => store.getAll());
-const putExpense = expense => storeRequest('expenses', 'readwrite', store => store.put(expense));
-const deleteExpense = id => storeRequest('expenses', 'readwrite', store => store.delete(id));
-const getSetting = key => storeRequest('settings', 'readonly', store => store.get(key));
-const putSetting = item => storeRequest('settings', 'readwrite', store => store.put(item));
+// Overview calculations and charts
+function monthlyTotals(key){const items=transactions.filter(x=>monthKey(x.date)===key);return{income:sum(items.filter(x=>x.type==='income')),expense:sum(items.filter(x=>x.type==='expense')),items}}
+function dayCountSoFar(key){return key===thisMonth()?nowDate().getDate():new Date(monthDate(key).getFullYear(),monthDate(key).getMonth()+1,0).getDate()}
+function samePeriodPrevious(key){const prev=shiftMonth(key,-1),day=dayCountSoFar(key);return transactions.filter(x=>monthKey(x.date)===prev&&Number(x.date.slice(8,10))<=day)}
+function renderOverview(){
+ const key=thisMonth(),totals=monthlyTotals(key),prevItems=samePeriodPrevious(key),prevIn=sum(prevItems.filter(x=>x.type==='income')),prevOut=sum(prevItems.filter(x=>x.type==='expense')),net=totals.income-totals.expense,prevNet=prevIn-prevOut;
+ $('#todayLabel').textContent=nowDate().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}).toUpperCase();$('#overviewMonth').textContent=nowDate().toLocaleDateString('en-IN',{month:'short',year:'numeric'}).toUpperCase();
+ $('#netCashflow').textContent=money(net);$('#moneyIn').textContent=money(totals.income);$('#moneyOut').textContent=money(totals.expense);$('#incomeCount').textContent=`${totals.items.filter(x=>x.type==='income').length} income entries`;$ ('#expenseCount').textContent=`${totals.items.filter(x=>x.type==='expense').length} expense entries`;
+ $('#cashflowTrend').textContent=prevItems.length?`${net-prevNet>=0?'↑':'↓'} ${money(Math.abs(net-prevNet))} vs same period last month`:'Add more history to compare';$('#cashflowCaption').textContent=totals.items.length?`${totals.items.length} recorded entries · ${net>=0?'positive':'negative'} net movement`:'Income minus expenses, based on entries you record.';
+ renderCashflowChart();renderOverviewBudget(totals.expense);renderCategoryDonut(totals.items.filter(x=>x.type==='expense'));renderRecent();renderOverviewInsight();renderOverviewGoal();
+}
+function renderCashflowChart(){const range=chartRange,keys=Array.from({length:range},(_,i)=>shiftMonth(thisMonth(),i-(range-1))),values=keys.map(monthlyTotals),max=Math.max(1,...values.flatMap(x=>[x.income,x.expense]));$('#cashflowChartCaption').textContent=`Last ${range} months · compare money in and out`;
+ $('#cashflowChart').innerHTML=keys.map((k,i)=>{const v=values[i],ih=Math.max(v.income?3:0,v.income/max*118),eh=Math.max(v.expense?3:0,v.expense/max*118);return`<div class="month-bars" title="${monthLabel(k)} · Income ${money(v.income)} · Expenses ${money(v.expense)}"><div class="bar-pair"><i class="bar income" style="height:${ih}px"></i><i class="bar expense" style="height:${eh}px"></i></div><small>${monthDate(k).toLocaleDateString('en-IN',{month:'short'}).toUpperCase()}</small></div>`}).join('')}
+function renderOverviewBudget(spent){const overall=budgets.find(b=>b.category==='__overall'),limit=overall?.limitPaise||0,pct=limit?spent/limit*100:0;$('#budgetSpent').textContent=money(spent);$('#budgetOf').textContent=limit?`of ${money(limit)} monthly limit`:'No overall budget set';$('#budgetProgressFill').style.width=`${Math.min(100,pct)}%`;$('#budgetProgressFill').style.background=pct>=100?'var(--terracotta)':'var(--forest-2)';$('#budgetProgressText').textContent=limit?`${pct.toFixed(0)}% of your monthly limit used`:'Set an overall limit to see your spending pace.';$('#budgetRemaining').textContent=limit?`${money(Math.max(0,limit-spent))} left`:'—';
+ const list=budgets.filter(b=>b.category!=='__overall').slice(0,3);$('#miniBudgetList').innerHTML=list.length?list.map(b=>{const used=sum(currentItems().filter(t=>t.type==='expense'&&t.category===b.category));return`<div class="mini-budget-row"><span>${esc(b.category)}</span><strong>${money(used)} / ${money(b.limitPaise)}</strong></div>`}).join(''):'<div class="mini-budget-row"><span>No category budgets yet</span><strong>—</strong></div>'}
+function renderCategoryDonut(items){const totals={};items.forEach(t=>totals[t.category]=(totals[t.category]||0)+t.amountPaise);const rows=Object.entries(totals).sort((a,b)=>b[1]-a[1]),total=sum(items);let angle=0;const stops=rows.map(([cat,val])=>{const a=angle;angle+=total?val/total*360:0;return`${(META[cat]||META.Other).color} ${a}deg ${angle}deg`});$('#overviewDonut').style.background=rows.length?`conic-gradient(${stops.join(',')})`:'conic-gradient(#e4ded2 0 360deg)';$('#overviewDonutTotal').textContent=money(total);$('#overviewCategoryLegend').innerHTML=rows.length?rows.slice(0,5).map(([cat,val])=>`<div class="legend-row"><i class="legend-swatch" style="background:${(META[cat]||META.Other).color}"></i><span class="legend-name">${esc(cat)}</span><strong class="legend-value">${money(val)}</strong></div>`).join(''):'<div class="empty-mini">Category mix appears<br>after your first expense.</div>'}
+function transactionIcon(t){return (META[t.category]||META.Other).icon}
+function renderRecent(){const rows=transactions.slice().sort((a,b)=>b.date.localeCompare(a.date)||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,4);$('#recentTransactions').innerHTML=rows.length?rows.map(t=>`<div class="recent-row"><span class="category-icon">${transactionIcon(t)}</span><div><div class="recent-title">${esc(t.merchant||t.category||t.type)}</div><div class="recent-sub">${esc(t.category)} · ${fmtDate(t.date)}</div></div><strong class="recent-amount ${t.type}">${t.type==='income'?'+':'−'}${money(t.amountPaise)}</strong></div>`).join(''):'<div class="empty-mini">Your recent activity<br>will appear here.</div>'}
+function renderOverviewInsight(){const items=currentItems(),expenses=items.filter(x=>x.type==='expense'),income=sum(items.filter(x=>x.type==='income')),out=sum(expenses);let title='Your patterns tell a story.',text='Record a few transactions and TapLedger will start surfacing useful patterns — without judgement.';if(expenses.length){const totals={};expenses.forEach(x=>totals[x.category]=(totals[x.category]||0)+x.amountPaise);const top=Object.entries(totals).sort((a,b)=>b[1]-a[1])[0];title=`${top[0]} is your biggest category.`;text=`It accounts for ${out?Math.round(top[1]/out*100):0}% of recorded spending this month. Open Intelligence to see what else stands out.`;if(income){const rate=(income-out)/income*100;text+=` Your recorded savings rate is ${rate.toFixed(0)}%.`}}$('#overviewInsightTitle').textContent=title;$('#overviewInsightText').textContent=text}
+function renderOverviewGoal(){const goal=goals.filter(g=>g.savedPaise<g.targetPaise).sort((a,b)=>(a.targetDate||'9999').localeCompare(b.targetDate||'9999'))[0];const host=$('#overviewGoal');if(!goal){host.innerHTML=`<div class="goal-empty"><span>◎</span><strong>${goals.length?'All goals are complete.':'Give your money a direction.'}</strong><p>${goals.length?'Celebrate the progress, then choose what comes next.':'Create a savings goal and track progress one contribution at a time.'}</p><button class="button button-light" id="quickCreateGoal">Create a goal</button></div>`;$('#quickCreateGoal')?.addEventListener('click',()=>openGoal());return}const pct=Math.min(100,goal.savedPaise/goal.targetPaise*100);host.innerHTML=`<div class="goal-mini"><strong>${esc(goal.name)}</strong><span>${pct.toFixed(0)}% COMPLETE</span><span>${money(goal.savedPaise)} saved of ${money(goal.targetPaise)}</span><span>${money(Math.max(0,goal.targetPaise-goal.savedPaise))} to go</span><div class="goal-mini-bar"><i style="width:${pct}%"></i></div><button class="text-action" data-go="goals">View goal ↗</button></div>`;host.querySelector('[data-go]')?.addEventListener('click',()=>navigate('goals'))}
 
-function money(paise) {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: CURRENCY, maximumFractionDigits: 2 }).format((paise || 0) / 100);
-}
-function rupeesToPaise(value) { return Math.round(Number(value) * 100); }
-function localDateString(date = new Date()) {
-  const y = date.getFullYear(); const m = String(date.getMonth() + 1).padStart(2, '0'); const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-function parseLocalDate(dateString) { return new Date(`${dateString}T12:00:00`); }
-function monthKey(dateString) { return dateString.slice(0, 7); }
-function currentMonthKey() { return localDateString().slice(0, 7); }
-function formatDate(dateString) { return parseLocalDate(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-}
-function showToast(message) {
-  const toast = $('#toast'); toast.textContent = message; toast.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
-}
+// Ledger
+function categoryOptions(type,selected){const options=type==='income'?INCOME_CATEGORIES:type==='transfer'?['Transfer']:EXPENSE_CATEGORIES;return options.map(c=>`<option ${c===selected?'selected':''}>${esc(c)}</option>`).join('')}
+function renderLedger(){const list=filteredTransactions();const totals=transactions.reduce((a,t)=>{if(t.type==='income')a.in+=t.amountPaise;if(t.type==='expense')a.out+=t.amountPaise;return a},{in:0,out:0});$('#ledgerSummary').innerHTML=[['TOTAL INCOME',money(totals.in),'All recorded income'],['TOTAL EXPENSES',money(totals.out),'All recorded expenses'],['NET MOVEMENT',money(totals.in-totals.out),'Income minus expenses']].map(x=>`<div class="summary-tile"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+ const selectedCategory=$('#ledgerCategoryFilter').value||'all';const categories=[...new Set(transactions.filter(t=>t.type!=='transfer').map(t=>t.category).filter(Boolean))].sort();$('#ledgerCategoryFilter').innerHTML='<option value="all">All categories</option>'+categories.map(c=>`<option>${esc(c)}</option>`).join('');$('#ledgerCategoryFilter').value=categories.includes(selectedCategory)?selectedCategory:'all';
+ $('#ledgerRows').innerHTML=list.map(t=>`<tr><td><div class="table-details"><span class="category-icon">${transactionIcon(t)}</span><div><strong>${esc(t.merchant||t.category||t.type)}</strong><small>${esc(t.note||(t.source==='nfc'?'NFC quick capture':t.type==='income'?'Money received':t.type==='transfer'?'Between your accounts':'Recorded entry'))}</small></div></div></td><td>${fmtDate(t.date)}</td><td><span class="type-chip ${t.type}">${esc(t.category||'Transfer')}</span></td><td>${esc(t.type==='transfer'?`${t.fromAccount||'Everyday'} → ${t.toAccount||'Bank'}`:(t.account||'Everyday'))}</td><td class="align-right"><span class="amount-cell ${t.type}">${t.type==='income'?'+':t.type==='expense'?'−':'↔'}${money(t.amountPaise)}</span></td><td><div class="table-actions"><button class="table-action" data-edit="${esc(t.id)}">EDIT</button><button class="table-action delete" data-delete="${esc(t.id)}">DELETE</button></div></td></tr>`).join('');
+ $('#ledgerEmpty').hidden=transactions.length>0;$('#ledgerRows').closest('.table-wrap').hidden=list.length===0;$('#ledgerFoot').textContent=`${list.length} visible · ${transactions.length} total records`;$('#ledgerFoot').hidden=transactions.length===0}
+function filteredTransactions(){const search=$('#ledgerSearch').value.trim().toLowerCase(),type=$('#ledgerTypeFilter').value,cat=$('#ledgerCategoryFilter').value,sort=$('#ledgerSort').value;let list=transactions.filter(t=>(type==='all'||t.type===type)&&(cat==='all'||t.category===cat)&&`${t.merchant} ${t.note} ${t.category} ${t.account}`.toLowerCase().includes(search));list.sort((a,b)=>sort==='oldest'?a.date.localeCompare(b.date):sort==='highest'?b.amountPaise-a.amountPaise:sort==='lowest'?a.amountPaise-b.amountPaise:b.date.localeCompare(a.date)||String(b.createdAt).localeCompare(String(a.createdAt)));return list}
 
-function currentMonthExpenses() { const key = currentMonthKey(); return expenses.filter(item => monthKey(item.spentAt) === key); }
+// Budgets
+function budgetUsed(b){return sum(currentItems().filter(t=>t.type==='expense'&&(b.category==='__overall'||t.category===b.category)))}
+function renderBudgets(){const overall=budgets.find(b=>b.category==='__overall'),spent=sum(currentItems().filter(t=>t.type==='expense')),catBudgets=budgets.filter(b=>b.category!=='__overall'),limit=overall?.limitPaise||0;$('#budgetPageSummary').innerHTML=[['THIS MONTH',money(spent),'Recorded expenses'],['OVERALL LIMIT',limit?money(limit):'Not set',limit?'Monthly spending guardrail':'Add an overall budget'],['LIMIT REMAINING',limit?money(Math.max(0,limit-spent)):'—',limit?`${Math.min(100,spent/limit*100).toFixed(0)}% used`:'No limit to compare']].map(x=>`<div class="summary-tile"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');$('#budgetMonthLabel').textContent=monthLabel(thisMonth()).toUpperCase();
+ const all=[...(overall?[overall]:[]),...catBudgets];$('#budgetCards').innerHTML=all.length?all.map(b=>{const used=budgetUsed(b),pct=used/b.limitPaise*100,remain=b.limitPaise-used,cat=b.category==='__overall'?'Overall budget':b.category,meta=META[cat]||{icon:'◎',color:'#8b8c82'};return`<article class="budget-card"><div class="budget-card-top"><div class="budget-category"><span class="budget-cat-icon" style="color:${meta.color}">${meta.icon}</span><div><strong>${esc(cat)}</strong><small>${b.category==='__overall'?'All expense categories':'Category limit'}</small></div></div><div class="budget-card-actions"><button data-edit-budget="${esc(b.id)}">EDIT</button><button data-delete-budget="${esc(b.id)}">REMOVE</button></div></div><div class="budget-values"><strong>${money(used)}</strong><span>of ${money(b.limitPaise)}</span></div><div class="budget-bar"><i class="${pct>=100?'warn':''}" style="width:${Math.min(100,pct)}%"></i></div><div class="budget-foot"><span>${pct.toFixed(0)}% USED</span><span>${remain>=0?money(remain)+' remaining':money(-remain)+' over limit'}</span></div></article>`}).join(''):'<div class="goal-empty-state"><span>⌑</span><h3>Give your spending some shape.</h3><p>Create an overall monthly budget or start with one category.</p><button class="button button-primary" id="firstBudgetButton">Create a budget</button></div>';$('#firstBudgetButton')?.addEventListener('click',()=>openBudget());}
+function openBudget(b){$('#budgetForm').reset();$('#budgetId').value=b?.id||'';$('#budgetDialogTitle').textContent=b?'Edit budget':'Set a budget';$('#budgetCategory').value=b?.category||'__overall';$('#budgetAmount').value=b?(b.limitPaise/100):'';$('#budgetDialog').showModal()}
+async function saveBudget(e){e.preventDefault();const category=$('#budgetCategory').value,amount=safeAmount($('#budgetAmount').value);if(!amount){toast('Enter a valid budget amount.');return}const id=$('#budgetId').value||`budget-${category}`;const old=budgets.find(x=>x.id===id)||{};const b={...old,id,category,limitPaise:amount,createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};await put('budgets',b);budgets=await getAll('budgets');$('#budgetDialog').close();renderAll();toast('Budget saved.')}
+async function deleteBudget(id){const b=budgets.find(x=>x.id===id);if(!b||!confirm(`Remove the ${b.category==='__overall'?'overall':b.category} budget? Your transactions will stay intact.`))return;await del('budgets',id);budgets=await getAll('budgets');renderAll();toast('Budget removed.')}
 
-function render() {
-  const monthItems = currentMonthExpenses();
-  const total = monthItems.reduce((sum, item) => sum + item.amountPaise, 0);
-  $('#monthLabel').textContent = new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
-  $('#monthTotal').textContent = money(total);
-  $('#monthCount').textContent = String(monthItems.length);
-  const fill = monthlyBudgetPaise > 0 ? Math.min(100, (total / monthlyBudgetPaise) * 100) : 0;
-  $('#budgetFill').style.width = `${fill}%`;
-  $('#budgetCaption').textContent = monthlyBudgetPaise > 0 ? `${money(total)} of ${money(monthlyBudgetPaise)} used · ${Math.max(0, 100 - fill).toFixed(0)}% left` : 'No monthly budget set';
-  $('#budgetButton').textContent = monthlyBudgetPaise > 0 ? 'Edit budget' : 'Set budget';
-  renderWeeklyChart(); renderCategories(); renderExpenseList();
-}
+// Goals
+function renderGoals(){const totalTarget=sum(goals,x=>x.targetPaise),totalSaved=sum(goals,x=>x.savedPaise),remaining=Math.max(0,totalTarget-totalSaved);$('#goalSummary').innerHTML=[['TOTAL TARGET',money(totalTarget),'Across all goals'],['SAVED SO FAR',money(totalSaved),'Progress recorded'],['STILL TO GO',money(remaining),'Across active goals']].map(x=>`<div class="summary-tile"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');$('#goalsGrid').innerHTML=goals.length?goals.slice().sort((a,b)=>(a.targetDate||'9999').localeCompare(b.targetDate||'9999')).map(g=>{const pct=Math.min(100,g.savedPaise/g.targetPaise*100),left=Math.max(0,g.targetPaise-g.savedPaise),date=g.targetDate?`TARGET ${fmtDate(g.targetDate).toUpperCase()}`:'NO TARGET DATE';return`<article class="goal-card"><div class="goal-card-head"><span class="goal-card-symbol">◎</span><div class="budget-card-actions"><button data-edit-goal="${esc(g.id)}">EDIT</button><button data-delete-goal="${esc(g.id)}">REMOVE</button></div></div><h3>${esc(g.name)}</h3><p class="goal-note">${esc(g.note||'A future worth planning for.')}</p><div class="goal-progress-label"><strong>${money(g.savedPaise)}</strong><span>OF ${money(g.targetPaise)}</span></div><div class="goal-track"><i style="width:${pct}%"></i></div><div class="goal-details"><span>${pct.toFixed(0)}% COMPLETE</span><span>${left?money(left)+' TO GO':'GOAL REACHED'}</span></div><div class="goal-card-actions"><span class="panel-kicker">${date}</span><button data-contribute-goal="${esc(g.id)}">＋ ADD CONTRIBUTION</button></div></article>`}).join(''):'<div class="goal-empty-state"><span>◎</span><h3>Make a plan for something that matters.</h3><p>Build an emergency fund, save for a trip, or create a little breathing room.</p><button class="button button-primary" id="firstGoalButton">Create your first goal</button></div>';$('#firstGoalButton')?.addEventListener('click',()=>openGoal())}
+function openGoal(g){$('#goalForm').reset();$('#goalId').value=g?.id||'';$('#goalDialogTitle').textContent=g?'Edit savings goal':'Create a savings goal';$('#goalName').value=g?.name||'';$('#goalTarget').value=g?g.targetPaise/100:'';$('#goalSaved').value=g?g.savedPaise/100:'0';$('#goalDate').value=g?.targetDate||'';$('#goalNote').value=g?.note||'';$('#goalDialog').showModal()}
+async function saveGoal(e){e.preventDefault();const name=$('#goalName').value.trim(),target=safeAmount($('#goalTarget').value),savedRaw=Number($('#goalSaved').value||0),saved=paise(savedRaw),id=$('#goalId').value; if(!name||!target||!Number.isFinite(saved)||saved<0||saved>target){toast('Check the goal name, target and saved amount.');return}const old=goals.find(x=>x.id===id)||{};const g={...old,id:id||uuid(),name,targetPaise:target,savedPaise:saved,targetDate:$('#goalDate').value||'',note:$('#goalNote').value.trim(),createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};await put('goals',g);goals=await getAll('goals');$('#goalDialog').close();renderAll();toast('Savings goal saved.')}
+function openContribution(g){$('#contributeGoalId').value=g.id;$('#contributeGoalName').textContent=`Add progress to “${g.name}”. This updates the goal tracker, not your bank balance.`;$('#contributionAmount').value='';$('#contributeDialog').showModal()}
+async function contribute(e){e.preventDefault();const id=$('#contributeGoalId').value,amount=safeAmount($('#contributionAmount').value),g=goals.find(x=>x.id===id);if(!g||!amount){toast('Enter a valid contribution.');return}g.savedPaise+=amount;g.updatedAt=new Date().toISOString();await put('goals',g);goals=await getAll('goals');$('#contributeDialog').close();renderAll();toast('Goal progress updated.')}
+async function deleteGoal(id){const g=goals.find(x=>x.id===id);if(!g||!confirm(`Remove the “${g.name}” goal? Ledger entries will not be affected.`))return;await del('goals',id);goals=await getAll('goals');renderAll();toast('Goal removed.')}
 
-function renderWeeklyChart() {
-  const host = $('#weeklyChart');
-  const days = [];
-  for (let offset = 6; offset >= 0; offset--) {
-    const date = new Date(); date.setDate(date.getDate() - offset);
-    const key = localDateString(date);
-    const total = expenses.filter(item => item.spentAt === key).reduce((sum, item) => sum + item.amountPaise, 0);
-    days.push({ key, label: date.toLocaleDateString('en-IN', { weekday: 'short' }), total });
-  }
-  const max = Math.max(...days.map(day => day.total), 100);
-  host.innerHTML = days.map(day => {
-    const height = day.total ? Math.max(5, (day.total / max) * 100) : 3;
-    return `<div class="day-column" title="${escapeHtml(day.key)}: ${money(day.total)}"><span class="day-amount">${day.total ? money(day.total).replace('₹', '₹') : '—'}</span><div class="day-bar-wrap"><div class="day-bar" style="height:${height}%"></div></div><span class="day-label">${day.label}</span></div>`;
-  }).join('');
-}
-
-function renderCategories() {
-  const host = $('#categoryBreakdown');
-  const monthItems = currentMonthExpenses();
-  const totals = new Map();
-  monthItems.forEach(item => totals.set(item.category, (totals.get(item.category) || 0) + item.amountPaise));
-  const entries = [...totals.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
-  if (!entries.length) { host.innerHTML = '<p class="empty-note">Your category totals will appear here.</p>'; return; }
-  const max = entries[0][1] || 1;
-  host.innerHTML = entries.map(([category, amount]) => `<div class="category-row"><span class="category-name">${CATEGORY_META[category]?.icon || '✦'} ${escapeHtml(category)}</span><span class="category-track"><span style="width:${(amount / max) * 100}%"></span></span><span class="category-value">${money(amount)}</span></div>`).join('');
+// Explainable intelligence
+function currentCategoryTotals(){const map={};currentItems().filter(t=>t.type==='expense').forEach(t=>map[t.category]=(map[t.category]||0)+t.amountPaise);return Object.entries(map).sort((a,b)=>b[1]-a[1])}
+function recurringCandidates(){const by={};transactions.filter(t=>t.type==='expense'&&t.merchant.trim()).forEach(t=>{const key=t.merchant.trim().toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();if(!by[key])by[key]={name:t.merchant.trim(),items:[]};by[key].items.push(t)});return Object.values(by).map(g=>{const months=new Set(g.items.map(t=>monthKey(t.date)));const amounts=g.items.map(t=>t.amountPaise);const avg=sum(g.items)/Math.max(1,g.items.length);const spread=avg?Math.max(...amounts)-Math.min(...amounts):0;return{...g,monthCount:months.size,avg,spread,similar:spread/Math.max(1,avg)<=.15}}).filter(g=>g.monthCount>=2&&g.items.length>=2&&g.similar).sort((a,b)=>b.avg-a.avg)}
+function insightCard(kind,icon,label,title,text){return`<article class="insight-card ${kind}"><div class="insight-top"><span class="insight-icon">${icon}</span><span class="insight-label">${label}</span></div><h3>${title}</h3><p>${text}</p></article>`}
+function renderIntelligence(){const m=monthlyTotals(thisMonth()),expenseItems=m.items.filter(t=>t.type==='expense'),income=m.income,out=m.expense,net=income-out,rate=income?(net/income*100):null,prev=samePeriodPrevious(thisMonth()),prevOut=sum(prev.filter(t=>t.type==='expense')),change=prevOut?((out-prevOut)/prevOut*100):null,top=currentCategoryTotals()[0];
+ $('#intelligenceScorecard').innerHTML=[['SAVINGS RATE',rate===null?'—':`${rate.toFixed(0)}%`,income?'Based on recorded income and expenses':'Add income to calculate'],['MONTHLY EXPENSES',money(out),`${expenseItems.length} recorded expense entries`],['DAILY SPEND PACE',money(out/Math.max(1,dayCountSoFar(thisMonth()))),`Average across ${dayCountSoFar(thisMonth())} days`],['REPEAT MERCHANTS',String(recurringCandidates().length),'Possible recurring patterns']].map(x=>`<div class="summary-tile"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+ const cards=[];if(!transactions.length){cards.push(insightCard('info','✳','START HERE','Build your baseline','Add everyday income and expenses. After a little history, this page can compare months, find top categories and highlight repeated merchants.'));cards.push(insightCard('good','◎','SAVINGS','Give savings a target','Create a goal with a target amount and date. TapLedger will calculate the remaining amount and your required monthly pace.'));}
+ else{if(top)cards.push(insightCard('warn','◒','LARGEST CATEGORY',`${top[0]} leads the month`,`${Math.round(top[1]/Math.max(1,out)*100)}% of recorded spending (${money(top[1])}) is in ${top[0]}. Review the entries to decide whether any purchases were optional or unusual.`));if(change!==null)cards.push(insightCard(change>0?'warn':'good','↗','MONTH-ON-MONTH',change>0?'Spending is running higher':change<0?'Spending is running lower':'Spending is level',`${Math.abs(change).toFixed(0)}% ${change>0?'above':change<0?'below':'in line with'} the previous month over the same number of elapsed days. This is a pace comparison, not a full-month forecast.`));else cards.push(insightCard('info','⌁','COMPARISON','More history will sharpen the picture','Record activity across another month to compare spending pace fairly.'));
+  if(income){const projected=(out/Math.max(1,dayCountSoFar(thisMonth())))*new Date(nowDate().getFullYear(),nowDate().getMonth()+1,0).getDate();cards.push(insightCard('blue','◷','MONTH-END PACE',`About ${money(projected)} at this pace`,`This simple projection extends your current daily average to the month's final day. It assumes no seasonal or one-off changes.`));cards.push(insightCard(rate>=20?'good':'gold','◎','SAVINGS RATE',rate>=20?'Positive saving pace':rate>=0?'Some room to build':'Outflow exceeds inflow',`Your recorded net cash flow is ${money(net)}, a ${rate.toFixed(1)}% savings rate on entered income. Only recorded transactions are included.`))}
+  const budget=budgets.find(b=>b.category==='__overall');if(budget){const pct=out/budget.limitPaise*100;cards.push(insightCard(pct>=100?'warn':pct>=80?'gold':'good','▤','BUDGET PACE',pct>=100?'Over the monthly guardrail':pct>=80?'Approaching your budget':'Within your budget',`${pct.toFixed(0)}% of your ${money(budget.limitPaise)} overall limit has been used. ${pct>=80?'Consider reviewing flexible categories for the rest of the month.':'Keep logging purchases to make the comparison useful.'}`))}
+  if(!cards.length)cards.push(insightCard('info','✳','NEXT STEP','Add an expense category','Category analysis appears when expense activity has been recorded.'));
+ }
+ $('#insightGrid').innerHTML=cards.slice(0,4).join('');const recurring=recurringCandidates();$('#recurringList').innerHTML=recurring.length?recurring.slice(0,6).map(g=>`<div class="recurring-item"><span class="category-icon">↻</span><div><strong>${esc(g.name)}</strong><small>${g.monthCount} distinct months · ${g.items.length} entries · amounts within about 15%</small></div><b>${money(g.avg)} avg.</b></div>`).join(''):'<div class="empty-mini">No likely recurring merchants yet. This needs at least two months of similar purchases with a merchant name.</div>';
 }
 
-function renderExpenseList() {
-  const host = $('#expenseList');
-  const filter = $('#categoryFilter').value;
-  const visible = [...expenses].sort((a, b) => b.spentAt.localeCompare(a.spentAt) || b.createdAt.localeCompare(a.createdAt)).filter(item => filter === 'all' || item.category === filter).slice(0, 60);
-  if (!visible.length) {
-    host.innerHTML = `<div class="empty-state"><span>✦</span><strong>${expenses.length ? 'No matching expenses' : 'No expenses yet'}</strong><p>${expenses.length ? 'Try another category filter.' : 'Tap your NFC card or add your first expense.'}</p></div>`;
-    return;
-  }
-  host.innerHTML = visible.map(item => `<article class="expense-item"><div class="expense-icon">${CATEGORY_META[item.category]?.icon || '✦'}</div><div class="expense-main"><div class="expense-title">${escapeHtml(item.merchant || item.category)}</div><div class="expense-sub">${escapeHtml(item.category)} · ${formatDate(item.spentAt)}${item.source === 'nfc' ? ' · NFC' : ''}${item.note ? ` · ${escapeHtml(item.note)}` : ''}</div></div><div class="expense-amount">−${money(item.amountPaise)}</div><button class="delete-expense" type="button" data-delete="${escapeHtml(item.id)}" aria-label="Delete expense">×</button></article>`).join('');
-}
+// Entry form, manual/NFC/voice shortcuts
+function setEntryType(type){$('#entryType').value=type;$$('.type-tab').forEach(b=>b.classList.toggle('active',b.dataset.type===type));const choices=type==='income'?INCOME_CATEGORIES:type==='transfer'?['Transfer']:EXPENSE_CATEGORIES;$('#entryCategory').innerHTML=choices.map(c=>`<option>${esc(c)}</option>`).join('');$('#entryDialogTitle').textContent=type==='income'?'Record income':type==='transfer'?'Record a transfer':'Log an expense';$('#entryMerchant').placeholder=type==='income'?'e.g. Monthly salary':type==='transfer'?'e.g. Move to savings':'e.g. Local Cafe';$('#entryCategoryField').hidden=type==='transfer';$('#entryAccountField').hidden=type==='transfer';$('#transferFields').hidden=type!=='transfer';}
+function openEntry(options={}){const type=options.type||'expense';sourceForNext=options.source||'manual';$('#entryForm').reset();$('#entryId').value=options.item?.id||'';setEntryType(options.item?.type||type);$('#entryId').value=options.item?.id||'';$('#entryAmount').value=options.item?(options.item.amountPaise/100).toFixed(2):options.amount||'';$('#entryCategory').value=options.item?.category||options.category||((type==='income')?'Salary':'Food');$('#entryDate').value=options.item?.date||today();$('#entryMerchant').value=options.item?.merchant||options.merchant||'';$('#entryAccount').value=options.item?.account||'Everyday';$('#transferFrom').value=options.item?.fromAccount||'Everyday';$('#transferTo').value=options.item?.toAccount||'Bank';$('#entryNote').value=options.item?.note||'';$('#entrySourceLabel').textContent=sourceForNext==='nfc'?' / NFC TAP':sourceForNext==='voice'?' / VOICE':' / MANUAL';$('#smartHint').textContent=sourceForNext==='nfc'?'NFC tap detected. Enter the amount and save.':sourceForNext==='voice'?'Voice capture filled what it could. Review the details before saving.':'A little context now makes future patterns more useful.';$('#entryDialog').showModal();setTimeout(()=>$('#entryAmount').focus(),80)}
+async function saveEntry(e){e.preventDefault();const id=$('#entryId').value,type=$('#entryType').value,amount=safeAmount($('#entryAmount').value),date=$('#entryDate').value,category=$('#entryCategory').value;if(!amount){toast('Enter an amount greater than ₹0.');return}if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){toast('Choose a valid date.');return}const old=transactions.find(t=>t.id===id);const item={id:id||uuid(),type,amountPaise:amount,currency:CURRENCY,category:type==='transfer'?'Transfer':category,merchant:$('#entryMerchant').value.trim(),note:$('#entryNote').value.trim(),date,account:type==='transfer'?$('#transferFrom').value:$('#entryAccount').value,fromAccount:type==='transfer'?$('#transferFrom').value:undefined,toAccount:type==='transfer'?$('#transferTo').value:undefined,source:old?.source||sourceForNext,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};if(type==='transfer'&&item.fromAccount===item.toAccount){toast('Choose two different accounts for a transfer.');return}if(!validTransaction(item)){toast('Please check the transaction details.');return}try{await put('transactions',item);transactions=await getAll('transactions');transactions.sort((a,b)=>b.date.localeCompare(a.date));$('#entryDialog').close();renderAll();toast(old?'Transaction updated.':'Transaction saved.')}catch(err){console.error(err);toast('Unable to save. Export a backup and try again.')}}
+async function deleteTransaction(id){const t=transactions.find(x=>x.id===id);if(!t||!confirm(`Delete ${t.merchant||t.category} · ${money(t.amountPaise)}? This cannot be undone without a backup.`))return;await del('transactions',id);transactions=await getAll('transactions');renderAll();toast('Transaction deleted.')}
+function applyUrlAction(){const p=new URLSearchParams(location.search);let type=null,source='nfc';if(p.get('a')==='1'||p.get('add')==='1')type='expense';if(p.get('i')==='1')type='income';if(!type)return;const category=p.get('c')||p.get('category')||undefined;const amount=p.get('v')||p.get('amount')||undefined;history.replaceState({},document.title,location.pathname+location.hash);openEntry({type,source,category,amount})}
+function inferCategory(text,type='expense'){const s=text.toLowerCase();if(type==='income'){if(/salary|payroll|stipend/.test(s))return'Salary';if(/freelance|client|project/.test(s))return'Freelance';if(/refund|returned/.test(s))return'Refund';if(/interest/.test(s))return'Interest';if(/gift/.test(s))return'Gift';return'Other'}if(/swiggy|zomato|restaurant|cafe|coffee|lunch|dinner|breakfast|food|pizza|burger|grocery|grocer/.test(s))return'Food';if(/uber|ola|metro|bus|train|fuel|petrol|cab|auto|parking/.test(s))return'Transport';if(/amazon|flipkart|shopping|mall|clothes|shoes/.test(s))return'Shopping';if(/electric|electricity|water bill|internet|wifi|recharge|mobile bill|rent/.test(s))return'Bills';if(/doctor|medicine|pharmacy|hospital|clinic|health/.test(s))return'Health';if(/course|book|class|tuition|education/.test(s))return'Education';if(/movie|netflix|spotify|game|concert/.test(s))return'Entertainment';return'Other'}
+function setupVoice(){const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Recognition){toast('Voice capture is not available in this browser. Try Chrome on Android.');return}const recognition=new Recognition();recognition.lang='en-IN';recognition.interimResults=false;recognition.maxAlternatives=1;$('#voiceShortcutButton').disabled=true;$('#voiceShortcutButton').textContent='Listening…';recognition.onresult=e=>{const text=e.results[0][0].transcript;const amountMatch=text.match(/(?:₹|rs\.?\s*)?([0-9]+(?:[,.][0-9]{1,2})?)/i);const type=/received|earned|salary|income|got paid/i.test(text)?'income':'expense';const category=inferCategory(text,type);const merchant=text.replace(amountMatch?.[0]||'','').replace(/\b(spent|paid|on|for|rupees|rupee|rs)\b/gi,'').trim();openEntry({type,source:'voice',amount:amountMatch?amountMatch[1].replace(',',''):undefined,category,merchant:merchant||text});};recognition.onerror=()=>toast('Voice capture ended. You can enter the details manually.');recognition.onend=()=>{$('#voiceShortcutButton').disabled=false;$('#voiceShortcutButton').textContent='Try voice entry ↗'};recognition.start()}
 
-function openExpenseDialog(options = {}) {
-  $('#expenseForm').reset();
-  $('#spentAt').value = localDateString();
-  $('#category').value = CATEGORIES.includes(options.category) ? options.category : 'Food';
-  $('#merchant').value = options.merchant || '';
-  $('#captureHint').textContent = options.source === 'nfc' ? 'NFC tap detected · Add the amount to save this purchase.' : 'Add the amount and a few details.';
-  expenseDialog.showModal();
-  setTimeout(() => $('#amount').focus(), 100);
-}
+// Data tools
+function csvCell(value){let s=String(value??'');if(/^[\s\u0000-\u001f]*[=+\-@]/.test(s))s="'"+s;return`"${s.replace(/"/g,'""')}"`}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function exportCSV(){const rows=[['Date','Type','Amount INR','Category','Merchant','Account','Note','Source','ID']];transactions.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>rows.push([t.date,t.type,(t.amountPaise/100).toFixed(2),t.category,t.merchant,t.account,t.note,t.source,t.id]));download(new Blob(['\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),`tapledger-ledger-${today()}.csv`);toast('CSV export prepared.')}
+async function backupJSON(){const data={app:'TapLedger',schemaVersion:3,exportedAt:new Date().toISOString(),currency:CURRENCY,transactions,budgets,goals};download(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`tapledger-backup-${today()}.json`);toast('Backup downloaded.')}
+async function restoreJSON(file){if(!file)return;try{const data=JSON.parse(await file.text());if(data.app!=='TapLedger')throw new Error('This is not a TapLedger backup.');let count=0;if(Array.isArray(data.transactions)){for(const t of data.transactions){if(validTransaction(t)){await put('transactions',{...t,merchant:String(t.merchant||''),note:String(t.note||'')});count++}}}else if(Array.isArray(data.expenses)){for(const old of data.expenses){if(!old||!Number.isSafeInteger(old.amountPaise)||!old.spentAt)continue;const t={id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,currency:'INR',category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Everyday',source:'legacy-backup',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};if(validTransaction(t)){await put('transactions',t);count++}}if(Number.isSafeInteger(data.monthlyBudgetPaise)&&data.monthlyBudgetPaise>0)await put('budgets',{id:'overall',category:'__overall',limitPaise:data.monthlyBudgetPaise,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})}else throw new Error('Backup contains no supported transaction records.');if(Array.isArray(data.budgets))for(const b of data.budgets)if(b&&typeof b.id==='string'&&Number.isSafeInteger(b.limitPaise)&&b.limitPaise>0)await put('budgets',b);if(Array.isArray(data.goals))for(const g of data.goals)if(g&&typeof g.id==='string'&&Number.isSafeInteger(g.targetPaise)&&g.targetPaise>0&&Number.isSafeInteger(g.savedPaise))await put('goals',g);await loadAll();renderAll();toast(`Restored or merged ${count} transaction records.`)}catch(err){toast(err.message||'Restore failed.')}finally{$('#restoreInput').value=''}}
+async function deleteAllData(){const phrase=prompt('This deletes all local transactions, budgets and goals from this browser. Type DELETE to confirm.');if(phrase!=='DELETE'){toast('Nothing was deleted.');return}for(const store of ['transactions','budgets','goals','expenses','settings']){const tx=db.transaction(store,'readwrite');tx.objectStore(store).clear();await new Promise((res,rej)=>{tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}await setSetting('migration-v3-complete',true);transactions=[];budgets=[];goals=[];renderAll();toast('All local TapLedger data deleted.')}
 
-function readLaunchParameters() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('add') === '1') {
-    const options = {
-      source: params.get('source') === 'nfc' ? 'nfc' : 'manual',
-      category: params.get('category') || 'Food',
-      merchant: params.get('merchant') || ''
-    };
-    // Remove the one-shot command so a refresh does not reopen the form.
-    window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
-    openExpenseDialog(options);
-  }
+// Navigation and event wiring
+function renderAll(){renderView(selectedView);if(selectedView!=='overview')renderOverview()}
+function copyText(text){if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('URL copied to clipboard.')).catch(()=>fallbackCopy(text))}else fallbackCopy(text)}
+function fallbackCopy(text){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('URL copied.')}catch(e){toast('Copy failed. Select and copy the URL manually.')}t.remove()}
+function renderAutomations(){const base=new URL('./',location.href);base.search='';base.hash='';const expense=new URL(base);expense.searchParams.set('a','1');const income=new URL(base);income.searchParams.set('i','1');$('#expenseNfcUrl').textContent=expense.href;$('#incomeNfcUrl').textContent=income.href;}
+function renderBudgetCategoryOptions(){const current=$('#budgetCategory').value;$('#budgetCategory').innerHTML='<option value="__overall">Overall monthly budget</option>'+EXPENSE_CATEGORIES.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('#budgetCategory').value=current||'__overall'}
+function wireEvents(){
+ $$('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));$$('[data-go]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.go)));
+ $('#topAddButton').addEventListener('click',()=>openEntry());$('#ledgerAddButton').addEventListener('click',()=>openEntry());$('#topSearchButton').addEventListener('click',()=>{navigate('ledger');$('#ledgerSearch').focus()});$('#addBudgetButton').addEventListener('click',()=>openBudget());$('#addGoalButton').addEventListener('click',()=>openGoal());$('#quickCreateGoal').addEventListener('click',()=>openGoal());
+ $('#entryForm').addEventListener('submit',saveEntry);$$('.type-tab').forEach(b=>b.addEventListener('click',()=>setEntryType(b.dataset.type)));$('#budgetForm').addEventListener('submit',saveBudget);$('#goalForm').addEventListener('submit',saveGoal);$('#contributeForm').addEventListener('submit',contribute);
+ $$('[data-close]').forEach(b=>b.addEventListener('click',()=>$('#'+b.dataset.close).close()));$('#settingsButton').addEventListener('click',()=>$('#settingsDialog').showModal());$('#topSettingsButton').addEventListener('click',()=>$('#settingsDialog').showModal());
+ ['ledgerSearch','ledgerTypeFilter','ledgerCategoryFilter','ledgerSort'].forEach(id=>$('#'+id).addEventListener(id==='ledgerSearch'?'input':'change',renderLedger));
+ $('#ledgerRows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),delBtn=e.target.closest('[data-delete]');if(edit){const t=transactions.find(x=>x.id===edit.dataset.edit);if(t)openEntry({item:t})}if(delBtn)deleteTransaction(delBtn.dataset.delete)});
+ $('#budgetCards').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-budget]'),remove=e.target.closest('[data-delete-budget]');if(edit)openBudget(budgets.find(b=>b.id===edit.dataset.editBudget));if(remove)deleteBudget(remove.dataset.deleteBudget)});
+ $('#goalsGrid').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-goal]'),remove=e.target.closest('[data-delete-goal]'),contributeBtn=e.target.closest('[data-contribute-goal]');if(edit)openGoal(goals.find(g=>g.id===edit.dataset.editGoal));if(remove)deleteGoal(remove.dataset.deleteGoal);if(contributeBtn){const g=goals.find(x=>x.id===contributeBtn.dataset.contributeGoal);if(g)openContribution(g)}});
+ $('#exportCsvButton').addEventListener('click',exportCSV);$('#backupButton').addEventListener('click',backupJSON);$('#restoreButton').addEventListener('click',()=>$('#restoreInput').click());$('#restoreInput').addEventListener('change',e=>restoreJSON(e.target.files?.[0]));$('#deleteAllButton').addEventListener('click',deleteAllData);
+ $('#voiceShortcutButton').addEventListener('click',setupVoice);$$('.copy-shortcut').forEach(b=>b.addEventListener('click',()=>{const base=new URL('./',location.href);base.search='';base.hash='';base.searchParams.set(b.dataset.shortcut==='income'?'i':'a','1');copyText(base.href)}));
+ $$('[data-range]').forEach(b=>b.addEventListener('click',()=>{chartRange=Number(b.dataset.range);$$('[data-range]').forEach(x=>x.classList.toggle('active',x===b));renderCashflowChart()}));
+ $('#entryMerchant').addEventListener('blur',()=>{const guessed=inferCategory($('#entryMerchant').value,$('#entryType').value);if(guessed&&$('#entryMerchant').value.trim()){$('#entryCategory').value=guessed;$('#smartHint').textContent=`Category suggestion: ${guessed}. Check it before saving.`}});
 }
-
-async function handleSave(event) {
-  event.preventDefault();
-  const amount = rupeesToPaise($('#amount').value);
-  const category = $('#category').value;
-  const spentAt = $('#spentAt').value;
-  if (!Number.isSafeInteger(amount) || amount <= 0) { showToast('Enter an amount greater than ₹0.'); $('#amount').focus(); return; }
-  if (!CATEGORIES.includes(category) || !/^\d{4}-\d{2}-\d{2}$/.test(spentAt)) { showToast('Check the category and date.'); return; }
-  const urlParams = new URLSearchParams(window.location.search);
-  const source = $('#captureHint').textContent.startsWith('NFC tap') ? 'nfc' : 'manual';
-  const item = {
-    id: (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`),
-    amountPaise: amount,
-    currency: CURRENCY,
-    category,
-    merchant: $('#merchant').value.trim(),
-    note: $('#note').value.trim(),
-    spentAt,
-    createdAt: new Date().toISOString(),
-    source
-  };
-  try {
-    await putExpense(item);
-    expenses.push(item);
-    expenseDialog.close(); render(); showToast(`Saved ${money(amount)}.`);
-  } catch (error) { console.error(error); showToast('Could not save. Check browser storage permissions.'); }
-}
-
-function csvSafe(value) {
-  let text = String(value ?? '');
-  if (/^[\s\u0000-\u001f]*[=+\-@]/.test(text)) text = `'${text}`;
-  return `"${text.replace(/"/g, '""')}"`;
-}
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
-  anchor.href = url; anchor.download = filename; anchor.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-function exportCsv() {
-  const rows = [['Date', 'Amount INR', 'Category', 'Merchant', 'Note', 'Source', 'ID']];
-  [...expenses].sort((a, b) => a.spentAt.localeCompare(b.spentAt)).forEach(item => rows.push([
-    item.spentAt, (item.amountPaise / 100).toFixed(2), item.category, item.merchant, item.note, item.source, item.id
-  ]));
-  const csv = '\uFEFF' + rows.map(row => row.map(csvSafe).join(',')).join('\r\n');
-  downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `tapledger-${localDateString()}.csv`);
-  showToast('CSV export prepared.');
-}
-function backupJson() {
-  const backup = { app: 'TapLedger', schemaVersion: 1, exportedAt: new Date().toISOString(), currency: CURRENCY, monthlyBudgetPaise, expenses };
-  downloadBlob(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }), `tapledger-backup-${localDateString()}.json`);
-  showToast('Backup file prepared.');
-}
-function isValidExpense(item) {
-  return item && typeof item.id === 'string' && Number.isSafeInteger(item.amountPaise) && item.amountPaise > 0 &&
-    CATEGORIES.includes(item.category) && typeof item.spentAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.spentAt);
-}
-async function restoreJson(file) {
-  if (!file) return;
-  try {
-    if (file.size > 10 * 1024 * 1024) throw new Error('Backup is larger than 10 MB.');
-    const data = JSON.parse(await file.text());
-    if (!data || data.app !== 'TapLedger' || !Array.isArray(data.expenses)) throw new Error('This is not a TapLedger backup.');
-    const valid = data.expenses.filter(isValidExpense).map(item => ({
-      id: item.id, amountPaise: item.amountPaise, currency: CURRENCY, category: item.category,
-      merchant: String(item.merchant || '').slice(0, 80), note: String(item.note || '').slice(0, 160),
-      spentAt: item.spentAt, createdAt: typeof item.createdAt === 'string' ? item.createdAt : new Date().toISOString(),
-      source: item.source === 'nfc' ? 'nfc' : 'manual'
-    }));
-    if (!valid.length && data.expenses.length) throw new Error('No valid expense records were found.');
-    for (const item of valid) await putExpense(item);
-    if (Number.isSafeInteger(data.monthlyBudgetPaise) && data.monthlyBudgetPaise >= 0) {
-      monthlyBudgetPaise = data.monthlyBudgetPaise; await putSetting({ key: 'monthlyBudgetPaise', value: monthlyBudgetPaise });
-    }
-    expenses = await getAllExpenses(); render(); showToast(`Restored or merged ${valid.length} records.`);
-  } catch (error) { showToast(error.message || 'Could not restore that file.'); }
-  finally { $('#restoreFile').value = ''; }
-}
-
-async function setBudget() {
-  const current = monthlyBudgetPaise ? (monthlyBudgetPaise / 100).toFixed(2) : '';
-  const answer = window.prompt('Set your monthly spending budget in ₹. Enter 0 to clear it.', current);
-  if (answer === null) return;
-  const value = Number(answer);
-  if (!Number.isFinite(value) || value < 0 || value > 100000000) { showToast('Enter a valid budget amount.'); return; }
-  monthlyBudgetPaise = rupeesToPaise(value);
-  await putSetting({ key: 'monthlyBudgetPaise', value: monthlyBudgetPaise });
-  render(); showToast(monthlyBudgetPaise ? 'Monthly budget updated.' : 'Monthly budget cleared.');
-}
-
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('./sw.js').catch(error => console.warn('Service worker registration failed:', error));
-  }
-}
-
-async function init() {
-  try {
-    if (!('indexedDB' in window)) throw new Error('This browser does not support local database storage.');
-    db = await openDatabase();
-    expenses = await getAllExpenses();
-    const savedBudget = await getSetting('monthlyBudgetPaise');
-    monthlyBudgetPaise = Number.isSafeInteger(savedBudget?.value) ? savedBudget.value : 0;
-    render();
-    registerServiceWorker();
-    readLaunchParameters();
-  } catch (error) {
-    console.error(error);
-    showToast('TapLedger could not start. Open it in current Chrome and allow site storage.');
-  }
-}
-
-$('#addButton').addEventListener('click', () => openExpenseDialog());
-$('#closeDialog').addEventListener('click', () => expenseDialog.close());
-$('#cancelExpense').addEventListener('click', () => expenseDialog.close());
-expenseForm.addEventListener('submit', handleSave);
-$('#budgetButton').addEventListener('click', setBudget);
-$('#categoryFilter').addEventListener('change', renderExpenseList);
-$('#exportCsv').addEventListener('click', exportCsv);
-$('#backupJson').addEventListener('click', backupJson);
-$('#restoreJson').addEventListener('click', () => $('#restoreFile').click());
-$('#restoreFile').addEventListener('change', event => restoreJson(event.target.files?.[0]));
-document.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => openExpenseDialog({ category: button.dataset.category })));
-$('#expenseList').addEventListener('click', async event => {
-  const button = event.target.closest('[data-delete]');
-  if (!button) return;
-  const item = expenses.find(expense => expense.id === button.dataset.delete);
-  if (!item || !window.confirm(`Delete this ${money(item.amountPaise)} expense?`)) return;
-  try { await deleteExpense(item.id); expenses = expenses.filter(expense => expense.id !== item.id); render(); showToast('Expense deleted.'); }
-  catch (error) { console.error(error); showToast('Could not delete that expense.'); }
-});
+function registerServiceWorker(){if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker:',err))}
+async function init(){try{db=await openDB();await migrateLegacy();await loadAll();renderBudgetCategoryOptions();wireEvents();renderAll();renderAutomations();registerServiceWorker();applyUrlAction()}catch(err){console.error(err);toast('TapLedger could not open local storage. Use Chrome on the published HTTPS site.')}}
+function applyUrlAction(){const p=new URLSearchParams(location.search);let type=null;if(p.get('a')==='1'||p.get('add')==='1')type='expense';if(p.get('i')==='1')type='income';if(!type)return;const category=p.get('c')||p.get('category')||undefined,amount=p.get('v')||p.get('amount')||undefined;history.replaceState({},document.title,location.pathname+location.hash);openEntry({type,source:'nfc',category,amount})}
 
 init();
