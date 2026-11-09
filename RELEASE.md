@@ -1,20 +1,13 @@
-# VOLTURA v14 release notes
+# VOLTURA v16 release
 
-## Brand and visual system
-- Rebranded the visible product to VOLTURA across the app, legal pages, install metadata and package docs.
-- Added a custom Voltura orbit mark, matching SVG favicon and PWA icon set.
-- Introduced the Volt Orbit motif: one path and one moving waypoint across logo, hero, navigation, section markers and progress states.
-- Reworked the visual system around matte graphite/mineral surfaces, electric-lime anodized accents, satin-steel detail, teal income and coral expenses.
-- Tightened typography and rectangular surfaces for a loud, flat editorial dashboard.
+VOLTURA v16 refines the product into a bold, flat, high-contrast matte interface with a single orbit-and-waypoint identity motif. The existing local-first ledger and IndexedDB schema are preserved.
 
-## Product integrity
-- Kept the IndexedDB database name `tapledger-db` and schema version `3`; prior local records remain in the same browser database.
-- Kept existing NFC query shortcuts (`?a=1`, `?i=1`, `?add=1`).
-- New JSON backup identity is `Voltura`; restore remains compatible with older `Vellum`, `Cairn` and `TapLedger` backups.
-- Export filenames now use the `voltura-*` prefix.
-- Service-worker cache version is now `voltura-platform-v14`.
+## NFC expense capture
 
-## Runtime
-- Still a static app; no build chain or remote dependency added.
-- Added the Voltura SVG mark and refreshed PWA icons.
-- Added mobile-specific layout tuning and reduced-motion handling for the rebranded hero.
+Program the NFC card with the exact expense URL shown under Automations (`?a=1`). A scan opens the quick expense dialog. Amount is required; category and payment account are selected in the dialog; merchant and note are optional; date defaults to today. Saving writes a normal `transactions` record with `source: "nfc"`, refreshes the dashboard and ledger, and remembers the last category/account on this device.
+
+The URL shortcut requires the published site to be available over HTTPS (or localhost for testing), NFC Tools to write a URI/NDEF record, and the phone to open the URL in a browser. It does not invoke Web NFC in the page and cannot force a popup while the browser is closed or the phone is locked.
+
+## Data compatibility
+
+Database remains `tapledger-db`, schema version 3. No database migration is introduced. Back up before deployment as standard practice.
