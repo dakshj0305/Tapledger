@@ -1,7 +1,8 @@
-const CACHE='voltura-platform-v18.1';
-const APP_FILES=['','index.html','style.css','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
+const CACHE='voltura-platform-v19.4';
+const APP_FILES=['','index.html','style.css','design-system.css','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
 const appURL=file=>new URL(file||'./',self.registration.scope).href;
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL))).then(()=>self.skipWaiting())));
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL)))));
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting())});
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>/^(vellum-platform-|voltura-platform-)/.test(key)&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
  const request=event.request;if(request.method!=='GET')return;
