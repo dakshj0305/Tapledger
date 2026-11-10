@@ -122,3 +122,32 @@ Have a lawyer qualified in Indian law review privacy, terms, DPDP Act 2023 / imp
 4. Open each navigation view (Ledger, Accounts, Budgets, Goals, Intelligence and Automations); test search, filters, edits and primary actions with synthetic data. Check mobile More includes Accounts.
 5. Review import/export using a copied synthetic backup and verify offline launch only after the service worker has cached the shell.
 6. Keep browser screenshots in `review-screenshots/after-redesign-20261111/` and add actual findings here. Do not use a normal profile or real financial records for destructive testing.
+
+
+## V20.0 ChatGPT implementation — source-level verification
+
+### Changes made
+- Replaced the previous muted-green visual direction with the V20 Signal / Editorial layer in `design-system.css`.
+- Established graphite / mineral-paper / volt-chartreuse colour roles and the V-cut as the single recurring structural motif.
+- Reworked the visual treatment of the application shell, navigation, page headings, cash-flow hero, dashboard panels, transaction surfaces, quick-entry controls and responsive navigation.
+- Added the icon files referenced by the manifest and service-worker precache list (`icons/voltura-mark.svg`, 192px/512px standard and maskable PNG icons).
+- Updated `index.html` theme colour and version label, manifest theme/background colours, service-worker cache version and brand/motif/release documentation.
+
+### Source-level checks
+- PASS: `node --check app.js`
+- PASS: `node --check sw.js`
+- PASS: `node --check quick-boot.js`
+- PASS: `design-system.css` parsed with zero CSS parser errors.
+- PASS: `manifest.webmanifest` parsed as JSON.
+- PASS: every path in the service-worker `APP_FILES` precache list exists in this package.
+- PASS: local `href`/`src` references in `index.html` resolve to files in this package.
+
+### Scope and data safety
+- `app.js` was not changed.
+- IndexedDB database/schema, stores, keys, indexes, migration marker, paise arithmetic, backup/restore logic and NFC quick-entry routing were not changed.
+- No deployment, publication, database access or financial-data operation was performed.
+
+### Not verified
+- Browser rendering and screenshots could not be captured in this environment; the browser navigation attempt was blocked by the execution environment.
+- Therefore actual visual appearance, 320px/390px/1440px layout, dark/light theme rendering, interactions, offline launch, accessibility and physical-device NFC remain **NOT VERIFIED**.
+- The source checks above do not substitute for visual and interaction acceptance in a real browser.

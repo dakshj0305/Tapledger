@@ -61,3 +61,28 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - `QA-REPORT.md`, `MOTIF-SYSTEM.md`: design and verification notes.
 - No changes to `app.js`, IndexedDB, transaction math, NFC launch handling, restore/export logic, or data stores. No deployment or publication performed.
 - Browser visual acceptance remains **NOT VERIFIED**. See the current QA report for actual checks and limitations.
+
+
+## V20.0 — Signal / Editorial redesign
+
+- Re-art-directed the application around one V-cut signature and a stronger loud-minimalist identity: graphite, mineral paper and a single chartreuse signal.
+- Reworked the visual hierarchy across the shell, navigation, page headings, dashboard cashflow field, panels, actions, transaction surfaces and quick-entry controls.
+- Tightened the mobile composition and retained a five-destination bottom navigation with the More entry point.
+- Added the missing local SVG and PNG icon assets referenced by the manifest and service-worker precache list.
+- Updated the app theme colour and service-worker cache to `voltura-platform-v20.0`.
+- No changes to `app.js`, IndexedDB, financial arithmetic, transaction structures, migrations, backup tags, NFC route logic or deployment base path.
+- Browser rendering and visual screenshot inspection are not available in this execution environment; visual acceptance remains **NOT VERIFIED**. Source-level checks are recorded separately in `QA-REPORT.md`.
+
+
+## V21 — Mineral Botanical refinement
+
+- Added `voltura-atmosphere.css` as a presentation-only layer after the existing design system.
+- Shifted the primary light theme to mineral paper, pale sage, botanical green and muted natural data accents.
+- Reworked the shell, navigation, typography and balance hero toward a lighter, more substantial editorial feel.
+- Retained the V20 application logic and bumped the service-worker cache to V21.
+- Browser rendering and interaction verification remain pending.
+
+
+## V22 — Field Notes visual refinement
+
+See `FEATURE-INVENTORY-V22.md` for the source-derived feature inventory, scope distinctions and verification status. Added `voltura-field-notes.css`, linked after the prior visual layers, and bumped the service-worker cache to V22. Existing `app.js` is unchanged.
