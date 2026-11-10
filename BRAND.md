@@ -1,38 +1,56 @@
-# VOLTURA — Brand system v14
+# VOLTURA brand system v18.1
 
-**Positioning:** A bold, local-first personal finance cockpit that turns daily money movement into a clear operating picture.
+**Positioning:** A local-first personal finance workspace designed around quick capture and calm review.
 
-**Tagline:** Money in motion.
+## Tagline options
 
-## The signature motif — The Volt Orbit
-One continuous orbit and one electric waypoint. It stands for the movement of money through the ledger and onward to accounts, budgets and goals. The mark belongs to VOLTURA; it is not a generic decoration.
+1. **Turn every rupee into clarity.** — chosen; describes the complete loop from quick recording to later review without promising financial outcomes.
+2. **See where money moves.** — plain-language and descriptive, but less distinct.
+3. **Tap. Track. Understand.** — action-led and short, but less specific to personal finance.
 
-## Palette
-- Graphite `#111820` — navigation, hero, logo and core structure.
-- Volt lime `#D7FF3F` — the single signature waypoint and primary action accent.
-- Mineral paper `#EFF1E9` — main canvas.
-- Porcelain `#FAFBF6` — working surfaces.
-- Satin steel `#B9C3C5` — restrained metallic detail and dividers.
-- Volt teal `#087D64` — incoming money and positive progress.
-- Signal coral `#E95B49` — outgoing money and warnings.
-- Deep olive `#4D6310` — accessible lime-derived text and focus states on light surfaces.
+## Identity mark
 
-## Finish and composition
-- Matte graphite and mineral surfaces are the default; no full-screen glass, glow haze or generic gradients.
-- The logo and hero get the controlled metallic / anodized treatment: one orbit line, one waypoint, a crisp specular edge.
-- The dashboard uses bold, uppercase editorial typography, strong rectangular silhouettes and offset shadows.
-- White space and data density remain balanced. Noise is not a substitute for information architecture.
+The original VOLTURA mark is a single solid, angular V built as an inline SVG path in `index.html` and as `icons/voltura-mark.svg`. It uses one colour, no gradients or external assets, and the same geometry is used in the raster PWA icons. It is intended to remain legible at 16 px, 48 px and 512 px; verify those sizes on light and dark backgrounds before public launch.
 
-## Typography
-- Interface: system sans-serif stack (system UI, Segoe UI, Arial), bold weights for headings.
-- Figures: local system monospace stack (SFMono-Regular, Consolas, Liberation Mono).
-- No font files or web-font downloads are bundled.
+## Visual direction: loud, flat, matte with controlled shine
 
-## Motion
-The hero portal uses local Canvas 2D motion, pointer warp and decaying ripple. The logo waypoint is the only persistent ambient path animation. Motion is decorative, pauses when the page is hidden, and is disabled by `prefers-reduced-motion`.
+- Flat means solid colour planes: no gradients, glassmorphism, blur, noise or glow.
+- Matte means large surfaces have no soft shadows.
+- Controlled shine is a single crisp, hard-edged highlight/facet on the primary action or identity mark.
+- Loud means a saturated volt-lime action colour, large amount type and clear hierarchy.
+- Income and expense remain distinguished by signs and labels, not colour alone.
 
-## Product and data integrity
-- Static HTML, CSS and JavaScript. No build step, npm install, React runtime or third-party component package.
-- Existing database identity remains `tapledger-db`, schema version `3`, preserving prior Vellum/TapLedger data on this browser profile.
-- JSON import remains backward compatible with Voltura, Vellum, Cairn and TapLedger exports.
-- All financial records remain local in IndexedDB; the design layer does not change calculation or storage behavior.
+## Palette and contrast
+
+| Role | Light | Dark | Intended use |
+|---|---|---|---|
+| Background | `#F3F4EC` | `#10171D` | Main canvas |
+| Surface | `#FFFFFF` | `#1D2831` | Cards and forms |
+| Raised surface | `#FAFBF6` | `#253540` | Inputs and secondary panels |
+| Text | `#10171D` | `#F3F4EC` | Primary text |
+| Muted text | `#4D5964` | `#C0CCD5` | Supporting text |
+| Primary | `#D9FF36` | `#D9FF36` | Main action |
+| On primary | `#10171D` | `#10171D` | Text on volt lime |
+| Accent / focus | `#005FCC` | `#8EC8FF` | Links and focus ring |
+| Positive | `#006B4F` | `#72D2AE` | Income and positive status |
+| Negative | `#B42318` | `#FF8C80` | Expense and error |
+| Warning | `#865800` | `#F0C36B` | Warning status |
+| Border | `#66727A` | `#71828D` | Control boundaries |
+
+Computed WCAG contrast ratios for the primary pairings (relative-luminance calculation): light text/background 16.31:1; light muted/background 6.48:1; light positive/background 5.90:1; light negative/background 5.94:1; light warning/background 5.56:1; light focus/background 5.40:1; light border/background 4.46:1; dark text/background 16.31:1; dark muted/background 11.05:1; dark positive/background 9.93:1; dark negative/background 8.01:1; dark warning/background 10.95:1; dark focus/background 10.20:1; dark border/background 4.54:1; dark border/surface 3.77:1; dark border/raised surface 3.18:1; on-primary/text on volt-lime 15.75:1. These are token-pair calculations; not a substitute for measuring every rendered state in a browser.
+
+## Typography and layout
+
+Use system sans-serif fonts; no remote fonts or CDN calls. Figures use tabular numerals. Mobile inputs are at least 16 px to avoid browser zoom. Mobile touch controls are at least 44×44 px. Safe-area insets are respected by the quick sheet.
+
+## Motion and haptics
+
+Use short transform/opacity transitions only. `prefers-reduced-motion` disables non-essential motion and defaults vibration feedback off. Vibration uses `navigator.vibrate()` only after a user action and never replaces visible or `aria-live` feedback. Browser/device support varies; Android Chrome support must be confirmed on hardware, and iOS Safari does not expose the same vibration API.
+
+## Data compatibility
+
+Keep IndexedDB as `tapledger-db`, version 3. This internal name is retained intentionally so existing local data remains reachable. New downloadable backups identify as `Voltura`; restore continues to accept legacy `TapLedger`, `Cairn` and `Vellum` tags.
+
+## Naming clearance
+
+“Voltura” may already be used by other businesses. A trademark search through IP India and relevant international registers is required before public launch. Availability is not claimed.

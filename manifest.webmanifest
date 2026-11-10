@@ -1,12 +1,12 @@
 {
-  "name": "VOLTURA \u2014 Personal Finance",
+  "name": "VOLTURA — Personal Finance",
   "short_name": "VOLTURA",
-  "description": "Money in motion. A private, local-first personal finance workspace with NFC quick capture.",
-  "start_url": "/Tapledger/",
-  "scope": "/Tapledger/",
+  "description": "A local-first personal finance ledger with quick expense capture.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#F0F1E9",
-  "theme_color": "#D7FF3F",
+  "background_color": "#F3F4EC",
+  "theme_color": "#D9FF36",
   "icons": [
     {
       "src": "./icons/icon-192.png",
@@ -32,5 +32,32 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Add expense",
+      "short_name": "Expense",
+      "description": "Open the quick expense form",
+      "url": "./?a=1",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Add income",
+      "short_name": "Income",
+      "description": "Open the income entry form",
+      "url": "./?i=1",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "id": "./"
 }

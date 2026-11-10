@@ -730,3 +730,185 @@ body{background:#e9ede5;color:var(--volt-ink)}
 @media(max-width:900px){.kinetic-intro{width:min(350px,42%)}.page-intro{gap:22px}}
 @media(max-width:680px){.page-intro{padding-top:28px;gap:22px}.page-intro h1{font-size:clamp(44px,13vw,68px)}.kinetic-intro{width:100%;align-items:stretch}.kinetic-intro .date-mark{align-self:flex-start}.kinetic-portal{height:160px;box-shadow:6px 6px 0 var(--volt-lime)}.kinetic-portal-word{font-size:clamp(34px,10vw,48px)}.balance-hero{padding:23px 20px;box-shadow:6px 6px 0 var(--volt-lime)}.quick-expense-dialog{width:calc(100% - 12px);max-height:calc(100dvh - 12px);margin:auto}.quick-expense-card{max-height:calc(100dvh - 16px);padding:16px}.quick-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.kinetic-portal:after{animation:none!important}.kinetic-portal,.button-primary,.quick-save-button{transition:none!important}}
+
+
+/* VOLTURA v18 token layer: flat, matte surfaces; one crisp light-direction edge. */
+:root{
+ --color-background:#F3F4EC;--color-surface:#FFFFFF;--color-surface-raised:#FAFBF6;
+ --color-text:#10171D;--color-text-muted:#4D5964;--color-primary:#D9FF36;--color-on-primary:#10171D;
+ --color-accent:#005FCC;--color-positive:#006B4F;--color-negative:#B42318;--color-warning:#865800;
+ --color-focus:#005FCC;--color-border:#66727A;
+ --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;
+ --radius-1:2px;--radius-2:4px;--radius-3:8px;--radius-4:12px;--radius-pill:999px;
+ --type-xs:12px;--type-sm:14px;--type-md:16px;--type-lg:20px;--type-xl:28px;--type-2xl:40px;--type-3xl:clamp(44px,8vw,72px);
+ --elevation-flat:none;--elevation-action:4px 4px 0 #10171D;--motion-fast:120ms;--motion-base:180ms;--motion-slow:240ms;
+ --paper:var(--color-background);--surface:var(--color-surface);--ink:var(--color-text);--muted:var(--color-text-muted);--line:var(--color-border);--accent:var(--color-accent);
+ color-scheme:light dark;
+}
+:root[data-theme="dark"]{
+ --color-background:#10171D;--color-surface:#1D2831;--color-surface-raised:#253540;
+ --color-text:#F3F4EC;--color-text-muted:#C0CCD5;--color-primary:#D9FF36;--color-on-primary:#10171D;
+ --color-accent:#8EC8FF;--color-positive:#72D2AE;--color-negative:#FF8C80;--color-warning:#F0C36B;
+ --color-focus:#8EC8FF;--color-border:#71828D;
+ --paper:var(--color-background);--surface:var(--color-surface);--ink:var(--color-text);--muted:var(--color-text-muted);--line:var(--color-border);--accent:var(--color-primary);
+ color-scheme:dark;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="dark"]){--color-background:#10171D;--color-surface:#1D2831;--color-surface-raised:#253540;--color-text:#F3F4EC;--color-text-muted:#C0CCD5;--color-primary:#D9FF36;--color-on-primary:#10171D;--color-accent:#8EC8FF;--color-positive:#72D2AE;--color-negative:#FF8C80;--color-warning:#F0C36B;--color-focus:#8EC8FF;--color-border:#71828D;--paper:var(--color-background);--surface:var(--color-surface);--ink:var(--color-text);--muted:var(--color-text-muted);--line:var(--color-border);--accent:var(--color-primary);color-scheme:dark}}
+html{background:var(--color-background);scroll-behavior:smooth}
+body{background:var(--color-background);color:var(--color-text);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+/* Avoid decorative blur, gradients, glow and soft elevation; retain a crisp offset facet only on the main action. */
+.sidebar,.panel,.balance-hero,.goal-feature,.insight-feature,.shortcut-card,.nfc-instructions,.dialog-card,.quick-expense-card,.account-card,.budget-card,.goal-card,.summary-tile{box-shadow:none!important;backdrop-filter:none!important;filter:none!important}
+.quick-expense-dialog{width:min(520px,calc(100% - 24px));max-width:520px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 24px);margin:auto;padding:0;border:0;background:transparent;overflow:visible}
+.quick-expense-dialog::backdrop{background:rgba(8,14,18,.82);backdrop-filter:none}
+.quick-expense-card{width:100%;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(16px,4vw,28px);padding-bottom:max(18px,env(safe-area-inset-bottom,0px));background:var(--color-surface);color:var(--color-text);border:2px solid var(--color-text);border-radius:var(--radius-1);box-shadow:var(--elevation-flat);}
+.quick-expense-top h2{color:var(--color-text);font-size:clamp(28px,7vw,36px);line-height:1.05;font-weight:900;letter-spacing:-.05em}
+.quick-expense-top .eyebrow{color:var(--color-accent)}
+.quick-amount-field{display:block;margin:16px 0;padding:12px 14px;background:var(--color-surface-raised);border:2px solid var(--color-border);border-radius:var(--radius-1)}
+.quick-amount-field>span,.quick-section-label>span,.quick-account-field>span,.quick-merchant-field>span{color:var(--color-text-muted);font-weight:750;letter-spacing:.07em}
+.quick-amount-input{display:flex;align-items:center;gap:10px}
+.quick-amount-input b{font-size:32px;font-weight:800;color:var(--color-text)}
+.quick-amount-input input{width:100%;min-width:0;height:58px;padding:0;border:0;background:transparent;color:var(--color-text);font:900 clamp(42px,12vw,56px)/1 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.quick-amount-input input:focus{outline:none}
+#quickExpenseAmountHelp{display:block;margin-top:4px;color:var(--color-text-muted);font-size:12px}
+.quick-field-error{display:block;color:var(--color-negative);font-weight:700;margin-top:6px}
+.quick-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quick-category-chip{min-height:46px;padding:8px 6px;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--color-surface-raised);border:1px solid var(--color-border);border-radius:var(--radius-1);color:var(--color-text);font-size:12px;font-weight:700;cursor:pointer;transition:background var(--motion-fast) ease-out,border-color var(--motion-fast) ease-out}
+.quick-category-chip span{font-size:16px}
+.quick-category-chip.active{background:var(--color-primary);border:2px solid var(--color-text);color:var(--color-on-primary);box-shadow:2px 2px 0 var(--color-text)}
+.quick-category-chip:focus-visible,.quick-save-button:focus-visible,.quick-voice-button:focus-visible,.quick-success-actions button:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
+.quick-account-field select,.quick-account-field input,.quick-merchant-field input{min-height:46px;font-size:16px;border:1px solid var(--color-border);border-radius:var(--radius-1);background:var(--color-surface);color:var(--color-text)}
+.quick-voice-button{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:10px;padding:8px 12px;border:1px solid var(--color-border);border-radius:var(--radius-1);background:transparent;color:var(--color-text);font-weight:700}
+.quick-voice-button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+.quick-expense-footer{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border)}
+.quick-expense-footer p{color:var(--color-text-muted);font-size:12px;margin:0}
+.quick-save-button{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:54px;min-width:180px;padding:0 18px;background:var(--color-primary);border:2px solid var(--color-text);border-radius:var(--radius-1);box-shadow:var(--elevation-action);color:var(--color-on-primary);font-size:15px;font-weight:900;cursor:pointer}
+.quick-save-button:hover{background:var(--color-primary)}
+.quick-save-button:disabled{opacity:.65;cursor:wait}
+.quick-expense-success{padding:28px 4px 8px}
+.quick-expense-success h3{margin:4px 0 8px;font-size:40px;line-height:1;font-weight:950;letter-spacing:-.05em}
+.quick-expense-success>p{color:var(--color-text-muted)}
+.quick-success-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.quick-success-actions button{min-height:48px}
+.quick-success-actions #viewDashboardAfterQuickExpense{grid-column:1/-1}
+.quick-undo-note{font-size:12px;color:var(--color-text-muted)}
+.quick-extra-details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--color-text);font-weight:700}
+.quick-extra-grid{padding-top:8px}
+.preference-settings{padding:16px 0;border-top:1px solid var(--color-border)}
+.preference-settings h3{margin:4px 0 14px;color:var(--color-text)}
+.preference-field{display:grid;gap:7px;margin:12px 0;color:var(--color-text-muted);font-weight:700}
+.preference-field select{min-height:44px;padding:8px;background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text);font-size:16px}
+.preference-toggle{display:flex;align-items:flex-start;gap:12px;min-height:48px;color:var(--color-text)}
+.preference-toggle input{width:20px;height:20px;margin-top:2px;accent-color:var(--color-positive)}
+.preference-toggle span{display:grid;gap:4px}.preference-toggle small,#preferenceStatus{color:var(--color-text-muted);line-height:1.5}
+#main-content:focus{outline:none}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:3px solid var(--color-focus)!important;outline-offset:3px!important}
+@media(max-width:560px){.quick-expense-dialog{width:calc(100% - 16px);max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px)}.quick-expense-card{max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px);padding:16px}.quick-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-category-chip{min-height:46px;font-size:13px}.quick-expense-footer{display:grid}.quick-save-button{width:100%;min-height:56px}.quick-success-actions{grid-template-columns:1fr}.quick-success-actions #viewDashboardAfterQuickExpense{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(forced-colors:active){.quick-expense-card,.quick-amount-field,.quick-category-chip,.quick-account-field input,.quick-account-field select,.quick-save-button{forced-color-adjust:auto;border:1px solid ButtonText}.quick-category-chip.active{outline:2px solid Highlight;outline-offset:2px}.quick-save-button{background:ButtonFace;color:ButtonText}.quick-expense-dialog::backdrop{background:Canvas}}
+
+/* Remove the former kinetic/canvas and glass finish from the product surface. */
+*{box-shadow:none!important;text-shadow:none!important;backdrop-filter:none!important;filter:none!important;}
+.quick-save-button{box-shadow:4px 4px 0 var(--color-text)!important;}
+.quick-category-chip.active{box-shadow:2px 2px 0 var(--color-text)!important;}
+.quick-feedback{min-height:1.25em;margin:7px 0 0;color:var(--color-text-muted);font-size:12px;font-weight:700}
+.voltura-static-mark{width:min(250px,100%);min-height:160px;display:grid;place-items:center;align-content:center;gap:10px;padding:22px;background:#10171D;color:#D9FF36;border:2px solid #10171D}
+.voltura-static-mark svg{width:76px;height:76px;color:#D9FF36}
+.voltura-static-mark strong{font-size:clamp(24px,4vw,34px);font-weight:950;letter-spacing:.08em}
+.voltura-static-mark small{font-size:9px;letter-spacing:.1em;text-align:center;color:#D9FF36}
+/* Flat chart disc: category values remain legible in the adjacent labelled legend. */
+.donut{background:#D9FF36!important;border:2px solid #10171D}
+.donut:before{border:1px solid #10171D}
+@media(prefers-reduced-motion:reduce){.quick-category-chip,.quick-save-button{transition:none!important}}
+
+/* v18.1: remove the legacy conic chart fill; data remains visible in the adjacent value legend. */
+#overviewDonut{background:var(--color-surface-raised,#E7EAE0)!important;border:2px solid var(--color-border,#66727A)!important;box-shadow:none!important}
+.quick-feedback{min-height:1.25em;margin:7px 0 0;color:var(--color-text-muted);font-size:12px}
+.quick-expense-dialog[open]{display:block}
+.quick-expense-card :is(input,select,button){font-size:16px}
+.quick-expense-card input[type="datetime-local"]{width:100%;min-width:0}
+.quick-category-chip:active,.quick-save-button:active{transform:translate(1px,1px)}
+.quick-category-chip,.quick-save-button{transition-property:transform,opacity,background-color,border-color}
+@media(prefers-reduced-motion:reduce){.quick-category-chip:active,.quick-save-button:active{transform:none}}
+
+
+/* VOLTURA v18.1 — whole-app token mapping and flat/matte visual pass. */
+:root{
+ --volt-paper:var(--color-background);--volt-surface:var(--color-surface);--volt-matte:var(--color-surface-raised);
+ --volt-lime:var(--color-primary);--volt-line:var(--color-border);--volt-teal:var(--color-positive);
+ --paper:var(--color-background);--paper-deep:var(--color-surface-raised);--surface:var(--color-surface);
+ --ink:var(--color-text);--ink-2:var(--color-text);--muted:var(--color-text-muted);--muted-2:var(--color-text-muted);
+ --line:var(--color-border);--forest:var(--color-positive);--forest-2:var(--color-positive);
+ --accent:var(--color-accent);--accent-soft:var(--color-surface-raised);--terracotta:var(--color-negative);
+ --gold:var(--color-accent);--gold-soft:var(--color-surface-raised);--blue:var(--color-accent);
+ --sage:var(--color-positive);--sage-soft:var(--color-surface-raised);--focus:var(--color-focus);
+ --serif:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+ --sans:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+ --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+ --elevation-flat:none;--elevation-action:none;--shadow:none;--shadow-strong:none;
+}
+/* No gradients, blurred glass, filters, glows or soft shadows anywhere in the working UI. */
+*,*::before,*::after{box-shadow:none!important;filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background-image:none!important;text-shadow:none!important;transition-property:transform,opacity!important}
+html,body,.app-frame,.main-content{background:var(--color-background)!important;color:var(--color-text)}
+body{font-family:var(--sans);font-size:15px}
+.sidebar{background:#10171D!important;color:#F3F4EC!important;border-right:0!important}
+.brand-symbol{background:var(--color-primary)!important;border:1px solid #F3F4EC!important;color:#10171D!important}
+.brand-symbol svg{fill:currentColor!important;stroke:none!important}
+.brand-word{font-family:var(--sans)!important;font-weight:900!important}
+.brand-word small{font-family:var(--mono)!important;letter-spacing:.12em!important}
+.nav-item{min-height:44px;color:#C0CCD5!important}
+.nav-item.active{background:var(--color-primary)!important;color:#10171D!important;border-left:3px solid #10171D!important}
+.topbar{background:var(--color-background)!important;border-bottom:1px solid var(--color-border)!important}
+.breadcrumb,.today-label,.intro-copy,.panel-kicker,.panel-sub,.metric-label,.chart-foot,.month-bars small{color:var(--color-text-muted)!important}
+.page-intro h1,.page-headline h1,.page-title,.section-heading h2,.section-heading h3{color:var(--color-text)!important;font-family:var(--sans)!important}
+.page-intro h1 em,.page-title span,.section-heading h2 span,.section-heading h3 span{color:var(--color-accent)!important}
+.panel,.cashflow-panel,.budget-snapshot,.category-panel,.recent-panel,.metric-card,.stat-card,.shortcut-card,.goal-card,.insight-card,.account-card,.budget-card,.goal-feature,.preference-settings{background:var(--color-surface)!important;color:var(--color-text)!important;border:1px solid var(--color-border)!important;border-radius:2px!important}
+.panel-sub,.budget-total,.budget-summary,.account-balance,.recent-title,.legend-name,.legend-value,.table-details strong{color:var(--color-text)!important}
+.balance-hero,.insight-feature{background:#10171D!important;color:#F3F4EC!important;border:1px solid #10171D!important}
+.balance-hero::before,.balance-hero::after,.feature-orbit{display:none!important}
+.balance-hero .balance-value,.balance-hero .balance-stat strong,.insight-feature h3{color:#F3F4EC!important}
+.balance-hero .metric-label,.balance-hero .light-label,.balance-hero .balance-foot,.balance-hero .balance-stat small,.insight-feature p:not(.eyebrow){color:#C0CCD5!important}
+.budget-snapshot,.category-panel,.metric-card,.stat-card,.goal-feature,.budget-card{background:var(--color-surface-raised)!important}
+.search-field,.ledger-toolbar select,.form-field input,.form-field select,.form-field textarea,.rupee-input,.preference-field select,.quick-account-field input,.quick-account-field select,.quick-merchant-field input{background:var(--color-surface)!important;color:var(--color-text)!important;border:1px solid var(--color-border)!important}
+input::placeholder,textarea::placeholder{color:var(--color-text-muted)!important;opacity:1}
+.ledger-table th,.table-wrap,.ledger-panel{background:var(--color-surface)!important;color:var(--color-text)!important}
+.ledger-table td{color:var(--color-text)!important;border-color:var(--color-border)!important}
+.button,.icon-button,.text-action,.table-action,.range-btn{border-radius:2px!important;box-shadow:none!important;font-family:var(--sans)!important;transition-property:transform,opacity!important}
+.button-primary,.quick-save-button{background:var(--color-primary)!important;color:#10171D!important;border:2px solid #10171D!important;border-top:3px solid #F3FFB4!important;border-left:3px solid #F3FFB4!important;box-shadow:none!important;font-weight:900!important}
+.button-light{background:var(--color-surface-raised)!important;color:var(--color-text)!important;border:1px solid var(--color-border)!important}
+.button-quiet{background:transparent!important;color:var(--color-text)!important;border:1px solid var(--color-border)!important}
+.button-danger{background:var(--color-surface)!important;color:var(--color-negative)!important;border:1px solid var(--color-negative)!important}
+.nav-item:focus-visible,.button:focus-visible,.icon-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.quick-category-chip:focus-visible{outline:3px solid var(--color-focus)!important;outline-offset:3px!important}
+.donut{background:var(--color-primary)!important;border:1px solid var(--color-text)!important;box-shadow:none!important}
+.category-layout{align-items:center}
+.category-legend{display:grid;gap:12px;align-content:center;width:100%}
+.legend-row{display:grid;gap:5px}
+.legend-meta{display:flex;justify-content:space-between;gap:8px;color:var(--color-text)}
+.category-meter{height:8px;background:var(--color-surface-raised);border:1px solid var(--color-border)}
+.category-meter span{display:block;min-width:2px;height:100%;background:var(--color-positive)}
+.quick-expense-card{border:1px solid var(--color-text)!important;border-radius:2px!important}
+.quick-save-button{border-radius:2px!important}
+.quick-category-chip.active{box-shadow:none!important;border:2px solid var(--color-text)!important}
+.voltura-static-mark{background:#10171D!important;color:var(--color-primary)!important;border-radius:0!important;box-shadow:none!important}
+.voltura-static-mark svg{fill:var(--color-primary)!important;color:var(--color-primary)!important}
+.app-footer{color:var(--color-text-muted);border-color:var(--color-border)!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important;transform:none!important}}
+@media(forced-colors:active){.quick-expense-card,.panel,.quick-amount-field,.quick-category-chip,.quick-save-button,.button{forced-color-adjust:auto;border:1px solid ButtonText!important}.quick-save-button,.button-primary{background:ButtonFace!important;color:ButtonText!important}.quick-category-chip.active{outline:2px solid Highlight!important}}
+
+/* Contrast and component-state refinements for the whole existing app. */
+.chart-legend,.chart-foot,.month-bars small,.legend-name,.panel-kicker,.panel-sub,.budget-total-caption,.budget-summary,.mini-budget-row,.recent-sub,.empty-mini,.summary-tile span,.summary-tile small,.table-details small,.table-foot,.ledger-empty p,.budget-category small,.budget-values span,.budget-foot,.goal-note,.goal-progress-label span,.goal-details,.insight-label,.insight-card p,.recurring-item small,.method-note,.shortcut-content p,.dialog-help,.fine-print,.settings-list p,.account-card-foot,.system-account-label,.account-kind,.account-balance-label,.range-btn,.form-field,.type-tab,.smart-hint{color:var(--color-text-muted)!important}
+.text-action,.feature-link{color:var(--color-accent)!important}
+.eyebrow{color:var(--color-text-muted)!important}
+.balance-hero .eyebrow,.insight-feature .eyebrow{color:#C0CCD5!important}
+.form-field small{color:var(--color-text-muted)!important}
+.smart-hint{background:var(--color-surface-raised)!important;color:var(--color-text-muted)!important;border:1px solid var(--color-border)}
+.dialog-card{background:var(--color-surface)!important;color:var(--color-text)!important;border-color:var(--color-border)!important}
+.dialog-top h2,.settings-list strong{color:var(--color-text)!important}
+.toast{background:#10171D!important;color:#F3F4EC!important;border:1px solid #71828D!important}
+.range-btn.active{background:var(--color-primary)!important;color:#10171D!important}
+.quick-save-button:disabled,.button:disabled{opacity:1!important;background:var(--color-surface-raised)!important;color:var(--color-text-muted)!important;border:1px solid var(--color-border)!important;cursor:not-allowed}
+.quick-save-button:disabled{border-top:1px solid var(--color-border)!important;border-left:1px solid var(--color-border)!important}
+.type-tab.active[data-type="expense"]{background:var(--color-accent)!important;color:#fff!important}
+.type-tab.active[data-type="income"]{background:var(--color-positive)!important;color:#fff!important}
+:root[data-theme="dark"] .type-tab.active[data-type="expense"],:root[data-theme="dark"] .type-tab.active[data-type="income"]{color:#10171D!important}
+:root[data-theme="dark"] .budget-progress,.budget-progress{background:var(--color-surface-raised)!important;border:1px solid var(--color-border)}
