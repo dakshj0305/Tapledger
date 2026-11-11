@@ -86,3 +86,13 @@ Validation: 10 Node tests passed; syntax, manifest, local asset, schema and back
 - Updates the PWA theme colours and service-worker cache version.
 - Keeps the existing local database schema and integer-paise finance logic unchanged.
 - Browser/device visual QA remains outstanding; see QA-REPORT.md.
+
+
+## V22.0 — Cinematic refinement (2026-11-11)
+
+- Adds restrained perspective/depth accents to the dashboard hero and monthly narrative, without a decorative 3D cube or unrelated portfolio/pricing sections.
+- Refines dark surfaces to #050505 / #111111 and uses subtle purple depth, cyan-to-pink primary actions, fine borders and restrained blur. Light theme remains available.
+- Adds reduced-motion-aware transitions and a sticky blurred desktop topbar; compact mobile topbar behavior is retained.
+- Uses system typography and local CSS only; no Aspekta download, GSAP, external dependencies or network services.
+- Service-worker cache version: `voltura-platform-v22.0`. Finance calculations, integer-paise values and IndexedDB schema remain unchanged.
+- Browser and Samsung device visual acceptance remains NOT TESTED.

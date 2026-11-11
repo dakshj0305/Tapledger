@@ -215,3 +215,14 @@ All requested viewport checks (320, 360, 390, 430, 768, 1024, 1440 px), overflow
 - NOT TESTED: browser-rendered visual inspection, real expense/income interactions, responsive screenshot inspection, screen-reader audit, physical NFC, real-device installation and offline relaunch.
 
 This is a static and automated-code audit, not a claim of full browser/device QA or production readiness.
+
+
+## Cinematic refinement follow-up (2026-11-11)
+
+- Added restrained spatial depth to the dashboard hero and monthly narrative using CSS perspective and fine accent rings; no rotating cube or portfolio sections were introduced.
+- Refined the dark theme to the requested #050505 background and #111111 surfaces, with white/gray text, cyan/pink actions and subtle purple functional glow. The light theme remains available.
+- Added restrained 8px backdrop blur to navigation/surfaces, sticky desktop topbar treatment, subtle hover transitions and reduced-motion handling. Mobile topbar remains non-sticky to preserve compact mobile behavior.
+- Kept system fonts; Aspekta is not bundled or fetched. No GSAP, external scripts, remote fonts, tracking or network services were added.
+- Bumped service-worker cache to `voltura-platform-v22.0`. No finance logic or IndexedDB schema changes.
+
+Verification: 11/11 Node tests pass; JavaScript syntax checks pass. Browser-rendered appearance, mobile screenshots and real-device behavior remain NOT TESTED.
