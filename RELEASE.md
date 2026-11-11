@@ -1,22 +1,4 @@
-# VOLTURA v19.3 release notes
-
-## v19.3 visual redesign
-
-- Added a cohesive responsive design layer across the existing dashboard, navigation, ledger, quick entry, accounts, budgets, reports, dialogs and settings.
-- Added coordinated light and dark theme tokens, clearer financial typography, consistent component sizing and mobile layouts.
-- Added `design-system.css` to the service-worker precache and advanced the cache to `voltura-platform-v19.3`.
-- No transaction, calculation, IndexedDB, migration, import/export or NFC route logic changed. Browser visual review and 320/390/1440 screenshots remain **UNVERIFIED**.
-
-## v19.2 recovery update
-
-## v19.2 recovery update
-
-- Manual transaction saves now lock synchronously to prevent duplicate income or expense records from repeated submission.
-- Service-worker updates download and cache while the current app stays usable. An accessible prompt lets the user apply a waiting update; applying is blocked while a dialog or save is active. Other open tabs are never force-reloaded.
-- The IndexedDB database name, schema version, stores, keys, indexes, migration marker, and backup tags are unchanged.
-- `/Tapledger/`, `?a=1`, and `?i=1` remain supported.
-
-## v18.1 baseline release notes
+# VOLTURA v18.1 release notes
 
 ## Quick expense capture
 
@@ -50,14 +32,3 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Preserved quick-entry time when an existing transaction is edited and exposed recorded time in recent activity and the ledger.
 - Removed the unregistered `voltura.finance` CNAME and aligned GitHub Pages metadata and manifest scope with `/Tapledger/`.
 - Updated dark-theme border contrast token to `#71828D`.
-
-## V19.4 — V-cut product redesign
-
-- `index.html`: dashboard headline/copy and signature; mobile More navigation now includes Accounts.
-- `design-system.css`: shared palette, dark-theme tokens, overview composition, full-viewport expense/income task screens, compact mobile navigation, and responsive category selection.
-- `legal.css`: supporting page typography, motif, matte surfaces and dark-system palette.
-- `manifest.webmanifest`: updated theme/background colors; existing `/Tapledger/` relative routes and shortcut URLs retained.
-- `sw.js`: cache version advanced to `voltura-platform-v19.4` so the current shell/styles can update safely.
-- `QA-REPORT.md`, `MOTIF-SYSTEM.md`: design and verification notes.
-- No changes to `app.js`, IndexedDB, transaction math, NFC launch handling, restore/export logic, or data stores. No deployment or publication performed.
-- Browser visual acceptance remains **NOT VERIFIED**. See the current QA report for actual checks and limitations.
