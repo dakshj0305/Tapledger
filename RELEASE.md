@@ -1,4 +1,32 @@
-# VOLTURA v18.1 release notes
+# VOLTURA v19.5 release notes
+
+## Cinematic composition and Palette A alignment
+
+- Kept the existing V-cut editorial composition, full-screen amount-first NFC capture, clipped signal corner, and flat matte surfaces; retained the mobile-first layout.
+- Aligned copied light and dark theme tokens, browser theme color, and manifest colors with Palette A in BRAND.md.
+- Advanced the service-worker cache key to oltura-platform-v19.5 so installed clients can fetch the updated presentation files.
+- No JavaScript, IndexedDB, transaction arithmetic, migration, import/export, or NFC route code changed. Database remains 	apledger-db, schema version 3; backups and /Tapledger/ routes remain compatible.
+- Local syntax/metadata and package checks are recorded in PACKAGE-VERIFICATION.md. Browser rendering, physical-device, accessibility-tool, deployment, and live-site checks are **UNVERIFIED**.
+
+# VOLTURA v19.3 release notes
+
+## v19.3 visual redesign
+
+- Added a cohesive responsive design layer across the existing dashboard, navigation, ledger, quick entry, accounts, budgets, reports, dialogs and settings.
+- Added coordinated light and dark theme tokens, clearer financial typography, consistent component sizing and mobile layouts.
+- Added `design-system.css` to the service-worker precache and advanced the cache to `voltura-platform-v19.3`.
+- No transaction, calculation, IndexedDB, migration, import/export or NFC route logic changed. Browser visual review and 320/390/1440 screenshots remain **UNVERIFIED**.
+
+## v19.2 recovery update
+
+## v19.2 recovery update
+
+- Manual transaction saves now lock synchronously to prevent duplicate income or expense records from repeated submission.
+- Service-worker updates download and cache while the current app stays usable. An accessible prompt lets the user apply a waiting update; applying is blocked while a dialog or save is active. Other open tabs are never force-reloaded.
+- The IndexedDB database name, schema version, stores, keys, indexes, migration marker, and backup tags are unchanged.
+- `/Tapledger/`, `?a=1`, and `?i=1` remain supported.
+
+## v18.1 baseline release notes
 
 ## Quick expense capture
 
@@ -32,3 +60,29 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Preserved quick-entry time when an existing transaction is edited and exposed recorded time in recent activity and the ledger.
 - Removed the unregistered `voltura.finance` CNAME and aligned GitHub Pages metadata and manifest scope with `/Tapledger/`.
 - Updated dark-theme border contrast token to `#71828D`.
+
+## V19.4 — V-cut product redesign
+
+- `index.html`: dashboard headline/copy and signature; mobile More navigation now includes Accounts.
+- `design-system.css`: shared palette, dark-theme tokens, overview composition, full-viewport expense/income task screens, compact mobile navigation, and responsive category selection.
+- `legal.css`: supporting page typography, motif, matte surfaces and dark-system palette.
+- `manifest.webmanifest`: updated theme/background colors; existing `/Tapledger/` relative routes and shortcut URLs retained.
+- `sw.js`: cache version advanced to `voltura-platform-v19.4` so the current shell/styles can update safely.
+- `QA-REPORT.md`, `MOTIF-SYSTEM.md`: design and verification notes.
+- No changes to `app.js`, IndexedDB, transaction math, NFC launch handling, restore/export logic, or data stores. No deployment or publication performed.
+- Browser visual acceptance remains **NOT VERIFIED**. See the current QA report for actual checks and limitations.
+
+## V20 — Local finance features and editorial dashboard (2026-11-11)
+
+Implemented in the separate GitHub upload copy: account position/savings dashboard metrics, category-ledger color treatment, optional payment method and receipt note, confirmable merchant category suggestions, 80%/100% budget states, local unusual-spend coach rules, weekly/monthly reporting, YoY comparison, print and CSV. Added the inline editorial SVG ticker while retaining Palette A and mobile navigation. Added finance helpers and automated Node tests. IndexedDB identity/schema and backup tags remain unchanged; payment method is optional. Service-worker cache version is `voltura-platform-v20.0`.
+
+Validation: 10 Node tests passed; syntax, manifest, local asset, schema and backup-tag static checks passed. Browser workflows, responsive screenshots, accessibility interactions, export/restore in a browser, real-device behavior, and offline runtime remain untested. No publish or deploy.
+
+
+## v21.0 — Cinematic Palette B review build
+- Introduces the approved near-black/cyan/pink/purple visual tokens and matching light theme.
+- Applies the approved cyan-to-pink gradient only to primary Save/Add actions.
+- Replaces the unrelated bottle slogan with a locally generated monthly finance sentence.
+- Updates the PWA theme colours and service-worker cache version.
+- Keeps the existing local database schema and integer-paise finance logic unchanged.
+- Browser/device visual QA remains outstanding; see QA-REPORT.md.

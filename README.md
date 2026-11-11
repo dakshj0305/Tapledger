@@ -38,3 +38,19 @@ GitHub Pages does not let this repository set all HTTP response security headers
 ## Trademark and naming
 
 “Voltura” may already be used by other businesses. Search the Indian Trade Marks Registry / IP India and relevant international registers before public launch. This source package does not establish that the name is available.
+
+## Current application features
+
+- Dashboard totals for the current month: recorded income, expenses, net movement, savings rate and tracked account position. Values are derived only from this browser's saved ledger and account opening balances.
+- Category-colored spending breakdown, searchable/filterable transaction ledger, monthly budgets with 80% and 100% states, and local rule-based coach cards.
+- Merchant suggestions use local merchant history first and name patterns second; a suggestion is never applied until you confirm it.
+- Unusual expense notices require at least five earlier same-category expenses in the preceding 12 months and an amount strictly above 150% of their average.
+- Weekly spending and printable monthly reports, category totals, prior-year comparison when both periods have recorded expenses, and CSV downloads.
+- Expense forms include date/time, account, payment method, merchant and receipt note. The extra payment-method field is optional; existing transaction records remain readable.
+
+All calculations are based on records you enter. Voltura has no cloud AI, bank connection, analytics or external data service. Local suggestions and insights are descriptive prompts, not financial advice.
+
+## Data and local storage
+
+The application continues to use IndexedDB `tapledger-db`, schema version 3, with its existing stores and indexes. New payment method information is an optional transaction property; older backups and records can omit it. Export new backups as `Voltura`; restore still accepts `Voltura`, `Vellum`, `Cairn` and `TapLedger`. Backups merge records into the current database; they do not clear it. Keep an exported backup before changing browser profiles or domains.
+
