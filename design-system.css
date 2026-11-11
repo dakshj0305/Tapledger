@@ -702,3 +702,37 @@ body{letter-spacing:-.008em!important}
 a:not(.brand){transition:color .2s ease,opacity .2s ease}
 @media(max-width:700px){.page-intro:after{right:4px;top:4px;width:112px;opacity:.65}.topbar{position:relative!important;backdrop-filter:none;-webkit-backdrop-filter:none}.page-intro h1{letter-spacing:-.065em!important}}
 @media(prefers-reduced-motion:reduce){.nav-item,.button-primary,.quick-save-button,a:not(.brand){transition:none!important}.nav-item:hover,.button-primary:hover,.quick-save-button:hover{transform:none!important}}
+
+
+/* V22.1 corrective pass: keep depth editorial, effects restrained and fallbacks solid. */
+.sidebar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--color-background)!important}
+.brand-symbol{box-shadow:none!important}
+.topbar{background:var(--color-background)!important}
+@supports (backdrop-filter:blur(8px)){.topbar{background:color-mix(in srgb,var(--color-background) 92%,transparent)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}}
+.balance-hero{background:var(--color-surface)!important}
+.page-intro:after,.balance-hero:after{box-shadow:none!important}
+.page-intro:after{opacity:.72}
+.balance-hero:after{border-color:color-mix(in srgb,var(--color-accent) 26%,transparent)!important}
+.panel,.account-card,.budget-card,.goal-card,.insight-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.editorial-rail{background:var(--color-surface)!important}
+.editorial-story-mark{box-shadow:none!important}
+.editorial-ticker{width:100%;overflow:hidden;white-space:nowrap;mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.editorial-ticker-track{display:flex;width:max-content;align-items:center;animation:volturaTicker 38s linear infinite;animation-play-state:paused;will-change:transform}
+.editorial-rail.is-visible .editorial-ticker-track{animation-play-state:running}
+.editorial-ticker-segment{display:inline-flex;align-items:center;gap:28px;padding-right:28px;color:var(--color-text);font-size:clamp(14px,1.35vw,18px);font-weight:560;line-height:1.45}
+.editorial-ticker-glyph{width:28px;height:18px;flex:none;fill:none;stroke:var(--color-accent);stroke-width:1.8}
+.editorial-rail.is-ticker-enhanced .editorial-accessible{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@keyframes volturaTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.storage-failure{position:fixed;z-index:10000;inset:0;display:grid;place-items:center;padding:24px;background:var(--color-background);color:var(--color-text)}
+.storage-failure[hidden]{display:none!important}
+.storage-failure-card{width:min(100%,560px);padding:clamp(24px,5vw,44px);border:1px solid var(--color-border);background:var(--color-surface)}
+.storage-failure-card h1{margin:10px 0;font-size:clamp(30px,7vw,48px);line-height:1.02;letter-spacing:-.05em}
+.storage-failure-card p:not(.eyebrow){color:var(--color-text-muted);line-height:1.6}
+@media(max-width:700px){.editorial-ticker-segment{font-size:14px}.topbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--color-background)!important}}
+@media(prefers-reduced-motion:reduce){.editorial-ticker{display:none!important}.editorial-rail.is-ticker-enhanced .editorial-accessible{position:static!important;width:auto!important;height:auto!important;margin:0!important;overflow:visible!important;clip:auto!important;white-space:normal!important}.editorial-ticker-track{animation:none!important;transform:none!important}}
+@media(forced-colors:active){.storage-failure-card,.editorial-rail{border:1px solid CanvasText!important}.storage-failure{background:Canvas!important;color:CanvasText!important}}
+
+/* V22.1 contrast correction for essential component boundaries and positive text. */
+:root{--color-border:#8B8492;--color-positive:#006B5B}
+:root[data-theme="dark"]{--color-border:rgba(255,255,255,.38)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="dark"]){--color-border:rgba(255,255,255,.38)}}

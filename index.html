@@ -86,9 +86,9 @@
  <div><span>ACCOUNT POSITION</span><strong id="accountPosition">₹0</strong><small>Assets minus liabilities</small></div>
  <div><span>SAVED THIS MONTH</span><strong id="savingsAmount">₹0</strong><small id="savingsRate">Income minus expenses</small></div>
 </section>
-<section class="editorial-rail" aria-labelledby="monthlyStoryTitle">
+<section class="editorial-rail" id="monthlyStoryRail" aria-labelledby="monthlyStoryTitle">
  <div class="editorial-story-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 34C13 34 13 14 24 14s11 20 19 20"/><circle cx="24" cy="14" r="3"/></svg></div>
- <div class="editorial-story-copy"><p class="panel-kicker" id="monthlyStoryTitle">YOUR MONTH, IN A SENTENCE</p><p class="editorial-accessible" id="monthlyStoryText">Your monthly financial summary will appear here when you record transactions.</p></div>
+ <div class="editorial-story-copy"><p class="panel-kicker" id="monthlyStoryTitle">YOUR MONTH, IN A SENTENCE</p><p class="editorial-accessible" id="monthlyStoryText">Your monthly financial summary will appear here when you record transactions.</p><div class="editorial-ticker" id="monthlyStoryTicker" aria-hidden="true" hidden><div class="editorial-ticker-track"><span></span><span></span></div></div></div>
  <span class="editorial-story-index" aria-hidden="true">V / 01</span>
 </section>
 <div class="section-heading overview-heading"><div><p class="eyebrow">THE FLOW</p><h2>Cash flow, at a glance<span>.</span></h2></div><div aria-label="Chart range" class="range-switch" role="group"><button class="range-btn active" data-range="6">6M</button><button class="range-btn" data-range="12">12M</button></div></div>
@@ -177,6 +177,9 @@
   <div class="update-notice-actions"><button class="button button-primary" id="applyAppUpdate" type="button">Update now</button><button class="button button-quiet" id="dismissAppUpdate" type="button">Later</button></div>
 </aside>
 <div aria-atomic="true" aria-live="polite" class="toast" id="toast" role="status"></div>
+<section class="storage-failure" id="storageFailureNotice" role="alert" aria-labelledby="storageFailureTitle" hidden>
+ <div class="storage-failure-card"><p class="eyebrow">LOCAL STORAGE UNAVAILABLE</p><h1 id="storageFailureTitle">Your finance data could not be opened.</h1><p>VOLTURA has not saved a new entry in this session. Your existing browser data has not been intentionally cleared or reset. Check that site storage is available, close older VOLTURA tabs if an upgrade is waiting, then retry.</p><button class="button button-primary" id="retryStorageButton" type="button">Retry VOLTURA</button></div>
+</section>
 <script src="./quick-boot.js"></script>
 <script defer="" src="./finance-core.js"></script>
 <script defer="" src="./app.js"></script>

@@ -134,17 +134,28 @@ function renderOverview(){
  renderCashflowChart();renderOverviewBudget(totals.expense);renderCategoryDonut(totals.items.filter(x=>x.type==='expense'));renderRecent();renderOverviewInsight();renderOverviewGoal();renderMonthlyStory(totals);
 }
 
+let monthlyStoryObserver=null;
 function renderMonthlyStory(totals){
- const host=$('#monthlyStoryText');if(!host)return;
+ const host=$('#monthlyStoryText'),rail=$('#monthlyStoryRail'),ticker=$('#monthlyStoryTicker');if(!host)return;
  const expenses=totals.items.filter(x=>x.type==='expense');
- if(!totals.items.length){host.textContent='Your month will take shape here as you record income and expenses. Your data stays on this device.';return}
- const grouped={};expenses.forEach(x=>grouped[x.category]=(grouped[x.category]||0)+x.amountPaise);
- const top=Object.entries(grouped).sort((a,b)=>b[1]-a[1])[0];
- const month=nowDate().toLocaleDateString('en-IN',{month:'long'});
- let sentence=`In ${month}, you recorded ${totals.items.length} entries, with ${money(totals.income)} in and ${money(totals.expense)} out`;
- if(top)sentence+=`, led by ${top[0]} at ${money(top[1])}`;
- sentence+=`. ${totals.income>=totals.expense?'Recorded cash flow is positive.':'Recorded spending is higher than recorded income.'}`;
- host.textContent=sentence;
+ if(!totals.items.length){host.textContent='Your month will take shape here as you record income and expenses. Your data stays on this device.'}
+ else{
+  const grouped={};expenses.forEach(x=>grouped[x.category]=(grouped[x.category]||0)+x.amountPaise);
+  const top=Object.entries(grouped).sort((a,b)=>b[1]-a[1])[0];
+  const month=nowDate().toLocaleDateString('en-IN',{month:'long'});
+  let sentence=`In ${month}, you recorded ${totals.items.length} entries, with ${money(totals.income)} in and ${money(totals.expense)} out`;
+  if(top)sentence+=`, led by ${top[0]} at ${money(top[1])}`;
+  sentence+=`. ${totals.income>=totals.expense?'Recorded cash flow is positive.':'Recorded spending is higher than recorded income.'}`;
+  host.textContent=sentence;
+ }
+ if(!rail||!ticker)return;
+ const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ if(reduceMotion||typeof IntersectionObserver!=='function'){rail.classList.remove('is-ticker-enhanced','is-visible');ticker.hidden=true;host.classList.remove('sr-only');return}
+ const track=ticker.querySelector('.editorial-ticker-track');if(!track)return;
+ track.replaceChildren();
+ for(let i=0;i<2;i++){const segment=document.createElement('span');segment.className='editorial-ticker-segment';segment.textContent=host.textContent;const glyph=document.createElementNS('http://www.w3.org/2000/svg','svg');glyph.setAttribute('viewBox','0 0 32 20');glyph.setAttribute('focusable','false');glyph.setAttribute('aria-hidden','true');glyph.classList.add('editorial-ticker-glyph');const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M1 15C8 15 8 5 16 5s8 10 15 10');glyph.append(path);segment.append(glyph);track.append(segment)}
+ ticker.hidden=false;host.classList.add('sr-only');rail.classList.add('is-ticker-enhanced');
+ if(!monthlyStoryObserver){monthlyStoryObserver=new IntersectionObserver(entries=>{for(const entry of entries){entry.target.classList.toggle('is-visible',entry.isIntersecting)}} ,{threshold:0.15});monthlyStoryObserver.observe(rail)}
 }
 function renderCashflowChart(){const range=chartRange,keys=Array.from({length:range},(_,i)=>shiftMonth(thisMonth(),i-(range-1))),values=keys.map(monthlyTotals),max=Math.max(1,...values.flatMap(x=>[x.income,x.expense]));$('#cashflowChartCaption').textContent=`Last ${range} months · compare money in and out`;
  $('#cashflowChart').innerHTML=keys.map((k,i)=>{const v=values[i],ih=Math.max(v.income?3:0,v.income/max*118),eh=Math.max(v.expense?3:0,v.expense/max*118);return`<div class="month-bars" aria-hidden="true" title="${monthLabel(k)} · Income ${money(v.income)} · Expenses ${money(v.expense)}"><div class="bar-pair"><i class="bar income" style="height:${ih}px"></i><i class="bar expense" style="height:${eh}px"></i></div><small>${monthDate(k).toLocaleDateString('en-IN',{month:'short'}).toUpperCase()}</small></div>`}).join('');$('#cashflowChartDataRows').innerHTML=keys.map(k=>{const v=monthlyTotals(k);return`<tr><th scope="row">${monthLabel(k)}</th><td>${moneyExact(v.income)}</td><td>${moneyExact(v.expense)}</td></tr>`}).join('')}
@@ -377,9 +388,9 @@ function wireEvents(){
 }
 
 function showUpdateNotice(message,mode='activate'){const notice=$('#appUpdateNotice'),copy=$('#appUpdateMessage'),button=$('#applyAppUpdate');if(!notice||!copy||!button)return;copy.textContent=message;button.dataset.mode=mode;button.textContent=mode==='reload'?'Reload VOLTURA':'Update now';button.disabled=false;notice.hidden=false}
-function applyAvailableUpdate(){const button=$('#applyAppUpdate'),message=$('#appUpdateMessage');if(entrySaving||quickExpenseSaving||document.querySelector('dialog[open]')){toast('Finish or close the open form before applying the update. Your saved data is safe.');return}if(button.dataset.mode==='reload'){location.reload();return}const worker=waitingServiceWorker||serviceWorkerRegistration?.waiting;if(!worker){$('#appUpdateNotice').hidden=true;toast('No waiting update is available.');return}updateActivationRequested=true;button.disabled=true;button.textContent='Updating?';message.textContent='Applying the update. Your saved transactions stay on this device.';worker.postMessage({type:'SKIP_WAITING'});setTimeout(()=>{if(!updateActivationRequested)return;updateActivationRequested=false;button.disabled=false;button.textContent='Update now';message.textContent='The update is still waiting. You can keep using VOLTURA and try again.'},12000)}
+function applyAvailableUpdate(){const button=$('#applyAppUpdate'),message=$('#appUpdateMessage');if(entrySaving||quickExpenseSaving||document.querySelector('dialog[open]')){toast('Finish or close the open form before applying the update. Your saved data is safe.');return}if(button.dataset.mode==='reload'){location.reload();return}const worker=waitingServiceWorker||serviceWorkerRegistration?.waiting;if(!worker){$('#appUpdateNotice').hidden=true;toast('No waiting update is available.');return}updateActivationRequested=true;button.disabled=true;button.textContent='Updating…';message.textContent='Applying the update. Your saved transactions stay on this device.';worker.postMessage({type:'SKIP_WAITING'});setTimeout(()=>{if(!updateActivationRequested)return;updateActivationRequested=false;button.disabled=false;button.textContent='Update now';message.textContent='The update is still waiting. You can keep using VOLTURA and try again.'},12000)}
 function registerServiceWorker(){if(!('serviceWorker'in navigator)||!location.protocol.startsWith('http'))return;serviceWorkerHadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!serviceWorkerHadController){serviceWorkerHadController=true;return}waitingServiceWorker=null;if(updateActivationRequested){location.reload();return}showUpdateNotice('The update is active. Reload VOLTURA when convenient.','reload')});$('#applyAppUpdate').addEventListener('click',applyAvailableUpdate);$('#dismissAppUpdate').addEventListener('click',()=>{$('#appUpdateNotice').hidden=true});navigator.serviceWorker.register('./sw.js').then(registration=>{serviceWorkerRegistration=registration;if(registration.waiting&&registration.active){waitingServiceWorker=registration.waiting;showUpdateNotice('A VOLTURA update is ready. You can keep working or apply it now.')}registration.addEventListener('updatefound',()=>{const worker=registration.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&registration.active&&registration.waiting){waitingServiceWorker=registration.waiting;showUpdateNotice('A VOLTURA update is ready. You can keep working or apply it now.')}})})}).catch(err=>console.warn('Service worker:',err))}
-async function init(){try{db=await openDB();await migrateLegacy();await loadAll();await ensureAccounts();await loadUserPreferences();renderBudgetCategoryOptions();populateAccountSelects();wireEvents();renderAll();renderAutomations();await renderVoiceConsentState();registerServiceWorker();applyUrlAction()}catch(err){console.error(err);toast('Voltura could not open local storage. Use Chrome on the published HTTPS site.')}}
+async function init(){try{db=await openDB();await migrateLegacy();await loadAll();await ensureAccounts();await loadUserPreferences();renderBudgetCategoryOptions();populateAccountSelects();wireEvents();renderAll();renderAutomations();await renderVoiceConsentState();registerServiceWorker();applyUrlAction()}catch(err){console.error('VOLTURA startup failed before the workspace was ready:',err);$$('dialog[open]').forEach(dialog=>{try{dialog.close()}catch{}});const notice=$('#storageFailureNotice');if(notice)notice.hidden=false;const retry=$('#retryStorageButton');if(retry)retry.addEventListener('click',()=>location.reload(),{once:true});document.querySelector('.app-frame')?.setAttribute('aria-hidden','true');}}
 
 
 init();

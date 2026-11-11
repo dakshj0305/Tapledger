@@ -226,3 +226,87 @@ This is a static and automated-code audit, not a claim of full browser/device QA
 - Bumped service-worker cache to `voltura-platform-v22.0`. No finance logic or IndexedDB schema changes.
 
 Verification: 11/11 Node tests pass; JavaScript syntax checks pass. Browser-rendered appearance, mobile screenshots and real-device behavior remain NOT TESTED.
+
+
+## V22.1 corrective reliability pass — 2026-11-11
+
+**Scope:** audited the V22 package in an isolated copy. The original project, live origin, and user IndexedDB were not accessed. No schema or transaction format changes were made.
+
+### Findings and changes
+
+| Finding | Severity | Change | Status |
+|---|---|---|---|
+| Startup storage/open failure was reported only through a transient toast, leaving an empty-looking workspace underneath | High | Added a persistent, accessible startup failure screen; open dialogs close and the workspace is hidden until reload/retry | FIXED IN SOURCE; runtime failure simulation NOT TESTED |
+| Cinematic refinement applied blur to the sidebar and content cards and added ambient glow, exceeding the supplied effects budget | Medium | Removed blur from sidebar/cards and removed ambient shadows; retained only an 8px sticky desktop topbar blur with a solid fallback | FIXED IN CSS; visual rendering NOT TESTED |
+| Monthly sentence was static despite the approved horizontal editorial treatment | Medium | Added a dashboard-only duplicated visual ticker, a single screen-reader text alternative, off-screen pause via IntersectionObserver, and reduced-motion/static fallback | IMPLEMENTED IN SOURCE; runtime motion NOT TESTED |
+| Update button displayed a question mark while updating | Low | Corrected status copy to an ellipsis | FIXED IN SOURCE |
+
+### Reference adaptation decisions
+
+| Reference element | Decision | Reason
+|---|---|---|
+| Cinematic near-black palette, high-contrast type, cyan/pink primary action, restrained purple accent | ADAPTED | Kept the finance-first hierarchy and light theme; gradient remains limited to primary actions |
+| Sticky glass navigation | ADAPTED | 8px blur only on sticky desktop topbar, with solid fallback; no blur on cards/sidebar or quick-add |
+| 3D rotating cube | DEFERRED | Explicitly rejected for dashboard/quick-add due battery and information hierarchy |
+| Portfolio case studies, pricing cards, calculator, bottle slogan and imagery | REJECTED | Unrelated to a private single-user finance ledger and includes third-party brand copy |
+| Horizontal month-in-a-sentence motion | ADAPTED | CSS transform ticker, no scroll hijacking, pauses off-screen and is static for reduced motion; the real sentence is computed from local data |
+| GSAP / ScrollTrigger | NOT INCLUDED | The current environment could not retrieve the official current licence/package source (npm metadata request timed out). The supplied brief requires licence verification and a self-hosted pinned build before use. A dependency was not guessed or remotely loaded; the ticker uses local CSS/IntersectionObserver instead. Revisit only after the official licence and pinned package can be verified. |
+| Third-party plugins/services | NOT CONNECTED | Replit/TinyFish-style hosted tools would move code or browser activity outside this local project and are not required for its static PWA workflow. No plugin was connected, no external API was added, and no finance data was shared. |
+
+### Verification
+
+- **PASSED:** `node --check app.js`, `quick-boot.js`, `finance-core.js`, `sw.js`.
+- **PASSED:** `node --test tests/*.test.cjs` — 14 tests, 0 failures. Three new tests cover persistent startup failure handling, accessible/off-screen ticker behavior and the restricted effects budget.
+- **PASSED:** existing tests still cover budget thresholds, merchant suggestions, unusual-spend rule/window, weekly totals, `/Tapledger/` asset references, IndexedDB schema identity, legacy backup tags, quick routes and local-only service-worker wiring.
+- **PASSED:** manifest JSON parse, local HTML asset resolution, CSS brace balance, ZIP integrity and package root layout.
+- **PASSED:** no new external script, font, stylesheet, API, analytics or tracking dependency was added.
+- **NOT TESTED:** browser rendering, because Playwright navigation to the local server returned `ERR_BLOCKED_BY_ADMINISTRATOR`; direct headless Chromium did not complete within 15 seconds. No screenshot or runtime interaction is claimed.
+- **NOT TESTED:** forced-colors, 200% text zoom, screen-reader announcements, reduced-motion behavior in a browser, offline relaunch, physical NFC and Samsung Galaxy S23 FE.
+- **NOT TESTED:** runtime simulation of IndexedDB being unavailable or blocked.
+- **NOT TESTED:** GSAP integration; it is intentionally absent pending official licence/package verification.
+
+### Data and deployment safety
+
+- IndexedDB remains `tapledger-db`, version 3; stores, keys, indexes, and migration marker are unchanged.
+- No transaction arithmetic, account calculation, import/export, backup tag, NFC route, or persistence function was intentionally changed.
+- Service-worker cache advanced to `voltura-platform-v22.1` for the HTML/CSS/JS changes.
+- No commit, push, merge, GitHub Pages deployment, or custom-domain change was performed.
+
+### Exact source diff summary (V22.0 → V22.1)
+
+- `index.html`: added the persistent startup failure surface and decorative ticker host while retaining the accessible paragraph; no finance fields or dialog IDs removed.
+- `app.js`: added the progressive-enhancement ticker renderer and persistent startup-failure handling; corrected update-progress wording.
+- `design-system.css`: appended a corrective override to remove excess blur/glow and provide ticker, fallback and error-screen styling.
+- `sw.js`: cache key changed from `voltura-platform-v22.0` to `voltura-platform-v22.1`.
+- `tests/project-integrity.test.cjs`: added three source-integrity tests.
+
+This is a deeper source and automated test pass, not a claim that every possible bug is eliminated or that browser/device acceptance has passed.
+
+
+### V22.1 colour contrast calculations
+
+Calculated from the final CSS token values using WCAG relative luminance (sRGB). Text and focus roles are compared with the page background; essential borders are compared with their underlying surfaces. These calculations do not replace a rendered component audit.
+
+| Theme / role | Foreground | Background | Ratio | Result |
+|---|---|---|---:|---|
+| Light primary text | `#17141D` | `#F4F2F7` | 16.37:1 | PASS |
+| Light muted text | `#625C6B` | `#F4F2F7` | 5.79:1 | PASS |
+| Light accent | `#7C3AED` | `#F4F2F7` | 5.13:1 | PASS |
+| Light positive | `#006B5B` | `#F4F2F7` | 5.87:1 | PASS |
+| Light negative | `#C12F68` | `#F4F2F7` | 4.88:1 | PASS |
+| Light warning | `#8A5A00` | `#F4F2F7` | 5.33:1 | PASS |
+| Light focus | `#6D28D9` | `#F4F2F7` | 6.39:1 | PASS |
+| Light border | `#8B8492` | `#F4F2F7` | 3.25:1 | PASS for non-text boundary |
+| Dark primary text | `#FFFFFF` | `#050505` | 20.38:1 | PASS |
+| Dark muted text | `#999999` | `#050505` | 7.15:1 | PASS |
+| Dark accent | `#A78BFA` | `#050505` | 7.49:1 | PASS |
+| Dark positive | `#67E8C0` | `#050505` | 13.47:1 | PASS |
+| Dark negative | `#FDA4AF` | `#050505` | 10.78:1 | PASS |
+| Dark warning | `#FCD34D` | `#050505` | 14.13:1 | PASS |
+| Dark focus | `#67E8F9` | `#050505` | 14.06:1 | PASS |
+| Dark border | `rgba(255,255,255,.38)` | `#050505` | 3.44:1 | PASS for non-text boundary |
+| Dark border | `rgba(255,255,255,.38)` | `#111111` | 3.54:1 | PASS for non-text boundary |
+| Primary button text | `#08070B` | `#06B6D4` gradient stop | 8.27:1 | PASS |
+| Primary button text | `#08070B` | `#EC4899` gradient stop | 5.69:1 | PASS |
+
+The border alpha is intentionally more visible than the earlier V22.0 value so essential component edges remain discernible. Colour must not be the only income/expense signal; labels and signed values remain in the UI.

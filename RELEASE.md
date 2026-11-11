@@ -96,3 +96,14 @@ Validation: 10 Node tests passed; syntax, manifest, local asset, schema and back
 - Uses system typography and local CSS only; no Aspekta download, GSAP, external dependencies or network services.
 - Service-worker cache version: `voltura-platform-v22.0`. Finance calculations, integer-paise values and IndexedDB schema remain unchanged.
 - Browser and Samsung device visual acceptance remains NOT TESTED.
+
+
+## V22.1 — corrective reliability package
+
+- Persistent startup failure state replaces a transient toast when workspace startup cannot complete.
+- Dashboard month narrative gains a progressive-enhancement horizontal ticker with a single accessible text alternative, off-screen pause, and reduced-motion fallback.
+- Cinematic effects are brought back within the supplied effects budget: blur only on the sticky desktop topbar, solid fallback, no card/sidebar blur or ambient glow.
+- Service-worker cache key updated to `voltura-platform-v22.1`.
+- No IndexedDB schema, finance arithmetic, transaction format, backup compatibility, or deployment settings changed.
+- Automated verification: 14/14 Node tests and JavaScript syntax checks passed. Browser and physical-device checks remain unverified.
+- GSAP/ScrollTrigger is not bundled because its official current licence/package could not be verified from this environment; no remote script was introduced.
