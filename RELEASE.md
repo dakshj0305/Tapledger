@@ -107,3 +107,14 @@ Validation: 10 Node tests passed; syntax, manifest, local asset, schema and back
 - No IndexedDB schema, finance arithmetic, transaction format, backup compatibility, or deployment settings changed.
 - Automated verification: 14/14 Node tests and JavaScript syntax checks passed. Browser and physical-device checks remain unverified.
 - GSAP/ScrollTrigger is not bundled because its official current licence/package could not be verified from this environment; no remote script was introduced.
+
+
+## V22.2 — Add-only restore safety
+
+- Backup restore now preserves existing records when imported primary keys collide; new records are added and conflicts/duplicates are reported as skipped.
+- Account-name collisions are case-insensitive and imported transaction references use the existing account spelling.
+- Existing category budgets are not duplicated during restore.
+- Legacy migration/startup no longer reclassifies matching existing transactions.
+- IndexedDB database identity and schema remain unchanged (`tapledger-db`, version 3).
+- Service-worker cache version: `voltura-platform-v22.2`.
+- Automated tests: 22/22 passed. Browser/IndexedDB integration and device checks remain unverified.

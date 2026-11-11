@@ -310,3 +310,22 @@ Calculated from the final CSS token values using WCAG relative luminance (sRGB).
 | Primary button text | `#08070B` | `#EC4899` gradient stop | 5.69:1 | PASS |
 
 The border alpha is intentionally more visible than the earlier V22.0 value so essential component edges remain discernible. Colour must not be the only income/expense signal; labels and signed values remain in the UI.
+
+
+## V22.2 isolated restore-safety reconstruction — 2026-11-11
+
+**Status: IMPLEMENTED IN A SEPARATE WORKING COPY; automated checks passed. Browser and IndexedDB integration remain unverified.**
+
+- Changed JSON restore from unconditional primary-key `put()` replacement to add-only planning. Existing transaction, budget, goal and account keys are retained; incoming conflicts and duplicate keys within a backup are skipped and included in the user-facing count.
+- Account collisions are checked case-insensitively. Imported transaction account references are normalized to the existing account spelling so they continue to resolve to the existing account record.
+- Budget restore checks both primary-key collisions and category collisions to avoid duplicate category budgets.
+- Legacy migration no longer rewrites a matching existing transaction. The `ensureAccounts()` startup path no longer mutates legacy transaction account classifications.
+- IndexedDB remains `tapledger-db`, version 3; stores, key paths, indexes and migration marker name are unchanged. No live browser profile was opened or modified.
+- Added unit tests for add-only collision handling, duplicate backup keys, case-insensitive account matching, restore wiring, migration non-rewrite behaviour, and cache versioning.
+- Advanced the service-worker cache name to `voltura-platform-v22.2` so updated application code is not served from the previous V22.1 cache.
+- PASS: `node --check app.js`; `node --check finance-core.js`; `node --check sw.js`.
+- PASS: `node --test tests/*.test.cjs` — 22 tests passed.
+- NOT TESTED: real IndexedDB transaction rollback/commit in a browser, restore UI against fabricated IndexedDB records, actual backup round-trip, Android NFC, browser rendering, screen readers, performance and offline first-install.
+- No commit, push or deployment was performed.
+- PASS: controlled in-memory fault-injection tests reproduced the old overwrite behaviour and verified the add-only planner preserves the on-device record while importing a new record. A second fault case verified that a matching user-edited legacy transaction is not reclassified. These are model tests, not live IndexedDB integration tests.
+- PASS: isolated local HTTP server returned 200 for `/`, `/?a=1`, `/?i=1`, `index.html`, `app.js`, `finance-core.js`, `sw.js`, `manifest.webmanifest`, `design-system.css` and `quick-boot.js`.

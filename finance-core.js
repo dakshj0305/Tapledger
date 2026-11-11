@@ -80,6 +80,23 @@
     }
     return results.sort((a, b) => compareTransactions(b.transaction, a.transaction));
   }
+  // Add-only restore planner. Existing primary keys always win; duplicate keys
+  // inside one backup are also accepted only once. No input records are mutated.
+  function planAdditiveRecords(existing, incoming, keyOf) {
+    const occupied = new Set((existing || []).map(item => String(keyOf(item))));
+    const seen = new Set();
+    const additions = [];
+    let conflicts = 0;
+    let duplicates = 0;
+    for (const item of incoming || []) {
+      const key = String(keyOf(item));
+      if (occupied.has(key)) { conflicts += 1; continue; }
+      if (seen.has(key)) { duplicates += 1; continue; }
+      seen.add(key);
+      additions.push(item);
+    }
+    return { additions, conflicts, duplicates };
+  }
   function budgetStatus(usedPaise, limitPaise) {
     if (!Number.isSafeInteger(limitPaise) || limitPaise <= 0) return 'unset';
     if (usedPaise >= limitPaise) return 'exceeded';
@@ -104,5 +121,5 @@
     }
     return weeks;
   }
-  (typeof window !== 'undefined' ? window : globalThis).VolturaFinance = Object.freeze({ merchantKey, inferMerchantCategory, suggestMerchantCategory, detectUnusualExpenses, budgetStatus, weeklyExpenseSummary });
+  (typeof window !== 'undefined' ? window : globalThis).VolturaFinance = Object.freeze({ merchantKey, inferMerchantCategory, suggestMerchantCategory, detectUnusualExpenses, budgetStatus, weeklyExpenseSummary, planAdditiveRecords });
 })();
