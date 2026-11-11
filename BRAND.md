@@ -54,13 +54,3 @@ Keep IndexedDB as `tapledger-db`, version 3. This internal name is retained inte
 ## Naming clearance
 
 “Voltura” may already be used by other businesses. A trademark search through IP India and relevant international registers is required before public launch. Availability is not claimed.
-
-
-## V20.0 art direction — Signal / Editorial
-
-The current visual direction supersedes the earlier muted green treatment: loud minimalism, graphite structure, mineral-paper canvas and a single chartreuse signal (`#D9FF36`). The angular V-cut is the single brand motif. It appears structurally in the mark, selected navigation and key focal surfaces; it is not repeated as literal lightning decoration. See `MOTIF-SYSTEM.md`.
-
-
-## V21 visual direction — Mineral Botanical
-
-The V21 refinement shifts the interface toward a lighter, more natural and more substantial expression: mineral-paper backgrounds, pale sage surfaces, deep botanical-green typography, restrained clay/stone data accents, and confident editorial headings. The V motif remains the single brand signature. Weight comes from typography, contrast and composition rather than a dark UI.
