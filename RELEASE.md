@@ -1,4 +1,8 @@
-# VOLTURA release notes · current v21.1.1
+# VOLTURA release notes · current v22.0
+
+## Current release — VOLTURA V22.0
+
+V22.0 is a visual/UX repair pass following review of the supplied screen recording. It fixes the lower insight feature copy being squeezed by its long CTA, increases foreground/background contrast, rebuilds dashboard spacing and card hierarchy, improves the category and recent activity layouts, adds explicit light-theme pairs, and makes Budgets and Savings Goals discoverable in mobile More navigation. The local-only project and IndexedDB v3 contract remain unchanged. GSAP is not bundled: npm registry access failed and no local GSAP distribution was available; no CDN was introduced. See `RELEASE-REPORT-V22.md`.
 
 ## Quick expense capture
 

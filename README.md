@@ -4,6 +4,9 @@ The current source package is V21.1.1, a dark-first/light-capable editorial fina
 
 # VOLTURA — Personal finance, made clear
 
+**Current source release: V22.0** — a contrast and layout overhaul focused on the dashboard, insight-card wrapping, mobile navigation and explicit theme surface pairings. See `RELEASE-REPORT-V22.md`, `DESIGN-SYSTEM-V22.md` and `UI-QA-CHECKLIST-V22.md`. GSAP runtime is not bundled in V22.0 because the npm registry could not be reached during packaging; no remote CDN was added.
+
+
 VOLTURA is a static, local-first personal finance PWA for recording income, expenses and transfers, reviewing budgets and goals, and analysing the ledger later. Financial records are stored in IndexedDB in the current browser profile.
 
 ## Run locally

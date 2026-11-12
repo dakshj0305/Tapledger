@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v21\.1\.1/);
+  assert.match(worker, /voltura-platform-v22\.0/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -75,7 +75,7 @@ test('service worker cache version and update checks are advanced', () => {
 
 test('brand icon assets and manifest theme color match the refreshed identity', () => {
   const manifest = JSON.parse(read('manifest.webmanifest'));
-  assert.equal(manifest.theme_color.toLowerCase(), '#0b1211');
+  assert.equal(manifest.theme_color.toLowerCase(), '#0b1110');
   for (const size of [192, 512]) {
     for (const suffix of ['', '-maskable']) {
       const file = path.join(root, `icons/icon-${size}${suffix}.png`);
@@ -102,10 +102,10 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /class="version-tag">V21\.1\.1</);
-  assert.match(read('sw.js'), /voltura-platform-v21\.1\.1/);
-  assert.match(read('app.js'), /VOLTURA v21\.1\.1/);
-  assert.match(read('voltura-visual-system.css'), /VOLTURA V21\.1\.1/);
+  assert.match(read('index.html'), /class="version-tag">V22\.0</);
+  assert.match(read('sw.js'), /voltura-platform-v22\.0/);
+  assert.match(read('app.js'), /VOLTURA v22\.0/);
+  assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
 
@@ -136,7 +136,7 @@ test('accessible cash-flow data table does not use a long intrinsic-width captio
 
 test('theme-color follows the selected appearance and chapter progress follows scroll position', () => {
   const app = read('app.js'), story = read('scroll-story.js');
-  assert.match(app, /themeMeta\.content=dark\?'#0b1211':'#f2f4ee'/);
+  assert.match(app, /themeMeta\.content=dark\?'#0b1110':'#f3f5ef'/);
   assert.match(story, /const start=rect\.top\+scrollY/);
   assert.match(story, /fill\.style\.width=`\$\{progress\*100\}%`/);
 });
@@ -222,4 +222,18 @@ test('glass fallbacks follow the final cascade and preserve contrast in reduced-
   assert.match(css.slice(unsupported), /\.sidebar\s*\{[^}]*background:#101b16!important;[^}]*color:#eef4e9!important/s);
   assert.match(css.slice(reduced, forced), /\.scroll-chapter-nav\s*\{[^}]*color:var\(--v-ink\)!important/s);
   assert.match(css.slice(forced), /CanvasText!important/);
+});
+
+
+test('V22 visual overhaul fixes insight text compression and preserves mobile secondary destinations', () => {
+  const css = read('voltura-visual-overhaul.css');
+  const html = read('index.html');
+  const app = read('app.js');
+  assert.match(css, /\.insight-feature,\.goal-feature\s*\{[^}]*flex-direction:column/s);
+  assert.match(css, /\.insight-copy\s*\{[^}]*max-width:100%/s);
+  assert.match(css, /\.insight-feature \.feature-link\s*\{[^}]*align-self:flex-start/s);
+  assert.match(html, /href="\.\/voltura-visual-overhaul\.css"/);
+  assert.match(html, /data-view="budgets"/);
+  assert.match(html, /data-view="goals"/);
+  assert.match(app, /view==='budgets'\|\|view==='goals'/);
 });

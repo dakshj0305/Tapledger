@@ -57,6 +57,7 @@ test('quick launch, local enhancement, and offline shell are wired without exter
   assert.ok(worker.includes("'finance-core.js'"));
   assert.ok(worker.includes("'motion-ui.css'"));
   assert.ok(worker.includes("'motion-ui.js'"));
+  assert.ok(worker.includes("'voltura-visual-overhaul.css'"));
   assert.match(worker, /if\(url\.origin!==self\.location\.origin\)return/);
   assert.doesNotMatch(html, /<script[^>]+src="https?:/i);
   assert.doesNotMatch(html, /<link[^>]+href="https?:[^\"]+stylesheet/i);
@@ -64,7 +65,7 @@ test('quick launch, local enhancement, and offline shell are wired without exter
 });
 
 test('stylesheets have balanced blocks and no remote imports', () => {
-  for (const name of ['style.css','design-system.css','polish.css','legal.css']) {
+  for (const name of ['style.css','design-system.css','polish.css','voltura-visual-system.css','voltura-visual-overhaul.css','legal.css']) {
     const css = read(name);
     assert.equal((css.match(/{/g)||[]).length, (css.match(/}/g)||[]).length, `${name} brace balance`);
     assert.doesNotMatch(css, /@import\s+url\(['"]?https?:/i, `${name} remote import`);
