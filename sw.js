@@ -1,5 +1,5 @@
-const CACHE='voltura-platform-v22.2';
-const APP_FILES=['','index.html','style.css','design-system.css','polish.css','voltura-visual-system.css','voltura-visual-overhaul.css','stitch-integration.css','motion-ui.css','motion-ui.js','scroll-story.js','liquid-metal.css','liquid-metal.js','finance-core.js','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
+const CACHE='voltura-platform-v25.1';
+const APP_FILES=['','index.html','style.css','design-system.css','polish.css','voltura-visual-system.css','voltura-visual-overhaul.css','stitch-integration.css','vivid-depth.css','vivid-depth.js','observatory.css','kinetic.css','kinetic.js','motion-ui.css','motion-ui.js','scroll-story.js','liquid-metal.css','liquid-metal.js','finance-core.js','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
 const appURL=file=>new URL(file||'./',self.registration.scope).href;
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL)))));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting())});

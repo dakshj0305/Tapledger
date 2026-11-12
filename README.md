@@ -1,22 +1,23 @@
 # VOLTURA — Personal finance, made clear.
 
-**Current source release: V22.2** · 13 November 2026
+**Current source release: V25.1** · 13 November 2026
 
 VOLTURA is a local-first personal-finance Progressive Web App (PWA) for recording income, expenses and transfers; reviewing accounts, budgets and savings goals; and understanding cash flow. The application is intentionally built with static HTML, CSS and vanilla JavaScript. It requires no framework build step and has no analytics, advertising, remote fonts or third-party runtime dependencies.
 
 ## Current release
 
-V22.2 consolidates the redesign and progressive motion work from the conversation:
+V25.1 hardens the Kinetic Relic release: a high-contrast midnight instrument language, oversized display typography, luminous orbital geometry, pointer-responsive depth and procedural canvas rendering.
 
 - The supplied Stitch references for Overview, Accounts, Transactions Ledger, Budgets, the financial-intelligence design direction and the VOLTURA monogram are retained under `design-reference/stitch/`.
 - The live app has a first-pass shared visual layer: forest-green/chartreuse branding, editorial headings, clearer surface pairings, responsive wrapping and selective glass. Forms, transaction rows and dense data panels stay opaque for legibility.
 - The supplied “Smarter Growth” video is used as a motion reference: calm staggered reveals and restrained editorial pacing, not a literal marketing-page copy.
 - Liquid-metal-style pointer lighting and click feedback are implemented with local CSS/JavaScript. The supplied React/WebGL button is documented but is not installed as a React component.
 - Scroll chapter navigation and reveal effects use native scrolling, IntersectionObserver and CSS fallbacks. The supplied full-screen React ScrollTrigger component is not installed; pinned full-screen scrolling is deliberately not used in the finance UI.
-- GSAP is an optional progressive enhancement hook only. No GSAP distribution is included or loaded by default. When a reviewed local GSAP + ScrollTrigger build is added, the existing detection hooks can enhance transitions; no CDN is used.
+- V24.0 adds restrained 3D pointer tilt, specular highlight tracking, richer card elevation, atmospheric depth and a luminous scroll-progress accent. These effects are local CSS/JavaScript, disabled for reduced-motion and touch-first layouts, and never use WebGL.
+- Motion remains progressive enhancement; no remote animation runtime is loaded.
 - All finance logic, routes, backup compatibility and the existing IndexedDB identity/schema are preserved.
 
-See `RELEASE-REPORT-V22.2.md`, `AUDIT-REPORT.md`, `QA-REPORT.md`, `CHANGELOG-V22.2.md` and the integration notes for detail and limitations.
+See `RELEASE-REPORT-V25.1.md`, `RELEASE-REPORT-V22.2.md`, `AUDIT-REPORT.md`, `QA-REPORT.md`, `CHANGELOG-V22.2.md` and the integration notes for detail and limitations.
 
 ## Run locally
 

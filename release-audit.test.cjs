@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v22\.2/);
+  assert.match(worker, /voltura-platform-v25\.1/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -102,9 +102,9 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /class="version-tag">V22\.2</);
-  assert.match(read('sw.js'), /voltura-platform-v22\.2/);
-  assert.match(read('app.js'), /VOLTURA v22\.2/);
+  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.1-KINETIC-RELIC-20261113"/);
+  assert.match(read('sw.js'), /voltura-platform-v25\.1/);
+  assert.match(read('app.js'), /VOLTURA v25\.1/);
   assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
@@ -248,4 +248,36 @@ test('Stitch first-pass integration is local, linked last, and included in the o
   assert.match(css, /forced-colors/);
   assert.doesNotMatch(css, /@import\s+url\s*\(/i);
   assert.ok(fs.existsSync(path.join(root, 'design-reference/stitch/voltura_overview_dashboard/screen.png')));
+});
+
+test('V24 Wealth Observatory is linked last and keeps the authored editorial palette', () => {
+  const html = read('index.html'), css = read('observatory.css'), worker = read('sw.js');
+  assert.ok(html.indexOf('observatory.css') > html.indexOf('vivid-depth.css'));
+  assert.match(worker, /'observatory\.css'/);
+  assert.match(css, /Georgia/);
+  assert.match(css, /cartographic|repeating-radial-gradient/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /data-theme="dark"/);
+});
+
+
+test('V25 Kinetic Relic is local, reduced-motion aware, and offline cached', () => {
+  const html=read('index.html'), css=read('kinetic.css'), js=read('kinetic.js'), worker=read('sw.js');
+  assert.match(html,/href="\.\/kinetic\.css"/);
+  assert.match(html,/src="\.\/kinetic\.js"/);
+  assert.match(worker,/'kinetic\.css','kinetic\.js'/);
+  assert.match(css,/perspective:1000px/);
+  assert.match(css,/prefers-reduced-motion/);
+  assert.match(js,/requestAnimationFrame/);
+  assert.match(js,/ResizeObserver/);
+  assert.match(js,/visibilitychange/);
+});
+
+
+test('V25.1 kinetic enhancements degrade safely without Canvas 2D or ResizeObserver', () => {
+  const js=read('kinetic.js');
+  assert.match(js,/if\(!ctx\)\{canvas\.remove\(\);return;\}/);
+  assert.match(js,/'ResizeObserver' in window/);
+  assert.match(js,/window\.addEventListener\('resize'/);
+  assert.match(js,/prefers-reduced-motion/);
 });

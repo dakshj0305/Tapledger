@@ -1,10 +1,10 @@
-# VOLTURA release notes — current V22.2
+# VOLTURA release notes — current V25.1
 
-**Build:** `VOLTURA-22.2-20261113`  
+**Build:** `VOLTURA-25.1-KINETIC-RELIC-20261113`  
 **Date:** 13 November 2026  
 **Deployment:** Not pushed or deployed by this release task.
 
-V22.2 is the consolidated source release after the Stitch design first pass, liquid-metal-style interaction adaptation, scroll-motion adaptation and “Smarter Growth” motion-reference pass. It retains the app's static HTML/CSS/vanilla-JavaScript architecture and the existing IndexedDB v3 contract.
+V25.1 is the consolidated source release after the Stitch design first pass, liquid-metal-style interaction adaptation, scroll-motion adaptation and “Smarter Growth” motion-reference pass. It retains the app's static HTML/CSS/vanilla-JavaScript architecture and the existing IndexedDB v3 contract.
 
 ## Included
 
@@ -33,4 +33,7 @@ GSAP was explicitly requested, but there is no local GSAP/ScrollTrigger distribu
 
 ## Verification summary
 
-See `RELEASE-REPORT-V22.2.md` and `QA-REPORT.md`. The current package was checked with Node syntax validation, all dependency-free automated tests, manifest parsing, local asset/precache tests, checksum verification and ZIP integrity validation. A headless Chromium run timed out; rendered desktop/mobile browser QA, real IndexedDB persistence, PWA install/update/offline behavior, NFC hardware and the deployed Pages site remain unverified.
+See `RELEASE-REPORT-V25.1.md` and `QA-REPORT.md`. The current package was checked with Node syntax validation, all dependency-free automated tests, manifest parsing, local asset/precache tests, checksum verification and ZIP integrity validation. A headless Chromium run timed out; rendered desktop/mobile browser QA, real IndexedDB persistence, PWA install/update/offline behavior, NFC hardware and the deployed Pages site remain unverified.
+
+
+V25.1 adds the Kinetic Relic visual system with procedural Canvas 2D particle projection, CSS 3D orbital geometry, pointer parallax, spring-like panel tilt and reduced-motion support. GSAP was not available in the supplied project or package cache; this build does not claim to include GSAP.
