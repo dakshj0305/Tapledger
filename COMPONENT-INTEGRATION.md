@@ -1,6 +1,6 @@
 # Component integration and source notes
 
-## Current VOLTURA v18.1
+## Current VOLTURA v20.9
 
 The project is a static HTML/CSS/JavaScript PWA. The supplied source package did **not** include the optional `KineticGrid.tsx` file named in the design brief. Accordingly, this release does not claim to port or execute that React canvas component. A static original VOLTURA SVG mark is used instead; this avoids an animation dependency on the fast NFC entry route and follows the flat/matte design direction.
 

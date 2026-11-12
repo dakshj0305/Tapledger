@@ -1,4 +1,4 @@
-# VOLTURA visual motif system v18.1
+# VOLTURA visual motif system v20.9
 
 The visual anchor is a single solid angular V mark, repeated in the inline app symbol, favicon and PWA icons. Use one colour only; keep the mark clear at small sizes.
 

@@ -1,72 +1,11 @@
-/* Liquid-metal CTA treatment adapted for VOLTURA's vanilla JS/PWA stack.
-   No React runtime or remote shader dependency; remains fully offline. */
-.button-primary,
-.button-light,
-.icon-button {
-  --liquid-x: 50%;
-  --liquid-y: 50%;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  color: #f7fbf8 !important;
-  border: 1px solid rgba(225, 239, 232, .72) !important;
-  border-radius: 999px !important;
-  background:
-    radial-gradient(100px circle at var(--liquid-x) var(--liquid-y), rgba(215,255,239,.48), transparent 72%),
-    linear-gradient(150deg, #f4f8f5 0%, #8e9c96 13%, #283c35 31%, #101b18 52%, #71857b 73%, #e6eee9 88%, #35483f 100%) !important;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,.75), inset 0 -2px 5px rgba(0,0,0,.5), 0 5px 16px rgba(8,20,15,.24), 0 0 0 1px rgba(17,40,30,.22) !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,.48);
-  transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease !important;
-  -webkit-tap-highlight-color: transparent;
-}
-.button-primary::before,
-.button-light::before,
-.icon-button::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(112deg, transparent 18%, rgba(255,255,255,.08) 32%, rgba(255,255,255,.48) 48%, rgba(181,255,220,.12) 57%, transparent 76%);
-  background-size: 240% 100%;
-  background-position: 100% 0;
-  transition: background-position .65s ease;
-  pointer-events: none;
-}
-.button-primary:hover,
-.button-light:hover,
-.icon-button:hover {
-  transform: translateY(-2px) scale(1.015) !important;
-  filter: saturate(1.18) brightness(1.12);
-  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), inset 0 -2px 5px rgba(0,0,0,.45), 0 9px 24px rgba(8,20,15,.34), 0 0 0 1px rgba(195,255,222,.3) !important;
-}
-.button-primary:hover::before,
-.button-light:hover::before,
-.icon-button:hover::before { background-position: 0 0; }
-.button-primary:active,
-.button-light:active,
-.icon-button:active { transform: translateY(1px) scale(.975) !important; }
-.button-primary:focus-visible,
-.button-light:focus-visible,
-.icon-button:focus-visible { outline: 3px solid #baff65 !important; outline-offset: 4px; }
-.button-primary svg,
-.button-light svg,
-.icon-button svg { position: relative; z-index: 1; }
-.icon-button { min-width: 44px; min-height: 44px; }
-.liquid-ripple {
-  position: absolute;
-  z-index: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(0);
-  background: radial-gradient(circle, rgba(240,255,247,.72), rgba(143,255,195,.18) 48%, transparent 72%);
-  animation: liquid-ripple .62s ease-out forwards;
-}
-@keyframes liquid-ripple { to { transform: translate(-50%, -50%) scale(8); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .button-primary, .button-light, .icon-button { transition: none !important; }
-  .button-primary::before, .button-light::before, .icon-button::before { transition: none; }
-  .liquid-ripple { animation-duration: .01ms; }
-}
+/* Accessible, offline-first button feedback. Flat surfaces follow the current VOLTURA brief. */
+.button-primary,.button-light,.icon-button{position:relative;isolation:isolate;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:transform .16s ease,background-color .16s ease,border-color .16s ease}
+.button-primary{background:var(--color-primary)!important;color:var(--color-on-primary)!important;border:1px solid var(--color-text)!important}
+.button-light,.icon-button{background:var(--color-surface)!important;color:var(--color-text)!important;border:1px solid var(--color-border)!important}
+.button-primary:hover,.button-light:hover,.icon-button:hover{transform:translateY(-1px)}
+.button-primary:active,.button-light:active,.icon-button:active{transform:translateY(1px)}
+.button-primary:focus-visible,.button-light:focus-visible,.icon-button:focus-visible{outline:3px solid var(--color-focus)!important;outline-offset:3px!important}
+.icon-button{min-width:44px;min-height:44px}
+.liquid-ripple{position:absolute;z-index:0;width:18px;height:18px;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(0);background:var(--color-accent);opacity:.22;animation:liquid-ripple .52s ease-out forwards}
+@keyframes liquid-ripple{to{transform:translate(-50%,-50%) scale(7);opacity:0}}
+@media(prefers-reduced-motion:reduce){.button-primary,.button-light,.icon-button{transition:none!important}.liquid-ripple{animation:none!important;display:none!important}}

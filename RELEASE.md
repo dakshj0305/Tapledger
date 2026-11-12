@@ -1,4 +1,4 @@
-# VOLTURA v18.1 release notes
+# VOLTURA release notes · current v20.9
 
 ## Quick expense capture
 
@@ -32,3 +32,13 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Preserved quick-entry time when an existing transaction is edited and exposed recorded time in recent activity and the ledger.
 - Removed the unregistered `voltura.finance` CNAME and aligned GitHub Pages metadata and manifest scope with `/Tapledger/`.
 - Updated dark-theme border contrast token to `#71828D`.
+
+
+## Dashboard and interaction completion — V20.9
+
+- Reworked the dashboard into three finance-oriented scroll chapters: Cash flow, Spending and Long view. The chapter rail remains sticky, tracks continuous page progress and highlights the active chapter without pinning or hijacking the whole financial workspace.
+- Repaired dashboard hierarchy and layout for reporting period, net cash flow, tracked position, savings, cash-flow chart, budget snapshot, category mix, recent activity, local insight and goals.
+- Corrected light/dark wordmark contrast and primary balance contrast; the hidden chart data table no longer introduces horizontal overflow.
+- Added responsive dock navigation and verified all eight views at desktop and mobile widths, including 320px and 200% root text sizing in the browser harness.
+- Trackpad wheel gestures now cause a restrained temporary perspective response on the chapter rail; native scrolling stays passive. Fine-pointer tilt and magnetic button movement are disabled for touch/reduced-motion users.
+- Kept the PWA dependency-free and offline-first. GSAP is not bundled; native motion APIs provide the current animation behavior rather than adding a remote dependency.

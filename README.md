@@ -59,6 +59,21 @@ sha256sum -c SHA256SUMS.txt
 See `AUDIT-REPORT.md` for the latest audit scope, results, corrections and remaining manual QA requirements. Passing source tests does not replace real-browser, device, accessibility or legal review.
 
 
-## Latest visual and update repairs (V20.6)
+## Latest visual and update repairs (V20.9)
 
 The current build replaces unrelated promotional filler with finance-specific brand messaging, refreshes the VOLTURA monogram and PWA icons, improves the responsive bottom navigation and scroll chapter bar, and adds a focused visual repair stylesheet. The service worker now precaches that stylesheet, uses a new cache namespace, and performs an explicit update check without relying on stale HTTP cache entries. See `AUDIT-REPORT.md` for executed checks and remaining browser/device QA.
+
+
+## Fine-grain UI repair (V20.9)
+
+The scroll chapter progress indicator now has one authoritative responsive style rule; the earlier duplicate declaration left its width constrained on some layouts. The mobile and desktop sticky offsets now account for the top bar, small-screen spacing is tightened, and all buttons declare their intended type explicitly. SVG symbol viewBox attributes are canonicalized. Source comments, visible version label, service-worker cache namespace and current release documentation are aligned at V20.9.
+
+
+## Dashboard and responsive UI completion (V20.9)
+
+The dashboard now has explicit masthead, reporting-period, balance-detail and chapter layouts. The oversized unstyled prism was removed so the cash-flow hero stays compact and readable. The primary amount and supporting labels use dark high-contrast text on the lime surface; the insight panel now uses a full-width text column rather than wrapping copy into a narrow decorative-icon column. The chart's screen-reader data table is labelled without a long caption that could create horizontal overflow on narrow screens. Mobile masthead metadata stacks cleanly, and the chapter progress rail tracks actual scroll progress.
+
+The app's browser theme-color now follows the selected light/dark/system preference. Visual surfaces remain flat and matte, with restrained 3D tilt and native scroll motion; no remote GSAP dependency is introduced.
+
+
+The V20.9 interaction pass also removes a duplicate pointer-tilt listener and unused motion variables. Passive trackpad wheel input now gives the sticky chapter control a restrained temporary perspective response and resets to neutral without cancelling native scrolling. The sidebar wordmark now follows the active theme text token for readable light and dark appearances.

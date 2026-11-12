@@ -1,4 +1,4 @@
-/* VOLTURA visual system — v19.3
+/* VOLTURA visual system — v20.9
    Presentation-only layer. The v19 data model and interaction code remain intact. */
 :root{
   color-scheme:light;
@@ -168,7 +168,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Dashboard: overview and cash-flow hierarchy */
 .balance-hero{min-height:154px;padding:23px 27px!important;grid-template-columns:minmax(220px,1.5fr) 1px minmax(125px,.6fr) minmax(125px,.6fr)!important;gap:23px!important;background:var(--volt-navy)!important;color:#F2F6F2!important;border:1px solid #26382F!important;border-radius:var(--volt-radius)!important;box-shadow:none!important}
-.balance-hero::before,.balance-hero::after,.balance-ornament{display:none!important}
+.balance-hero::before,.balance-hero::after{display:none!important}
 .balance-main,.balance-stat{z-index:1}
 .metric-label,.light-label{color:#B9C7BE!important;font:650 10px/1.35 var(--sans)!important;letter-spacing:.08em!important}
 .pill-dark{margin-left:7px;padding:4px 7px;border:1px solid #42554A;border-radius:5px;color:#DAE6DE!important;font:550 10px var(--sans)!important}
