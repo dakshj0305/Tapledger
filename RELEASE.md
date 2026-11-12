@@ -42,3 +42,11 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Added responsive dock navigation and verified all eight views at desktop and mobile widths, including 320px and 200% root text sizing in the browser harness.
 - Trackpad wheel gestures now cause a restrained temporary perspective response on the chapter rail; native scrolling stays passive. Fine-pointer tilt and magnetic button movement are disabled for touch/reduced-motion users.
 - Kept the PWA dependency-free and offline-first. GSAP is not bundled; native motion APIs provide the current animation behavior rather than adding a remote dependency.
+
+## Data-safety and launch reliability — V20.10
+
+- Backup restore is additive: existing transaction, budget, goal and account keys win; duplicate IDs within an imported backup are accepted once. New records are written with IndexedDB `add()` operations in one read-write transaction, so a key collision cannot silently overwrite a saved record.
+- Legacy expense migration is additive and no longer reclassifies or rewrites an existing transaction during startup. Existing transaction account references are not silently changed by account setup.
+- Removed the parser-time quick-launch dialog opener. NFC/shortcut query actions now open after IndexedDB initialization and normal event wiring, avoiding a pre-initialization dialog being reset by the main app.
+- Kept the existing IndexedDB database name, version, object stores, key paths and indexes unchanged.
+- Advanced the visible app and service-worker cache version to V20.10.

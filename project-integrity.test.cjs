@@ -34,14 +34,15 @@ test('new payment method remains optional and legacy backup tags are accepted', 
   assert.match(app, /paymentMethod:String\(t\.paymentMethod\|\|''\)/);
   for (const tag of ['Voltura','Vellum','Cairn','TapLedger']) assert.ok(app.includes(`'${tag}'`));
   assert.match(app, /app:'Voltura'/);
-  assert.match(app, /await batchWrite\(\['transactions','budgets','goals','accounts'\],ops\)/);
+  assert.match(app, /await batchWrite\(\['transactions','budgets','goals','accounts'\],additions\)/);
+  assert.match(app, /planAdditiveRecords\(existingTransactions,txs/);
+  assert.match(app, /action:'add'/);
 });
 
 test('quick launch, local enhancement, and offline shell are wired without external requests', () => {
-  const html = read('index.html'), boot = read('quick-boot.js'), app = read('app.js'), worker = read('sw.js');
-  assert.match(boot, /params\.get\('a'\).*'expense'/s);
-  assert.match(boot, /params\.get\('i'\).*'income'/s);
-  assert.match(boot, /input\?\.focus/);
+  const html = read('index.html'), app = read('app.js'), worker = read('sw.js');
+  assert.doesNotMatch(html, /quick-boot\.js/);
+  assert.match(app, /function applyUrlAction/);
   assert.match(app, /history\.replaceState/);
   assert.match(app, /function handleEntrySubmit/);
   assert.match(app, /async function saveQuickExpense/);

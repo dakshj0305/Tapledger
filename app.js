@@ -1,6 +1,6 @@
 'use strict';
 
-/* VOLTURA v20.9 — static, local-first personal finance PWA.
+/* VOLTURA v20.10 — static, local-first personal finance PWA.
    Internal DB/store names intentionally retain their TapLedger identity for existing data compatibility.
    Currency amounts are stored as integer paise to avoid floating point drift. */
 const DB_NAME='tapledger-db', DB_VERSION=3, CURRENCY='INR';
@@ -48,7 +48,7 @@ function validDate(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.tes
 // IndexedDB: upgrade adds new stores while preserving v1 expenses/settings.
 function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('expenses'))d.createObjectStore('expenses',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});if(!d.objectStoreNames.contains('transactions')){const s=d.createObjectStore('transactions',{keyPath:'id'});s.createIndex('date','date');s.createIndex('type','type');s.createIndex('category','category')}if(!d.objectStoreNames.contains('budgets'))d.createObjectStore('budgets',{keyPath:'id'});if(!d.objectStoreNames.contains('goals'))d.createObjectStore('goals',{keyPath:'id'});if(!d.objectStoreNames.contains('accounts'))d.createObjectStore('accounts',{keyPath:'name'})};req.onblocked=()=>toast('Database upgrade is waiting. Close older Voltura or legacy TapLedger tabs, then return here.');req.onsuccess=()=>{const opened=req.result;opened.onversionchange=()=>opened.close();resolve(opened)};req.onerror=()=>reject(req.error)})}
 function storeRequest(store,mode,method,value){return new Promise((resolve,reject)=>{let tx,request,result;try{tx=db.transaction(store,mode);const objectStore=tx.objectStore(store);request=value===undefined?objectStore[method]():objectStore[method](value)}catch(error){reject(error);return}request.onsuccess=()=>{result=request.result};request.onerror=()=>{reject(request.error||new Error('Database request failed.'))};tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error||request.error||new Error('Database transaction failed.'));tx.onabort=()=>reject(tx.error||new Error('Database transaction was aborted.'))})}
-function batchWrite(storeNames,operations){return new Promise((resolve,reject)=>{let tx;try{tx=db.transaction(storeNames,'readwrite');for(const op of operations){const store=tx.objectStore(op.store);if(op.action==='delete')store.delete(op.key);else if(op.action==='clear')store.clear();else store.put(op.value)}}catch(error){reject(error);return}tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Database write failed.'));tx.onabort=()=>reject(tx.error||new Error('Database write was aborted.'))})}
+function batchWrite(storeNames,operations){return new Promise((resolve,reject)=>{let tx;try{tx=db.transaction(storeNames,'readwrite');for(const op of operations){const store=tx.objectStore(op.store);if(op.action==='delete')store.delete(op.key);else if(op.action==='clear')store.clear();else if(op.action==='add')store.add(op.value);else store.put(op.value)}}catch(error){reject(error);return}tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Database write failed.'));tx.onabort=()=>reject(tx.error||new Error('Database write was aborted.'))})}
 const getAll=store=>storeRequest(store,'readonly','getAll');
 const put= (store,value)=>storeRequest(store,'readwrite','put',value);
 const del=(store,key)=>storeRequest(store,'readwrite','delete',key);
@@ -56,55 +56,38 @@ const getSetting=key=>storeRequest('settings','readonly','get',key);
 const setSetting=(key,value)=>put('settings',{key,value});
 const getAccounts=()=>getAll('accounts');
 async function migrateLegacy(){
+  // One-time legacy import is strictly additive. Existing current-ledger records
+  // are never rewritten or reclassified by a background migration.
   const marker=await getSetting('migration-v3-complete');
-  const done=!!marker?.value;
+  if(marker?.value)return;
   const legacy=await getAll('expenses');
   const current=await getAll('transactions');
-  const byId=new Map(current.map(t=>[String(t.id),t]));
-  const ops=[];
-  for(const old of legacy){
-    if(!old||!Number.isSafeInteger(old.amountPaise)||old.amountPaise<=0||!validDate(String(old.spentAt)))continue;
-    const id=String(old.id||uuid());
-    const existing=byId.get(id);
-    if(existing){
-      // The legacy expense store remains as an audit source after v5 migration.
-      // Reclassify matching records as history, but never recreate a record the
-      // user has subsequently deleted from the current ledger.
-      if(existing.type==='expense'&&(existing.account!=='Imported history'||existing.source!=='legacy')){
-        ops.push({store:'transactions',action:'put',value:{...existing,account:'Imported history',source:'legacy',updatedAt:existing.updatedAt||new Date().toISOString()}});
-      }
-    }else if(!done){
-      ops.push({store:'transactions',action:'put',value:{id,type:'expense',amountPaise:old.amountPaise,currency:'INR',category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Imported history',source:'legacy',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()}});
-    }
-  }
-  if(!done){
-    const oldBudget=await getSetting('monthlyBudgetPaise');
-    if(oldBudget&&Number.isSafeInteger(oldBudget.value)&&oldBudget.value>0){
-      const existingBudgets=await getAll('budgets');
-      if(!existingBudgets.some(b=>b.category==='__overall'))ops.push({store:'budgets',action:'put',value:{id:'overall',category:'__overall',limitPaise:oldBudget.value,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}});
-    }
+  const plan=VolturaFinance.planAdditiveRecords(current,legacy.filter(old=>old&&Number.isSafeInteger(old.amountPaise)&&old.amountPaise>0&&validDate(String(old.spentAt))).map(old=>({
+    id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,currency:'INR',
+    category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',
+    merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),
+    account:'Imported history',source:'legacy',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()
+  })),item=>item.id);
+  const ops=plan.additions.map(value=>({store:'transactions',action:'add',value}));
+  const oldBudget=await getSetting('monthlyBudgetPaise');
+  if(oldBudget&&Number.isSafeInteger(oldBudget.value)&&oldBudget.value>0){
+    const existingBudgets=await getAll('budgets');
+    if(!existingBudgets.some(b=>b.category==='__overall'))ops.push({store:'budgets',action:'add',value:{id:'overall',category:'__overall',limitPaise:oldBudget.value,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}});
   }
   if(ops.length)await batchWrite(['transactions','budgets'],ops);
-  if(!done)await setSetting('migration-v3-complete',true);
+  await setSetting('migration-v3-complete',true);
 }
 async function ensureAccounts(){
   const existing=await getAccounts();
   const known=new Set(existing.map(a=>String(a.name).toLowerCase()));
   const additions=[];
-  const legacyPatches=[];
   const defaults=[['Everyday','asset'],['Bank','asset'],['Cash','asset'],['UPI','asset'],['Credit card','liability']];
   const names=new Map();for(const [name,kind] of defaults)names.set(name,kind);
   const hasLegacy=transactions.some(t=>t.type==='expense'&&['legacy','legacy-backup'].includes(t.source));
   if(hasLegacy)names.set('Imported history','historical');
   for(const t of transactions){
-    if(t.type==='expense'&&['legacy','legacy-backup'].includes(t.source)&&t.account!=='Imported history'){
-      const patched={...t,account:'Imported history'};
-      legacyPatches.push(patched);
-      Object.assign(t,patched);
-    }
     for(const name of [t.account,t.fromAccount,t.toAccount])if(name&&typeof name==='string'&&!names.has(name))names.set(name,/credit|loan|card/i.test(name)?'liability':'asset');
   }
-  if(legacyPatches.length)await batchWrite(['transactions'],legacyPatches.map(value=>({store:'transactions',action:'put',value})));
   for(const [name,kind] of names)if(!known.has(name.toLowerCase()))additions.push({name,kind,openingBalancePaise:0,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
   if(additions.length)await batchWrite(['accounts'],additions.map(value=>({store:'accounts',action:'put',value})));
   accounts=await getAccounts();accounts.sort((a,b)=>a.name.localeCompare(b.name));
@@ -316,8 +299,17 @@ async function restoreJSON(file){if(!file)return;try{const data=JSON.parse(await
  const incomingAccounts=[];if(Array.isArray(data.accounts))for(const a of data.accounts){if(a&&typeof a.name==='string'&&a.name.trim()&&a.name.length<=40&&['asset','liability'].includes(a.kind)&&Number.isSafeInteger(a.openingBalancePaise)&&a.openingBalancePaise>=0&&a.openingBalancePaise<=10000000000)incomingAccounts.push({name:a.name.trim(),kind:a.kind,openingBalancePaise:a.openingBalancePaise,createdAt:String(a.createdAt||new Date().toISOString()),updatedAt:new Date().toISOString()})}
  const skipped=(Array.isArray(data.transactions)?data.transactions.length:Array.isArray(data.expenses)?data.expenses.length:0)-txs.length+skippedBudgetRecords+(Array.isArray(data.goals)?data.goals.length-incomingGoals.length:0)+(Array.isArray(data.accounts)?data.accounts.length-incomingAccounts.length:0);
  if(!txs.length&&!incomingBudgets.length&&!incomingGoals.length&&!incomingAccounts.length)throw new Error(`No valid records were found in this backup. Nothing was changed.${skipped?` ${skipped} record${skipped===1?'':'s'} skipped.`:''}`);
- for(const value of txs)ops.push({store:'transactions',action:'put',value});for(const value of incomingBudgets)ops.push({store:'budgets',action:'put',value});for(const value of incomingGoals)ops.push({store:'goals',action:'put',value});for(const value of incomingAccounts)ops.push({store:'accounts',action:'put',value});
- await batchWrite(['transactions','budgets','goals','accounts'],ops);await loadAll();await ensureAccounts();renderAll();toast(`Backup merged: ${count} transactions, ${incomingBudgets.length} budgets, ${incomingGoals.length} goals.${skipped?` ${skipped} record${skipped===1?'':'s'} skipped.`:''}`)
+ const [existingTransactions,existingBudgets,existingGoals,existingAccounts]=await Promise.all([getAll('transactions'),getAll('budgets'),getAll('goals'),getAll('accounts')]);
+ const txPlan=VolturaFinance.planAdditiveRecords(existingTransactions,txs,item=>item.id);
+ const budgetPlan=VolturaFinance.planAdditiveRecords(existingBudgets,incomingBudgets,item=>item.id);
+ const goalPlan=VolturaFinance.planAdditiveRecords(existingGoals,incomingGoals,item=>item.id);
+ const accountPlan=VolturaFinance.planAdditiveRecords(existingAccounts,incomingAccounts,item=>String(item.name).toLocaleLowerCase(),);
+ const additions=[...txPlan.additions.map(value=>({store:'transactions',action:'add',value})),...budgetPlan.additions.map(value=>({store:'budgets',action:'add',value})),...goalPlan.additions.map(value=>({store:'goals',action:'add',value})),...accountPlan.additions.map(value=>({store:'accounts',action:'add',value}))];
+ if(!additions.length)throw new Error('Every valid backup record already exists or conflicts with an existing record. Nothing was changed.');
+ await batchWrite(['transactions','budgets','goals','accounts'],additions);await loadAll();await ensureAccounts();renderAll();
+ const addedTransactions=txPlan.additions.length,addedBudgets=budgetPlan.additions.length,addedGoals=goalPlan.additions.length;
+ const conflicts=txPlan.conflicts+txPlan.duplicates+budgetPlan.conflicts+budgetPlan.duplicates+goalPlan.conflicts+goalPlan.duplicates+accountPlan.conflicts+accountPlan.duplicates;
+ toast(`Backup merged: ${addedTransactions} transactions, ${addedBudgets} budgets, ${addedGoals} goals added.${conflicts?` ${conflicts} existing or duplicate records left unchanged.`:''}${skipped?` ${skipped} invalid records skipped.`:''}`)
  }catch(err){console.error(err);toast(err.message||'Restore failed. No import was completed.')}finally{$('#restoreInput').value=''}}
 async function clearCurrentMonth(){
  const key=thisMonth();

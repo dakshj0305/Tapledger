@@ -77,3 +77,7 @@ The app's browser theme-color now follows the selected light/dark/system prefere
 
 
 The V20.9 interaction pass also removes a duplicate pointer-tilt listener and unused motion variables. Passive trackpad wheel input now gives the sticky chapter control a restrained temporary perspective response and resets to neutral without cancelling native scrolling. The sidebar wordmark now follows the active theme text token for readable light and dark appearances.
+
+## Data-safety and launch reliability (V20.10)
+
+V20.10 makes JSON restore strictly additive. Existing primary keys are preserved, repeated IDs in the backup are accepted only once, and inserts run atomically through IndexedDB `add()` operations. Legacy migration no longer rewrites matching current-ledger records, and account setup no longer silently reassigns legacy transaction account names. The parser-time quick-launch script has been removed; expense/income shortcuts open after database initialization and event wiring. The IndexedDB identity and schema remain unchanged.

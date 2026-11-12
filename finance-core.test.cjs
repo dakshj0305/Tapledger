@@ -48,3 +48,19 @@ test('weekly spending is grouped into calendar weeks and excludes income', () =>
   assert.deepEqual(weeks.slice(0, 2), [{ startDay: 1, endDay: 5, totalPaise: 300 }, { startDay: 6, endDay: 12, totalPaise: 300 }]);
   assert.equal(weeks.reduce((sum, week) => sum + week.totalPaise, 0), 600);
 });
+
+
+test('additive restore keeps existing primary keys and deduplicates incoming records', () => {
+  const existing = [{ id: 'same', value: 'local' }];
+  const incoming = [
+    { id: 'same', value: 'backup-overwrite-attempt' },
+    { id: 'new', value: 'first-copy' },
+    { id: 'new', value: 'duplicate-copy' },
+    { id: 'other', value: 'other-new-record' }
+  ];
+  const plan = finance.planAdditiveRecords(existing, incoming, item => item.id);
+  assert.deepEqual(plan.additions, [incoming[1], incoming[3]]);
+  assert.equal(plan.conflicts, 1);
+  assert.equal(plan.duplicates, 1);
+  assert.equal(existing[0].value, 'local');
+});

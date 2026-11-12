@@ -1,0 +1,6 @@
+VOLTURA V20.10
+Git branch: master (local reconstructed history; uploaded source ZIP contained no .git metadata)
+Release commit: see HEAD in VOLTURA-v20.10-git-history.bundle
+Working source: user-confirmed Tapledger-v20.9-complete(1).zip
+IndexedDB identity/schema: tapledger-db v3 unchanged
+Remote push: not performed; no Git remote credentials or repository connection were supplied.
