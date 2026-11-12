@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v20\.10/);
+  assert.match(worker, /voltura-platform-v21\.0/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -102,10 +102,10 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /class="version-tag">V20\.10</);
-  assert.match(read('sw.js'), /voltura-platform-v20\.10/);
-  assert.match(read('app.js'), /VOLTURA v20\.10/);
-  assert.match(read('design-system.css'), /visual system — v20\.10/);
+  assert.match(read('index.html'), /class="version-tag">V21\.0</);
+  assert.match(read('sw.js'), /voltura-platform-v21\.0/);
+  assert.match(read('app.js'), /VOLTURA v21\.0/);
+  assert.match(read('design-system.css'), /visual system — v21\.0/);
 });
 
 
@@ -158,4 +158,15 @@ test('passive trackpad sensing drives a subtle chapter-nav tilt and resets witho
   assert.doesNotMatch(js, /motion-ambient|--pointer-x|--chart-pointer|--shine-x|--shine-y/);
   assert.equal((js.match(/querySelectorAll\('\.balance-hero,\.insight-feature'\)/g)||[]).length,1,'3D tilt listeners are attached once');
   assert.doesNotMatch(motionCss, /motion-ambient/);
+});
+
+
+test('V21 redesign stylesheet is linked, precached, responsive and presentation-only', () => {
+  const html = read('index.html'), worker = read('sw.js'), css = read('voltura-redesign.css');
+  assert.match(html, /href="\.\/voltura-redesign\.css"/);
+  assert.match(worker, /'voltura-redesign\.css'/);
+  assert.match(css, /@media\(max-width:700px\)/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.doesNotMatch(css, /https?:\/\//);
+  assert.match(css, /--vr-forest/);
 });

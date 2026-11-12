@@ -1,6 +1,6 @@
 'use strict';
 
-/* VOLTURA v20.10 — static, local-first personal finance PWA.
+/* VOLTURA v21.0 — static, local-first personal finance PWA.
    Internal DB/store names intentionally retain their TapLedger identity for existing data compatibility.
    Currency amounts are stored as integer paise to avoid floating point drift. */
 const DB_NAME='tapledger-db', DB_VERSION=3, CURRENCY='INR';

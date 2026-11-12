@@ -81,3 +81,8 @@ The V20.9 interaction pass also removes a duplicate pointer-tilt listener and un
 ## Data-safety and launch reliability (V20.10)
 
 V20.10 makes JSON restore strictly additive. Existing primary keys are preserved, repeated IDs in the backup are accepted only once, and inserts run atomically through IndexedDB `add()` operations. Legacy migration no longer rewrites matching current-ledger records, and account setup no longer silently reassigns legacy transaction account names. The parser-time quick-launch script has been removed; expense/income shortcuts open after database initialization and event wiring. The IndexedDB identity and schema remain unchanged.
+
+
+## Visual redesign — V21.0
+
+Introduces a cohesive VOLTURA visual system with a forest-green navigation rail, refined balance hero, clearer dashboard hierarchy, more spacious chart and activity panels, consistent secondary-page styling, and responsive mobile navigation. The redesign is a presentation layer: existing finance logic, DOM interaction hooks, IndexedDB database identity/schema, and locally stored records remain unchanged.

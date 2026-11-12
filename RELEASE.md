@@ -50,3 +50,8 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Removed the parser-time quick-launch dialog opener. NFC/shortcut query actions now open after IndexedDB initialization and normal event wiring, avoiding a pre-initialization dialog being reset by the main app.
 - Kept the existing IndexedDB database name, version, object stores, key paths and indexes unchanged.
 - Advanced the visible app and service-worker cache version to V20.10.
+
+
+## Visual redesign — V21.0
+
+Introduces a cohesive VOLTURA visual system with a forest-green navigation rail, refined balance hero, clearer dashboard hierarchy, more spacious chart and activity panels, consistent secondary-page styling, and responsive mobile navigation. The redesign is a presentation layer: existing finance logic, DOM interaction hooks, IndexedDB database identity/schema, and locally stored records remain unchanged.
