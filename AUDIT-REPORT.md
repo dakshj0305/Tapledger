@@ -42,3 +42,27 @@ This is a source-package and executable Node test audit. It covers JavaScript sy
 - Production hosting headers, GitHub Pages deployment, legal/privacy review, and device-specific performance profiling.
 
 A source audit cannot prove that a web app is mistake-free on every device. The items above require browser/device execution before calling the release production-certified.
+
+
+## Follow-up visual/runtime repair — 2026-11-12
+
+The next reported visual defects were traced to the delivered source rather than guessed from screenshots:
+
+1. The overview contained unrelated beverage-brand promotional copy and a bottle illustration inside a finance dashboard. That unstyled editorial rail had no matching CSS and was replaced with a VOLTURA-specific brand statement.
+2. The VOLTURA mark was a generic single-letter V. The inline mark, favicon, and four PWA raster icons now share a distinct V/spark identity. The manifest theme color now matches the lime accent.
+3. The app shell was still labelled V20.1 and the service worker cache remained V20.5. The visible app label and cache namespace are now V20.6.
+4. The new visual stylesheet was added to the service-worker precache list, so offline installs receive it too.
+5. Service-worker registration now uses `updateViaCache: 'none'` and explicitly calls `registration.update()` on startup, addressing stale HTTP-cached worker scripts and missed update checks. Existing update prompts still protect open forms and unsaved work.
+6. Mobile navigation now uses a compact bottom dock with safe-area spacing; the Goals view remains reachable, while secondary views stay in the existing More dialog. Chapter navigation, focus states, and reduced-motion behavior were refined.
+
+### Follow-up checks executed
+
+- All seven root JavaScript files pass `node --check`.
+- All 18 Node tests pass across the three suites.
+- New tests verify the visual repair stylesheet, removal of irrelevant promo copy, brand asset presence, PWA icon sizes, mobile safe-area rules, reduced-motion rules, service-worker cache version, and explicit update checks.
+- Service-worker precache and all local HTML dependencies resolve.
+- IndexedDB database name and schema version remain unchanged.
+
+### Still not certified
+
+Chromium headless again failed to complete in this execution environment, so rendered browser screenshots, console inspection, responsive pixel QA, Lighthouse, and device-level interaction remain unverified. Do not treat source tests as a substitute for those checks.

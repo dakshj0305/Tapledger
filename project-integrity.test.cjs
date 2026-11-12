@@ -60,7 +60,7 @@ test('quick launch, local enhancement, and offline shell are wired without exter
 });
 
 test('stylesheets have balanced blocks and no remote imports', () => {
-  for (const name of ['style.css','design-system.css','legal.css']) {
+  for (const name of ['style.css','design-system.css','polish.css','legal.css']) {
     const css = read(name);
     assert.equal((css.match(/{/g)||[]).length, (css.match(/}/g)||[]).length, `${name} brace balance`);
     assert.doesNotMatch(css, /@import\s+url\(['"]?https?:/i, `${name} remote import`);

@@ -2,6 +2,13 @@
 
 See `AUDIT-REPORT.md` for the scope, corrections, and explicit unverified areas.
 
+## Latest visual/runtime repair
+
+- Removed unrelated beverage promotional content from the finance overview.
+- Refreshed the VOLTURA mark and PWA icon set.
+- Added a compact responsive bottom navigation and chapter-nav polish.
+- Bumped the service-worker cache to V20.6, precached `polish.css`, and added an explicit update check with `updateViaCache: none`.
+
 ## Automated checks
 
 Run from this directory:
@@ -18,7 +25,7 @@ node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.
 sha256sum -c SHA256SUMS.txt
 ```
 
-The two original test suites and the added release-audit suite are dependency-free and run with Node's built-in test runner.
+The three dependency-free test suites are dependency-free and run with Node's built-in test runner.
 
 ## Data safety
 

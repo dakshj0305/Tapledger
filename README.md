@@ -57,3 +57,8 @@ sha256sum -c SHA256SUMS.txt
 ```
 
 See `AUDIT-REPORT.md` for the latest audit scope, results, corrections and remaining manual QA requirements. Passing source tests does not replace real-browser, device, accessibility or legal review.
+
+
+## Latest visual and update repairs (V20.6)
+
+The current build replaces unrelated promotional filler with finance-specific brand messaging, refreshes the VOLTURA monogram and PWA icons, improves the responsive bottom navigation and scroll chapter bar, and adds a focused visual repair stylesheet. The service worker now precaches that stylesheet, uses a new cache namespace, and performs an explicit update check without relying on stale HTTP cache entries. See `AUDIT-REPORT.md` for executed checks and remaining browser/device QA.

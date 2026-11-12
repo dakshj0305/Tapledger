@@ -47,3 +47,40 @@ test('scroll chapters and liquid-metal enhancement are wired and degrade gracefu
   assert.match(liquid, /prefers-reduced-motion/);
   assert.match(liquid, /addEventListener/);
 });
+
+test('visual repair layer, brand mark, and mobile navigation are complete', () => {
+  const html = read('index.html');
+  const css = read('polish.css');
+  const mark = read('icons/voltura-mark.svg');
+  assert.match(html, /href="\.\/polish\.css"/);
+  assert.match(html, /class="brand-manifesto"/);
+  assert.doesNotMatch(html, /In every bottle|Real Magic of sharing pure Refreshment/);
+  assert.match(css, /@media\(max-width:680px\)/);
+  assert.match(css, /safe-area-inset-bottom/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(mark, /<svg/);
+  assert.match(mark, /VOLTURA/);
+  assert.ok(fs.statSync(path.join(root, 'icons/icon-192.png')).size > 1000);
+  assert.ok(fs.statSync(path.join(root, 'icons/icon-512.png')).size > 1000);
+});
+
+test('service worker cache version and update checks are advanced', () => {
+  const worker = read('sw.js'), app = read('app.js');
+  assert.match(worker, /voltura-platform-v20\.6/);
+  assert.match(worker, /'polish\.css'/);
+  assert.match(app, /updateViaCache:'none'/);
+  assert.match(app, /registration\.update\(\)/);
+});
+
+
+test('brand icon assets and manifest theme color match the refreshed identity', () => {
+  const manifest = JSON.parse(read('manifest.webmanifest'));
+  assert.equal(manifest.theme_color.toLowerCase(), '#d7f36a');
+  for (const size of [192, 512]) {
+    for (const suffix of ['', '-maskable']) {
+      const file = path.join(root, `icons/icon-${size}${suffix}.png`);
+      assert.ok(fs.existsSync(file), `missing refreshed icon ${file}`);
+      assert.ok(fs.statSync(file).size > 1000, `icon appears unexpectedly small: ${file}`);
+    }
+  }
+});
