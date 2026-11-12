@@ -45,3 +45,15 @@ GitHub Pages does not let this repository set all HTTP response security headers
 The presentation layer now includes a higher-contrast dark palette, restrained translucent surfaces, responsive pointer ambience, a scroll progress indicator, reveal-on-scroll transitions, and passive wheel/trackpad gesture sensing. These are progressive enhancements; native scrolling and all finance flows remain usable without them. Motion respects `prefers-reduced-motion`.
 
 The refresh deliberately adds no remote runtime, font, analytics, or API. GSAP is not bundled in this source package; the motion layer uses native browser APIs to preserve the offline-first and no-third-party-script constraints. If GSAP is later approved, vendor a reviewed local build and update the CSP/service-worker allowlist rather than loading it from a CDN.
+
+## Automated verification
+
+This project has no build-time npm dependencies. With Node.js 18 or newer, run the dependency-free source and finance tests from the project directory:
+
+```sh
+for f in *.js; do node --check "$f" || exit 1; done
+node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.cjs
+sha256sum -c SHA256SUMS.txt
+```
+
+See `AUDIT-REPORT.md` for the latest audit scope, results, corrections and remaining manual QA requirements. Passing source tests does not replace real-browser, device, accessibility or legal review.
