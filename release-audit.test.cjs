@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v21\.0/);
+  assert.match(worker, /voltura-platform-v21\.1\.1/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -75,7 +75,7 @@ test('service worker cache version and update checks are advanced', () => {
 
 test('brand icon assets and manifest theme color match the refreshed identity', () => {
   const manifest = JSON.parse(read('manifest.webmanifest'));
-  assert.equal(manifest.theme_color.toLowerCase(), '#d8ff3f');
+  assert.equal(manifest.theme_color.toLowerCase(), '#0b1211');
   for (const size of [192, 512]) {
     for (const suffix of ['', '-maskable']) {
       const file = path.join(root, `icons/icon-${size}${suffix}.png`);
@@ -102,10 +102,10 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /class="version-tag">V21\.0</);
-  assert.match(read('sw.js'), /voltura-platform-v21\.0/);
-  assert.match(read('app.js'), /VOLTURA v21\.0/);
-  assert.match(read('design-system.css'), /visual system — v21\.0/);
+  assert.match(read('index.html'), /class="version-tag">V21\.1\.1</);
+  assert.match(read('sw.js'), /voltura-platform-v21\.1\.1/);
+  assert.match(read('app.js'), /VOLTURA v21\.1\.1/);
+  assert.match(read('voltura-visual-system.css'), /VOLTURA V21\.1\.1/);
 });
 
 
@@ -136,7 +136,7 @@ test('accessible cash-flow data table does not use a long intrinsic-width captio
 
 test('theme-color follows the selected appearance and chapter progress follows scroll position', () => {
   const app = read('app.js'), story = read('scroll-story.js');
-  assert.match(app, /themeMeta\.content=dark\?'#101715':'#F3F3ED'/);
+  assert.match(app, /themeMeta\.content=dark\?'#0b1211':'#f2f4ee'/);
   assert.match(story, /const start=rect\.top\+scrollY/);
   assert.match(story, /fill\.style\.width=`\$\{progress\*100\}%`/);
 });
@@ -161,12 +161,65 @@ test('passive trackpad sensing drives a subtle chapter-nav tilt and resets witho
 });
 
 
-test('V21 redesign stylesheet is linked, precached, responsive and presentation-only', () => {
-  const html = read('index.html'), worker = read('sw.js'), css = read('voltura-redesign.css');
-  assert.match(html, /href="\.\/voltura-redesign\.css"/);
-  assert.match(worker, /'voltura-redesign\.css'/);
-  assert.match(css, /@media\(max-width:700px\)/);
-  assert.match(css, /prefers-reduced-motion/);
-  assert.doesNotMatch(css, /https?:\/\//);
-  assert.match(css, /--vr-forest/);
+test('V21.1 dashboard layer is self-hosted, dark-first, responsive and bounded-glass', () => {
+  const html=read('index.html'), css=read('voltura-visual-system.css'), worker=read('sw.js');
+  assert.match(html,/href="\.\/voltura-visual-system\.css"/);
+  assert.match(css,/--v-bg:\s*#0b1211/);
+  assert.match(css,/@media \(max-width:640px\)/);
+  assert.match(css,/prefers-reduced-transparency/);
+  assert.match(css,/forced-colors:active/);
+  assert.match(css,/backdrop-filter:blur\(10px\)/);
+  assert.match(worker,/'voltura-visual-system\.css'/);
+});
+
+test('recent dashboard transactions expose edit and delete through existing handlers', () => {
+  const app=read('app.js');
+  assert.match(app,/data-recent-edit/);
+  assert.match(app,/data-recent-delete/);
+  assert.match(app,/\$\('#recentTransactions'\)\.addEventListener\('click'/);
+  assert.match(app,/openEntry\(\{item:t\}\)/);
+  assert.match(app,/deleteTransaction\(remove\.dataset\.recentDelete\)/);
+});
+
+test('legacy migration and account setup do not rewrite existing transaction records', () => {
+  const app=read('app.js');
+  const migration=app.slice(app.indexOf('async function migrateLegacy'),app.indexOf('async function ensureAccounts'));
+  const accounts=app.slice(app.indexOf('async function ensureAccounts'),app.indexOf('async function loadAll'));
+  assert.doesNotMatch(migration,/if\(existing\)[\s\S]*?action:'put'/);
+  assert.doesNotMatch(accounts,/legacyPatches|Object\.assign\(t/);
+  assert.match(app,/const DB_NAME='tapledger-db', DB_VERSION=3/);
+});
+
+test('JSON restore is atomic and additive rather than overwriting primary keys', () => {
+  const app=read('app.js');
+  const restore=app.slice(app.indexOf('function additiveRestore'),app.indexOf('async function clearCurrentMonth'));
+  assert.match(restore,/db\.transaction\(stores,'readwrite'\)/);
+  assert.match(restore,/VolturaFinance\.planAdditiveRecords/);
+  assert.match(restore,/tx\.objectStore\(store\)\.add\(value\)/);
+  assert.doesNotMatch(restore,/tx\.objectStore\(store\)\.put\(value\)/);
+  assert.match(restore,/toLocaleLowerCase\(\)/);
+});
+
+test('mobile navigation retains a persistent central add action and secondary views remain in More', () => {
+  const html=read('index.html'), app=read('app.js'), css=read('voltura-visual-system.css');
+  assert.match(html,/id="mobileAddButton"/);
+  assert.match(app,/\$\('#mobileAddButton'\)\.addEventListener\('click',\(\)=>openEntry\(\)\)/);
+  assert.match(html,/id="moreNavDialog"/);
+  assert.match(css,/\.nav-item\.mobile-add-button\s*\{[^}]*display:flex/s);
+});
+
+
+test('glass fallbacks follow the final cascade and preserve contrast in reduced-transparency and forced-colors modes', () => {
+  const css = read('voltura-visual-system.css');
+  const unsupported = css.lastIndexOf('@supports not (backdrop-filter:blur(1px))');
+  const reduced = css.lastIndexOf('@media (prefers-reduced-transparency:reduce)');
+  const forced = css.lastIndexOf('@media (forced-colors:active)');
+  assert.ok(unsupported > css.lastIndexOf('.scroll-chapter-nav { background:var(--v-glass)!important'), 'unsupported-browser fallback follows final glass styling');
+  assert.ok(reduced > unsupported, 'reduced-transparency fallback follows unsupported-browser fallback');
+  assert.ok(forced > reduced, 'forced-colors has final precedence');
+  assert.doesNotMatch(css, /@media\s+not\s*\(backdrop-filter/, 'backdrop support is a @supports query, not an invalid media query');
+  assert.match(css.slice(unsupported), /@supports not \(backdrop-filter:blur\(1px\)\)/);
+  assert.match(css.slice(unsupported), /\.sidebar\s*\{[^}]*background:#101b16!important;[^}]*color:#eef4e9!important/s);
+  assert.match(css.slice(reduced, forced), /\.scroll-chapter-nav\s*\{[^}]*color:var\(--v-ink\)!important/s);
+  assert.match(css.slice(forced), /CanvasText!important/);
 });

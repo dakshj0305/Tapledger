@@ -49,18 +49,18 @@ test('weekly spending is grouped into calendar weeks and excludes income', () =>
   assert.equal(weeks.reduce((sum, week) => sum + week.totalPaise, 0), 600);
 });
 
-
-test('additive restore keeps existing primary keys and deduplicates incoming records', () => {
-  const existing = [{ id: 'same', value: 'local' }];
+test('additive restore planner preserves existing IDs and rejects duplicate incoming IDs', () => {
+  const existing = [{ id: 'same', amountPaise: 100 }];
   const incoming = [
-    { id: 'same', value: 'backup-overwrite-attempt' },
-    { id: 'new', value: 'first-copy' },
-    { id: 'new', value: 'duplicate-copy' },
-    { id: 'other', value: 'other-new-record' }
+    { id: 'same', amountPaise: 999 },
+    { id: 'new', amountPaise: 200 },
+    { id: 'new', amountPaise: 300 },
+    { id: 'newer', amountPaise: 400 }
   ];
-  const plan = finance.planAdditiveRecords(existing, incoming, item => item.id);
-  assert.deepEqual(plan.additions, [incoming[1], incoming[3]]);
+  const plan = VolturaFinance.planAdditiveRecords(existing, incoming, item => item.id);
+  assert.deepEqual(plan.additions.map(item => item.id), ['new', 'newer']);
   assert.equal(plan.conflicts, 1);
   assert.equal(plan.duplicates, 1);
-  assert.equal(existing[0].value, 'local');
+  assert.equal(existing[0].amountPaise, 100);
+  assert.equal(incoming[0].amountPaise, 999);
 });

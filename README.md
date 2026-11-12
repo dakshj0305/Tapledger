@@ -1,3 +1,7 @@
+## Current release — VOLTURA V21.1.1
+
+The current source package is V21.1.1, a dark-first/light-capable editorial finance workspace. The dashboard has a stronger monthly cash-flow hero, chapter navigation, clearer cash-flow and budget panels, category mix, recent activity with direct edit/delete actions, and a savings/insight section. Mobile navigation keeps Add prominent. The core release also hardens additive JSON restore and avoids rewriting existing transactions during startup migration. V21.1.1 corrects the CSS cascade order for unsupported backdrop blur, reduced transparency and forced-colors modes. The project remains static HTML/CSS/vanilla JavaScript, uses local IndexedDB (`tapledger-db`, v3), and adds no remote dependency.
+
 # VOLTURA — Personal finance, made clear
 
 VOLTURA is a static, local-first personal finance PWA for recording income, expenses and transfers, reviewing budgets and goals, and analysing the ledger later. Financial records are stored in IndexedDB in the current browser profile.
@@ -52,7 +56,7 @@ This project has no build-time npm dependencies. With Node.js 18 or newer, run t
 
 ```sh
 for f in *.js; do node --check "$f" || exit 1; done
-node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.cjs
+node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.cjs restore-transaction.test.cjs
 sha256sum -c SHA256SUMS.txt
 ```
 
@@ -77,12 +81,3 @@ The app's browser theme-color now follows the selected light/dark/system prefere
 
 
 The V20.9 interaction pass also removes a duplicate pointer-tilt listener and unused motion variables. Passive trackpad wheel input now gives the sticky chapter control a restrained temporary perspective response and resets to neutral without cancelling native scrolling. The sidebar wordmark now follows the active theme text token for readable light and dark appearances.
-
-## Data-safety and launch reliability (V20.10)
-
-V20.10 makes JSON restore strictly additive. Existing primary keys are preserved, repeated IDs in the backup are accepted only once, and inserts run atomically through IndexedDB `add()` operations. Legacy migration no longer rewrites matching current-ledger records, and account setup no longer silently reassigns legacy transaction account names. The parser-time quick-launch script has been removed; expense/income shortcuts open after database initialization and event wiring. The IndexedDB identity and schema remain unchanged.
-
-
-## Visual redesign — V21.0
-
-Introduces a cohesive VOLTURA visual system with a forest-green navigation rail, refined balance hero, clearer dashboard hierarchy, more spacious chart and activity panels, consistent secondary-page styling, and responsive mobile navigation. The redesign is a presentation layer: existing finance logic, DOM interaction hooks, IndexedDB database identity/schema, and locally stored records remain unchanged.

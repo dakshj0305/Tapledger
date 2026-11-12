@@ -76,3 +76,23 @@ These remain unverified, not passed.
 - The light-theme sidebar wordmark now uses the active text token rather than a near-white hard-coded color.
 - Browser harness covered all eight views at 320px, 390px, 820px and 1440px; all views remained within the viewport at tested widths. At 320px, all eight views also remained within the viewport with 200% root text sizing.
 - Final source test run: 27/27 Node tests passed; seven JavaScript syntax checks passed; six CSS files parsed without syntax errors; manifest JSON parsed successfully.
+
+
+## V21.1 local source QA addendum — 2026-11-12
+
+- **PASSED:** `node --check` for `app.js`, `finance-core.js`, `quick-boot.js`, `sw.js`, `motion-ui.js` and `scroll-story.js`.
+- **PASSED:** `node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.cjs restore-transaction.test.cjs` — 34 tests passed, 0 failed.
+- **PASSED:** source checks for unchanged IndexedDB identity/version, same-origin precache references, the new stylesheet reference, mobile add navigation, additive restore contract, migration non-rewrite contract and recent-transaction actions.
+- **PASSED:** calculated token contrast checks for primary dark/light text, muted text and action text. See `CONTRAST-REPORT-V21.1.md`. These are token-pair calculations, not a full rendered-page contrast audit.
+- **NOT TESTED:** rendered desktop/mobile screenshot verification. Chromium headless was invoked against localhost but did not complete within the execution window.
+- **NOT TESTED:** actual IndexedDB restore transaction in a browser, populated-data visual review, 200% zoom, forced-colors, TalkBack, Android keyboard on Galaxy S23 FE, NFC hardware, offline reload and GitHub Pages deployment.
+- **NOT TESTED:** the user's real browser profile and financial records. Testing used no financial exports or personal IndexedDB.
+
+
+## V21.1.1 final cascade patch — 2026-11-12
+
+- **PASSED:** `node --test *.test.cjs` — 35 tests passed, 0 failed.
+- **PASSED:** JavaScript syntax checks, CSS brace/parser checks, manifest parsing, service-worker precache path checks and SHA-256 manifest verification.
+- **PASSED:** regression coverage confirms that unsupported-backdrop-filter, reduced-transparency and forced-colors fallbacks appear after the final dashboard design rules; reduced-transparency keeps the navigation legible in light mode.
+- **NOT TESTED:** Chromium headless screenshot attempt against `http://127.0.0.1:8765/` did not complete before the 25-second process timeout. This release has no new browser-rendered visual certification.
+- **NOT TESTED:** real IndexedDB restore, persistent storage, service-worker activation/offline relaunch, actual GitHub Pages deployment, Galaxy S23 FE/NFC, TalkBack, Windows Edge/Chrome, 200% zoom, and end-to-end forced-colors/reduced-transparency rendering.

@@ -1,0 +1,63 @@
+VOLTURA V21.1.1 source inventory
+Generated: 2026-11-12
+Project root: Tapledger-main/
+
+AGENTS.md	6510 bytes
+ASSET-PROVENANCE.md	670 bytes
+AUDIT-REPORT.md	13742 bytes
+BRAND.md	4046 bytes
+BUTTON-INTEGRATION.md	1135 bytes
+COMPONENT-INTEGRATION.md	1441 bytes
+CONTRAST-REPORT-V21.1.md	2129 bytes
+CUSTOM-DOMAIN-SETUP.md	583 bytes
+DESIGN-SYSTEM-V21.1.md	3844 bytes
+FEATURE-INVENTORY-V22.md	2723 bytes
+GITHUB-UPLOAD-GUIDE.md	1158 bytes
+INTEGRATION-NOTES.md	2395 bytes
+MOTIF-SYSTEM.md	637 bytes
+ORIGINAL-SOURCE-HASH-VERIFICATION.md	2649 bytes
+PACKAGE-VERIFICATION.md	1542 bytes
+QA-REPORT.md	7433 bytes
+README.md	8627 bytes
+RECONSTRUCTION-REPORT.md	4086 bytes
+RELEASE-REPORT-V21.1.1.md	8092 bytes
+RELEASE-REPORT-V21.1.md	7350 bytes
+RELEASE.md	8047 bytes
+RUN-LOCAL-WINDOWS.bat	442 bytes
+SHA256SUMS.txt	4315 bytes
+SOURCE-DIFF-SUMMARY.md	2930 bytes
+SOURCE-INVENTORY-V21.1.txt	1011 bytes
+UI-QA-CHECKLIST.md	3430 bytes
+UI-REFRESH-NOTES.md	3157 bytes
+app.js	97361 bytes
+cookies.html	4370 bytes
+design-system.css	62158 bytes
+finance-core.js	6279 bytes
+finance-core.test.cjs	3556 bytes
+icons/icon-192-maskable.png	5351 bytes
+icons/icon-192.png	8194 bytes
+icons/icon-512-maskable.png	15395 bytes
+icons/icon-512.png	23857 bytes
+icons/voltura-mark.svg	397 bytes
+index.html	52411 bytes
+legal.css	3173 bytes
+liquid-metal.css	1483 bytes
+liquid-metal.js	1440 bytes
+manifest.webmanifest	1391 bytes
+motion-ui.css	3470 bytes
+motion-ui.js	4326 bytes
+polish.css	16523 bytes
+privacy.html	10711 bytes
+project-integrity.test.cjs	4243 bytes
+quick-boot.js	411 bytes
+release-audit.test.cjs	11719 bytes
+restore-transaction.test.cjs	4601 bytes
+scroll-story.js	3402 bytes
+skills-lock.json	284 bytes
+style.css	122313 bytes
+sw.js	2509 bytes
+terms.html	6865 bytes
+voltura-visual-system.css	31184 bytes
+
+File count listed: 56
+SHA-256 values for all project files except SHA256SUMS.txt are recorded in SHA256SUMS.txt.

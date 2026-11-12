@@ -1,8 +1,8 @@
-# VOLTURA release notes · current v20.9
+# VOLTURA release notes · current v21.1.1
 
 ## Quick expense capture
 
-- `?a=1` opens the expense sheet at document startup, before the main app finishes initializing; the amount receives focus. `?i=1` still opens the income form.
+- `quick-boot.js` captures `?a=1`, `?i=1` and legacy `?add=1` as early intent only. After IndexedDB, account loading and event wiring complete, the main app opens the appropriate entry UI and focuses the amount. This avoids the former open-then-reset race.
 - The first render includes a static category fallback and an account fallback; the app replaces categories with the eight most-used categories from local expense history and selects the last-used payment account after IndexedDB loads.
 - Amounts are parsed as integer paise, allow a maximum of two decimal places, and are capped at ₹10 crore.
 - Date and time are editable; merchant and note remain optional.
@@ -43,15 +43,41 @@ No real Android/NFC write or tap test, TalkBack/NVDA test, Lighthouse run, axe/W
 - Trackpad wheel gestures now cause a restrained temporary perspective response on the chapter rail; native scrolling stays passive. Fine-pointer tilt and magnetic button movement are disabled for touch/reduced-motion users.
 - Kept the PWA dependency-free and offline-first. GSAP is not bundled; native motion APIs provide the current animation behavior rather than adding a remote dependency.
 
-## Data-safety and launch reliability — V20.10
 
-- Backup restore is additive: existing transaction, budget, goal and account keys win; duplicate IDs within an imported backup are accepted once. New records are written with IndexedDB `add()` operations in one read-write transaction, so a key collision cannot silently overwrite a saved record.
-- Legacy expense migration is additive and no longer reclassifies or rewrites an existing transaction during startup. Existing transaction account references are not silently changed by account setup.
-- Removed the parser-time quick-launch dialog opener. NFC/shortcut query actions now open after IndexedDB initialization and normal event wiring, avoiding a pre-initialization dialog being reset by the main app.
-- Kept the existing IndexedDB database name, version, object stores, key paths and indexes unchanged.
-- Advanced the visible app and service-worker cache version to V20.10.
+## V21.1 — Editorial workspace redesign and safe core repairs (2026-11-12)
+
+### Visual and interaction redesign
+
+- Added `voltura-visual-system.css` as a final, local-only design layer. The redesign intentionally resolves the prior global flat-mode `!important` cascade that disabled shadows, backdrop blur, and dimensional surfaces.
+- Introduced a dark-first charcoal/forest/lime visual system with an explicit light palette, tabular financial numerals, stronger dashboard hierarchy, larger reporting typography, redesigned sidebar, glass chapter rail, cash-flow hero, cards, category chart and goal/insight surfaces.
+- Limited dashboard glass treatment to the navigation rail, chapter rail and balance hero; quick entry and inputs remain opaque.
+- Rebuilt mobile navigation as Overview, Ledger, Add, Intelligence and More; secondary destinations remain available in More.
+- Added Edit and Delete actions to each recent dashboard transaction, wired to the existing transaction editor and confirmation-based delete flow.
+- Added visual-viewport sizing for Android keyboard changes and hid the mobile dock while the keyboard is open.
+
+### Core and data-safety repairs
+
+- Changed JSON restore from blind `put()` operations to a single read/write IndexedDB transaction using `add()` after reading existing keys. Existing transaction IDs win; duplicate backup IDs are skipped; budget category collisions are skipped; account-name matching is case-insensitive; account references in imported transactions are normalized to the existing canonical account name. A write failure aborts the entire restore transaction.
+- Changed legacy migration to import only when the migration marker is not set and to skip matching transaction IDs without rewriting their category, account, source or timestamps.
+- Changed account initialization to create missing account records without rewriting existing transaction account references.
+- Changed `quick-boot.js` to capture shortcut intent only; the app opens the quick-entry UI once after IndexedDB, account state and event wiring are ready. This avoids the early-open / later-reset race. `?a=1`, `?i=1` and `?add=1` remain supported.
+- Added `visualViewport` resize/scroll handling for keyboard-aware quick-entry sizing.
+- Preserved `tapledger-db`, IndexedDB version 3, existing stores, key paths, indexes, integer-paise calculations and accepted backup tags.
+
+### Release and verification
+
+- Updated service-worker cache identity to `voltura-platform-v21.1` and precached the new visual stylesheet.
+- Updated app build label and manifest/theme metadata.
+- Automated source tests: 34 passed. JavaScript syntax checks passed. ZIP and live-browser checks remain separate release gates.
+- No framework, build system, remote dependency, remote font, CDN, analytics or network service was added. GSAP and the optional pinned scroll scene were not added.
+- No files were deleted. No IndexedDB data was accessed, migrated or modified in a real user browser.
 
 
-## Visual redesign — V21.0
+## V21.1.1 — accessibility fallback cascade repair (2026-11-12)
 
-Introduces a cohesive VOLTURA visual system with a forest-green navigation rail, refined balance hero, clearer dashboard hierarchy, more spacious chart and activity panels, consistent secondary-page styling, and responsive mobile navigation. The redesign is a presentation layer: existing finance logic, DOM interaction hooks, IndexedDB database identity/schema, and locally stored records remain unchanged.
+- Corrected the unsupported-backdrop-filter fallback to use `@supports`, not an invalid `@media` feature query.
+- Moved the final glass fallback rules after the visual cascade so later `!important` design overrides cannot re-enable blur in browsers without support.
+- Corrected reduced-transparency colours so the persistent dark navigation remains readable in the light theme; the chapter rail switches to a solid theme surface.
+- Put forced-colors rules last so they take precedence over later insight text styling.
+- Advanced the visible build label and service-worker cache namespace to `V21.1.1` / `voltura-platform-v21.1.1`.
+- Added a regression test for fallback ordering and color handling. No app data, IndexedDB schema, financial calculations, stored transaction properties or user records are changed by this patch.

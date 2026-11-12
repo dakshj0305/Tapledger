@@ -1,6 +1,6 @@
 'use strict';
 
-/* VOLTURA v21.0 — static, local-first personal finance PWA.
+/* VOLTURA v21.1.1 — static, local-first personal finance PWA.
    Internal DB/store names intentionally retain their TapLedger identity for existing data compatibility.
    Currency amounts are stored as integer paise to avoid floating point drift. */
 const DB_NAME='tapledger-db', DB_VERSION=3, CURRENCY='INR';
@@ -48,7 +48,7 @@ function validDate(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.tes
 // IndexedDB: upgrade adds new stores while preserving v1 expenses/settings.
 function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('expenses'))d.createObjectStore('expenses',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});if(!d.objectStoreNames.contains('transactions')){const s=d.createObjectStore('transactions',{keyPath:'id'});s.createIndex('date','date');s.createIndex('type','type');s.createIndex('category','category')}if(!d.objectStoreNames.contains('budgets'))d.createObjectStore('budgets',{keyPath:'id'});if(!d.objectStoreNames.contains('goals'))d.createObjectStore('goals',{keyPath:'id'});if(!d.objectStoreNames.contains('accounts'))d.createObjectStore('accounts',{keyPath:'name'})};req.onblocked=()=>toast('Database upgrade is waiting. Close older Voltura or legacy TapLedger tabs, then return here.');req.onsuccess=()=>{const opened=req.result;opened.onversionchange=()=>opened.close();resolve(opened)};req.onerror=()=>reject(req.error)})}
 function storeRequest(store,mode,method,value){return new Promise((resolve,reject)=>{let tx,request,result;try{tx=db.transaction(store,mode);const objectStore=tx.objectStore(store);request=value===undefined?objectStore[method]():objectStore[method](value)}catch(error){reject(error);return}request.onsuccess=()=>{result=request.result};request.onerror=()=>{reject(request.error||new Error('Database request failed.'))};tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error||request.error||new Error('Database transaction failed.'));tx.onabort=()=>reject(tx.error||new Error('Database transaction was aborted.'))})}
-function batchWrite(storeNames,operations){return new Promise((resolve,reject)=>{let tx;try{tx=db.transaction(storeNames,'readwrite');for(const op of operations){const store=tx.objectStore(op.store);if(op.action==='delete')store.delete(op.key);else if(op.action==='clear')store.clear();else if(op.action==='add')store.add(op.value);else store.put(op.value)}}catch(error){reject(error);return}tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Database write failed.'));tx.onabort=()=>reject(tx.error||new Error('Database write was aborted.'))})}
+function batchWrite(storeNames,operations){return new Promise((resolve,reject)=>{let tx;try{tx=db.transaction(storeNames,'readwrite');for(const op of operations){const store=tx.objectStore(op.store);if(op.action==='delete')store.delete(op.key);else if(op.action==='clear')store.clear();else store.put(op.value)}}catch(error){reject(error);return}tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Database write failed.'));tx.onabort=()=>reject(tx.error||new Error('Database write was aborted.'))})}
 const getAll=store=>storeRequest(store,'readonly','getAll');
 const put= (store,value)=>storeRequest(store,'readwrite','put',value);
 const del=(store,key)=>storeRequest(store,'readwrite','delete',key);
@@ -56,39 +56,37 @@ const getSetting=key=>storeRequest('settings','readonly','get',key);
 const setSetting=(key,value)=>put('settings',{key,value});
 const getAccounts=()=>getAll('accounts');
 async function migrateLegacy(){
-  // One-time legacy import is strictly additive. Existing current-ledger records
-  // are never rewritten or reclassified by a background migration.
   const marker=await getSetting('migration-v3-complete');
   if(marker?.value)return;
-  const legacy=await getAll('expenses');
-  const current=await getAll('transactions');
-  const plan=VolturaFinance.planAdditiveRecords(current,legacy.filter(old=>old&&Number.isSafeInteger(old.amountPaise)&&old.amountPaise>0&&validDate(String(old.spentAt))).map(old=>({
-    id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,currency:'INR',
-    category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',
-    merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),
-    account:'Imported history',source:'legacy',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()
-  })),item=>item.id);
-  const ops=plan.additions.map(value=>({store:'transactions',action:'add',value}));
-  const oldBudget=await getSetting('monthlyBudgetPaise');
-  if(oldBudget&&Number.isSafeInteger(oldBudget.value)&&oldBudget.value>0){
-    const existingBudgets=await getAll('budgets');
-    if(!existingBudgets.some(b=>b.category==='__overall'))ops.push({store:'budgets',action:'add',value:{id:'overall',category:'__overall',limitPaise:oldBudget.value,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}});
+  const [legacy,current,existingBudgets,oldBudget]=await Promise.all([
+    getAll('expenses'),getAll('transactions'),getAll('budgets'),getSetting('monthlyBudgetPaise')
+  ]);
+  const existingIds=new Set(current.map(t=>String(t.id)));
+  const ops=[];
+  for(const old of legacy){
+    if(!old||!Number.isSafeInteger(old.amountPaise)||old.amountPaise<=0||!validDate(String(old.spentAt)))continue;
+    const id=String(old.id||uuid());
+    if(existingIds.has(id))continue;
+    existingIds.add(id);
+    ops.push({store:'transactions',action:'put',value:{id,type:'expense',amountPaise:old.amountPaise,currency:'INR',category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Imported history',source:'legacy',createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()}});
+  }
+  if(oldBudget&&Number.isSafeInteger(oldBudget.value)&&oldBudget.value>0&&!existingBudgets.some(b=>b.category==='__overall')){
+    ops.push({store:'budgets',action:'put',value:{id:'overall',category:'__overall',limitPaise:oldBudget.value,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}});
   }
   if(ops.length)await batchWrite(['transactions','budgets'],ops);
   await setSetting('migration-v3-complete',true);
 }
 async function ensureAccounts(){
   const existing=await getAccounts();
-  const known=new Set(existing.map(a=>String(a.name).toLowerCase()));
-  const additions=[];
-  const defaults=[['Everyday','asset'],['Bank','asset'],['Cash','asset'],['UPI','asset'],['Credit card','liability']];
-  const names=new Map();for(const [name,kind] of defaults)names.set(name,kind);
-  const hasLegacy=transactions.some(t=>t.type==='expense'&&['legacy','legacy-backup'].includes(t.source));
-  if(hasLegacy)names.set('Imported history','historical');
+  const known=new Set(existing.map(a=>String(a.name).toLocaleLowerCase()));
+  const names=new Map();
+  for(const [name,kind] of [['Everyday','asset'],['Bank','asset'],['Cash','asset'],['UPI','asset'],['Credit card','liability']])names.set(name,kind);
+  if(transactions.some(t=>t.type==='expense'&&['legacy','legacy-backup'].includes(t.source)))names.set('Imported history','historical');
   for(const t of transactions){
     for(const name of [t.account,t.fromAccount,t.toAccount])if(name&&typeof name==='string'&&!names.has(name))names.set(name,/credit|loan|card/i.test(name)?'liability':'asset');
   }
-  for(const [name,kind] of names)if(!known.has(name.toLowerCase()))additions.push({name,kind,openingBalancePaise:0,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  const additions=[];
+  for(const [name,kind] of names)if(!known.has(name.toLocaleLowerCase()))additions.push({name,kind,openingBalancePaise:0,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
   if(additions.length)await batchWrite(['accounts'],additions.map(value=>({store:'accounts',action:'put',value})));
   accounts=await getAccounts();accounts.sort((a,b)=>a.name.localeCompare(b.name));
 }
@@ -137,7 +135,7 @@ function renderCategoryDonut(items){
  $('#overviewCategoryLegend').setAttribute('role','list');$('#overviewCategoryLegend').setAttribute('aria-label','Expense totals by category');
  $('#overviewCategoryLegend').innerHTML=shown.length?shown.map(([cat,val],index)=>`<div class="legend-row" role="listitem"><div class="legend-meta"><span class="legend-name"><i class="legend-swatch" aria-hidden="true" style="background:${categoryColor(cat)}"></i>${esc(cat)}</span><strong class="legend-value">${money(val)}</strong></div><div class="category-meter" aria-hidden="true"><span style="width:${Math.max(1,val/maximum*100).toFixed(1)}%;background:${categoryColor(cat)}"></span></div></div>`).join(''):'<div class="empty-mini">Category mix appears<br>after your first expense.</div>';
 }
-function renderRecent(){const rows=transactions.slice().sort((a,b)=>b.date.localeCompare(a.date)||String(b.time||'').localeCompare(String(a.time||''))||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,4);$('#recentTransactions').innerHTML=rows.length?rows.map(t=>`<div class="recent-row"><span class="category-icon">${transactionIcon(t)}</span><div><div class="recent-title">${esc(t.merchant||t.category||t.type)}</div><div class="recent-sub">${esc(t.category)} · ${fmtDate(t.date)}${t.time?' · '+esc(t.time):''}</div></div><strong class="recent-amount ${t.type}">${t.type==='income'?'+':'−'}${money(t.amountPaise)}</strong></div>`).join(''):'<div class="empty-mini">Your recent activity<br>will appear here.</div>'}
+function renderRecent(){const rows=transactions.slice().sort((a,b)=>b.date.localeCompare(a.date)||String(b.time||'').localeCompare(String(a.time||''))||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,4);$('#recentTransactions').innerHTML=rows.length?rows.map(t=>`<div class="recent-row"><span class="category-icon">${transactionIcon(t)}</span><div><div class="recent-title">${esc(t.merchant||t.category||t.type)}</div><div class="recent-sub">${esc(t.category)} · ${fmtDate(t.date)}${t.time?' · '+esc(t.time):''}</div><div class="recent-actions"><button class="recent-action" data-recent-edit="${esc(t.id)}" type="button">Edit</button><button class="recent-action" data-recent-delete="${esc(t.id)}" type="button">Delete</button></div></div><strong class="recent-amount ${t.type}">${t.type==='income'?'+':'−'}${money(t.amountPaise)}</strong></div>`).join(''):'<div class="empty-mini">Your recent activity will appear here. Add your first entry to see it take shape.</div>'}
 function renderOverviewInsight(){const items=currentItems(),expenses=items.filter(x=>x.type==='expense'),income=sum(items.filter(x=>x.type==='income')),out=sum(expenses);let title='Your patterns tell a story.',text='Record a few transactions and Voltura will start surfacing useful patterns — without judgement.';if(expenses.length){const totals={};expenses.forEach(x=>totals[x.category]=(totals[x.category]||0)+x.amountPaise);const top=Object.entries(totals).sort((a,b)=>b[1]-a[1])[0];title=`${top[0]} is your biggest category.`;text=`It accounts for ${out?Math.round(top[1]/out*100):0}% of recorded spending this month. Open Intelligence to see what else stands out.`;if(income){const rate=(income-out)/income*100;text+=` Your recorded savings rate is ${rate.toFixed(0)}%.`}}$('#overviewInsightTitle').textContent=title;$('#overviewInsightText').textContent=text}
 function renderOverviewGoal(){const goal=goals.filter(g=>g.savedPaise<g.targetPaise).sort((a,b)=>(a.targetDate||'9999').localeCompare(b.targetDate||'9999'))[0];const host=$('#overviewGoal');if(!goal){host.innerHTML=`<div class="goal-empty"><span>◎</span><strong>${goals.length?'All goals are complete.':'Give your money a direction.'}</strong><p>${goals.length?'Celebrate the progress, then choose what comes next.':'Create a savings goal and track progress one contribution at a time.'}</p><button class="button button-light" id="quickCreateGoal">Create a goal</button></div>`;$('#quickCreateGoal')?.addEventListener('click',()=>openGoal());return}const pct=Math.min(100,goal.savedPaise/goal.targetPaise*100);host.innerHTML=`<div class="goal-mini"><strong>${esc(goal.name)}</strong><span>${pct.toFixed(0)}% COMPLETE</span><span>${money(goal.savedPaise)} saved of ${money(goal.targetPaise)}</span><span>${money(Math.max(0,goal.targetPaise-goal.savedPaise))} to go</span><div class="goal-mini-bar"><i style="width:${pct}%"></i></div><button class="text-action" data-go="goals">View goal ↗</button></div>`;host.querySelector('[data-go]')?.addEventListener('click',()=>navigate('goals'))}
 
@@ -258,7 +256,7 @@ async function saveQuickExpense(event){
 async function undoQuickExpense(){if(!lastQuickSavedId)return;const id=lastQuickSavedId;clearTimeout(quickUndoTimer);quickUndoTimer=0;try{await del('transactions',id);transactions=await getAll('transactions');transactions.sort((a,b)=>b.date.localeCompare(a.date)||String(b.time||'').localeCompare(String(a.time||''))||String(b.createdAt).localeCompare(String(a.createdAt)));lastQuickSavedId='';renderAll();$('#quickExpenseSuccess').hidden=true;$('#quickExpenseFields').hidden=false;$('#quickUndoStatus').textContent='Save undone. Review or edit the entry, then save again.';$('#quickExpenseError').textContent='The last save was undone.';$('#quickExpenseError').hidden=false;$('#quickFeedback').textContent='Save undone. You can edit the entry and try again.';$('#quickExpenseSave').disabled=false;$('#quickExpenseSave').innerHTML='<span>Save expense</span><b aria-hidden="true">↗</b>';$('#quickExpenseAmount').focus();haptic('tap');toast('Last expense undone.')}catch(error){console.error(error);toast('Could not undo this expense. Check your ledger.')}}
 function addAnotherQuickExpense(){clearTimeout(quickUndoTimer);quickUndoTimer=0;lastQuickSavedId='';void openQuickExpense()}
 function finishQuickExpense(){clearTimeout(quickUndoTimer);quickUndoTimer=0;$('#quickExpenseDialog').close();navigate('overview');$('#main-content').focus?.()}
-function applyUrlAction(){const p=new URLSearchParams(location.search);let type=null,source='nfc';if(p.get('a')==='1'||p.get('add')==='1')type='expense';if(p.get('i')==='1')type='income';if(!type)return;history.replaceState({},document.title,location.pathname+location.hash);if(type==='expense')openQuickExpense();else openEntry({type,source})}
+function applyUrlAction(){const p=new URLSearchParams(location.search);const intent=window.__volturaLaunchIntent;const type=intent?.type||(p.get('a')==='1'||p.get('add')==='1'?'expense':p.get('i')==='1'?'income':'');if(!type)return;delete window.__volturaLaunchIntent;history.replaceState({},document.title,location.pathname+location.hash);if(type==='expense')openQuickExpense();else openEntry({type,source:'nfc'})}
 function inferCategory(text,type='expense'){const value=String(text||'').toLowerCase();if(type==='income'){if(/salary|payroll|stipend/.test(value))return'Salary';if(/freelance|client|project/.test(value))return'Freelance';if(/refund|returned/.test(value))return'Refund';if(/interest/.test(value))return'Interest';if(/gift/.test(value))return'Gift';return'Other'}return VolturaFinance.inferMerchantCategory(text)||'Other'}
 function parseSpokenAmount(text){const match=text.match(/(?:₹|inr\s*|rs\.?\s*)?(\d[\d,]*(?:\.\d+)?)/i);if(!match)return null;const raw=match[1].replace(/,/g,'');return /^\d+(?:\.\d{1,2})?$/.test(raw)?raw:null}
 function speechRecognitionConstructor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null}
@@ -275,7 +273,7 @@ function haptic(kind='tap'){
  const patterns={tap:10,success:[15,20,25],error:[40,20,30]};
  try{navigator.vibrate(patterns[kind]||patterns.tap)}catch{}
 }
-function applyThemePreference(value){const allowed=['system','light','dark'];const theme=allowed.includes(value)?value:'system';document.documentElement.dataset.theme=theme;const dark=theme==='dark'||(theme==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);const themeMeta=document.querySelector('meta[name="theme-color"]');if(themeMeta)themeMeta.content=dark?'#101715':'#F3F3ED';const select=$('#themePreference');if(select&&select.value!==theme)select.value=theme;}
+function applyThemePreference(value){const allowed=['system','light','dark'];const theme=allowed.includes(value)?value:'system';document.documentElement.dataset.theme=theme;const dark=theme==='dark'||(theme==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);const themeMeta=document.querySelector('meta[name="theme-color"]');if(themeMeta)themeMeta.content=dark?'#0b1211':'#f2f4ee';const select=$('#themePreference');if(select&&select.value!==theme)select.value=theme;}
 async function loadUserPreferences(){
  let theme='system',savedVibration=null;
  try{const values=await Promise.all([getSetting('theme-pref-v1'),getSetting('vibration-enabled-v1')]);theme=values[0]?.value||'system';savedVibration=values[1]?.value}catch(error){console.warn('Could not read display preferences:',error)}
@@ -292,25 +290,93 @@ function download(blob,name){const url=URL.createObjectURL(blob),a=document.crea
 function exportCSV(){const rows=[['Date','Time','Type','Amount INR','Category','Merchant','Account','Payment method','Receipt note','Source','ID']];transactions.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>rows.push([t.date,t.time||'',t.type,(t.amountPaise/100).toFixed(2),t.category,t.merchant,t.account,t.paymentMethod||'',t.note,t.source,t.id]));download(new Blob(['\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),`voltura-ledger-${today()}.csv`);toast('CSV export prepared.')}
 async function backupJSON(){const data={app:'Voltura',schemaVersion:8,exportedAt:new Date().toISOString(),currency:CURRENCY,transactions,budgets,goals,accounts};download(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`voltura-backup-${today()}.json`);toast('Backup downloaded.')}
 function sanitizeTransaction(t){if(!validTransaction(t))return null;return{id:String(t.id),type:t.type,amountPaise:t.amountPaise,currency:'INR',category:t.type==='transfer'?'Transfer':String(t.category),merchant:String(t.merchant||'').slice(0,90),paymentMethod:String(t.paymentMethod||'').slice(0,40),note:String(t.note||'').slice(0,180),date:t.date,time:/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(String(t.time||''))?String(t.time):'',account:t.type==='transfer'?'':String(t.account),fromAccount:t.type==='transfer'?String(t.fromAccount):undefined,toAccount:t.type==='transfer'?String(t.toAccount):undefined,source:String(t.source||'import').slice(0,30),createdAt:String(t.createdAt||new Date().toISOString()),updatedAt:String(t.updatedAt||new Date().toISOString())}}
-async function restoreJSON(file){if(!file)return;try{const data=JSON.parse(await file.text());if(!data||!['Voltura','Vellum','Cairn','TapLedger'].includes(data.app))throw new Error('This is not a supported Voltura or legacy Cairn/TapLedger/Vellum backup.');const ops=[];let count=0;const txs=[];if(Array.isArray(data.transactions)){for(const raw of data.transactions){const t=sanitizeTransaction(raw);if(t){txs.push(t);count++}}}else if(Array.isArray(data.expenses)){for(const old of data.expenses){if(!old||!Number.isSafeInteger(old.amountPaise)||old.amountPaise<=0||!validDate(String(old.spentAt)))continue;const t=sanitizeTransaction({id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Everyday',source:'legacy-backup',createdAt:old.createdAt||new Date().toISOString()});if(t){txs.push(t);count++}}}else if(!Array.isArray(data.budgets)&&!Array.isArray(data.goals))throw new Error('Backup contains no supported transaction, budget or goal data.');
- const incomingBudgets=[];let skippedBudgetRecords=0;if(Array.isArray(data.budgets))for(const b of data.budgets){if(b&&typeof b.id==='string'&&b.id.length<=80&&Number.isSafeInteger(b.limitPaise)&&b.limitPaise>0&& (b.category==='__overall'||EXPENSE_CATEGORIES.includes(b.category)))incomingBudgets.push({id:b.id,category:b.category,limitPaise:b.limitPaise,createdAt:String(b.createdAt||new Date().toISOString()),updatedAt:new Date().toISOString()});else skippedBudgetRecords++}
- if(Number.isSafeInteger(data.monthlyBudgetPaise)&&data.monthlyBudgetPaise>0&&!incomingBudgets.some(b=>b.category==='__overall'))incomingBudgets.push({id:'overall',category:'__overall',limitPaise:data.monthlyBudgetPaise,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
- const incomingGoals=[];if(Array.isArray(data.goals))for(const g of data.goals){if(g&&typeof g.id==='string'&&g.id.length<=100&&typeof g.name==='string'&&g.name.trim()&&Number.isSafeInteger(g.targetPaise)&&g.targetPaise>0&&Number.isSafeInteger(g.savedPaise)&&g.savedPaise>=0&&g.savedPaise<=g.targetPaise&&(!g.targetDate||validDate(g.targetDate)))incomingGoals.push({id:g.id,name:g.name.trim().slice(0,70),targetPaise:g.targetPaise,savedPaise:g.savedPaise,targetDate:g.targetDate||'',note:String(g.note||'').slice(0,140),createdAt:String(g.createdAt||new Date().toISOString()),updatedAt:new Date().toISOString()})}
- const incomingAccounts=[];if(Array.isArray(data.accounts))for(const a of data.accounts){if(a&&typeof a.name==='string'&&a.name.trim()&&a.name.length<=40&&['asset','liability'].includes(a.kind)&&Number.isSafeInteger(a.openingBalancePaise)&&a.openingBalancePaise>=0&&a.openingBalancePaise<=10000000000)incomingAccounts.push({name:a.name.trim(),kind:a.kind,openingBalancePaise:a.openingBalancePaise,createdAt:String(a.createdAt||new Date().toISOString()),updatedAt:new Date().toISOString()})}
- const skipped=(Array.isArray(data.transactions)?data.transactions.length:Array.isArray(data.expenses)?data.expenses.length:0)-txs.length+skippedBudgetRecords+(Array.isArray(data.goals)?data.goals.length-incomingGoals.length:0)+(Array.isArray(data.accounts)?data.accounts.length-incomingAccounts.length:0);
- if(!txs.length&&!incomingBudgets.length&&!incomingGoals.length&&!incomingAccounts.length)throw new Error(`No valid records were found in this backup. Nothing was changed.${skipped?` ${skipped} record${skipped===1?'':'s'} skipped.`:''}`);
- const [existingTransactions,existingBudgets,existingGoals,existingAccounts]=await Promise.all([getAll('transactions'),getAll('budgets'),getAll('goals'),getAll('accounts')]);
- const txPlan=VolturaFinance.planAdditiveRecords(existingTransactions,txs,item=>item.id);
- const budgetPlan=VolturaFinance.planAdditiveRecords(existingBudgets,incomingBudgets,item=>item.id);
- const goalPlan=VolturaFinance.planAdditiveRecords(existingGoals,incomingGoals,item=>item.id);
- const accountPlan=VolturaFinance.planAdditiveRecords(existingAccounts,incomingAccounts,item=>String(item.name).toLocaleLowerCase(),);
- const additions=[...txPlan.additions.map(value=>({store:'transactions',action:'add',value})),...budgetPlan.additions.map(value=>({store:'budgets',action:'add',value})),...goalPlan.additions.map(value=>({store:'goals',action:'add',value})),...accountPlan.additions.map(value=>({store:'accounts',action:'add',value}))];
- if(!additions.length)throw new Error('Every valid backup record already exists or conflicts with an existing record. Nothing was changed.');
- await batchWrite(['transactions','budgets','goals','accounts'],additions);await loadAll();await ensureAccounts();renderAll();
- const addedTransactions=txPlan.additions.length,addedBudgets=budgetPlan.additions.length,addedGoals=goalPlan.additions.length;
- const conflicts=txPlan.conflicts+txPlan.duplicates+budgetPlan.conflicts+budgetPlan.duplicates+goalPlan.conflicts+goalPlan.duplicates+accountPlan.conflicts+accountPlan.duplicates;
- toast(`Backup merged: ${addedTransactions} transactions, ${addedBudgets} budgets, ${addedGoals} goals added.${conflicts?` ${conflicts} existing or duplicate records left unchanged.`:''}${skipped?` ${skipped} invalid records skipped.`:''}`)
- }catch(err){console.error(err);toast(err.message||'Restore failed. No import was completed.')}finally{$('#restoreInput').value=''}}
+function additiveRestore(stores,incoming){
+ return new Promise((resolve,reject)=>{
+  let tx;
+  let remaining=stores.length;
+  let finished=false;
+  let restoreCounts={};
+  const current={};
+  try {
+   tx=db.transaction(stores,'readwrite');
+   const fail=error=>{if(finished)return;finished=true;try{tx.abort()}catch{}reject(error)};
+   for(const name of stores){
+    const request=tx.objectStore(name).getAll();
+    request.onsuccess=()=>{
+     current[name]=request.result;
+     remaining-=1;
+     if(remaining!==0)return;
+     try {
+      const existingAccounts=current.accounts||[];
+      const accountByKey=new Map(existingAccounts.map(a=>[String(a.name).toLocaleLowerCase(),a.name]));
+      const accountAliases=new Map();
+      for(const account of incoming.accounts||[]){
+       const key=String(account.name).toLocaleLowerCase();
+       accountAliases.set(key,accountByKey.get(key)||account.name);
+      }
+      const normalizeAccount=name=>{
+       if(!name)return name;
+       const key=String(name).toLocaleLowerCase();
+       return accountByKey.get(key)||accountAliases.get(key)||name;
+      };
+      const txRows=(incoming.transactions||[]).map(item=>item.type==='transfer'
+       ?{...item,fromAccount:normalizeAccount(item.fromAccount),toAccount:normalizeAccount(item.toAccount)}
+       :{...item,account:normalizeAccount(item.account)});
+      const planTx=VolturaFinance.planAdditiveRecords(current.transactions||[],txRows,item=>item.id);
+      const occupiedBudgetIds=new Set((current.budgets||[]).map(item=>String(item.id)));
+      const occupiedBudgetCategories=new Set((current.budgets||[]).map(item=>String(item.category).toLocaleLowerCase()));
+      const seenBudgetCategories=new Set();
+      const budgetAdds=[];
+      let budgetConflicts=0;
+      for(const budget of incoming.budgets||[]){
+       const key=String(budget.category).toLocaleLowerCase();
+       if(occupiedBudgetIds.has(String(budget.id))||occupiedBudgetCategories.has(key)||seenBudgetCategories.has(key)){budgetConflicts+=1;continue;}
+       seenBudgetCategories.add(key);budgetAdds.push(budget);
+      }
+      const planGoals=VolturaFinance.planAdditiveRecords(current.goals||[],incoming.goals||[],item=>item.id);
+      const planAccounts=VolturaFinance.planAdditiveRecords(existingAccounts,incoming.accounts||[],item=>String(item.name).toLocaleLowerCase());
+      const accountAdds=planAccounts.additions.filter(item=>!accountByKey.has(String(item.name).toLocaleLowerCase()));
+      const addRows=(store,rows)=>{for(const value of rows)tx.objectStore(store).add(value);};
+      addRows('transactions',planTx.additions);
+      addRows('budgets',budgetAdds);
+      addRows('goals',planGoals.additions);
+      addRows('accounts',accountAdds);
+      restoreCounts={
+       transactions:planTx.additions.length,transactionConflicts:planTx.conflicts,transactionDuplicates:planTx.duplicates,
+       budgets:budgetAdds.length,budgetConflicts,goals:planGoals.additions.length,goalConflicts:planGoals.conflicts,
+       goalDuplicates:planGoals.duplicates,accounts:accountAdds.length,accountConflicts:planAccounts.conflicts+planAccounts.duplicates
+      };
+     } catch(error){fail(error);}
+    };
+    request.onerror=()=>fail(request.error||new Error('Could not inspect existing records.'));
+   }
+  } catch(error){reject(error);return;}
+  tx.oncomplete=()=>{if(finished)return;finished=true;resolve(restoreCounts);};
+  tx.onerror=()=>{if(finished)return;finished=true;reject(tx.error||new Error('Restore transaction failed.'));};
+  tx.onabort=()=>{if(finished)return;finished=true;reject(tx.error||new Error('Restore was aborted; no imported records were committed.'));};
+ });
+}
+async function restoreJSON(file){
+ if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(!data||!['Voltura','Vellum','Cairn','TapLedger'].includes(data.app))throw new Error('This is not a supported Voltura or legacy Cairn/TapLedger/Vellum backup.');
+  const txs=[];
+  if(Array.isArray(data.transactions)){for(const raw of data.transactions){const t=sanitizeTransaction(raw);if(t)txs.push(t)}}
+  else if(Array.isArray(data.expenses)){for(const old of data.expenses){if(!old||!Number.isSafeInteger(old.amountPaise)||old.amountPaise<=0||!validDate(String(old.spentAt)))continue;const t=sanitizeTransaction({id:String(old.id||uuid()),type:'expense',amountPaise:old.amountPaise,category:EXPENSE_CATEGORIES.includes(old.category)?old.category:'Other',merchant:String(old.merchant||''),note:String(old.note||''),date:String(old.spentAt),account:'Everyday',source:'legacy-backup',createdAt:old.createdAt||new Date().toISOString()});if(t)txs.push(t)}}
+  else if(!Array.isArray(data.budgets)&&!Array.isArray(data.goals))throw new Error('Backup contains no supported transaction, budget or goal data.');
+  const budgets=[];let invalid=0;
+  if(Array.isArray(data.budgets))for(const b of data.budgets){if(b&&typeof b.id==='string'&&b.id.length<=80&&Number.isSafeInteger(b.limitPaise)&&b.limitPaise>0&&(b.category==='__overall'||EXPENSE_CATEGORIES.includes(b.category)))budgets.push({id:b.id,category:b.category,limitPaise:b.limitPaise,createdAt:String(b.createdAt||new Date().toISOString()),updatedAt:String(b.updatedAt||new Date().toISOString())});else invalid++}
+  if(Number.isSafeInteger(data.monthlyBudgetPaise)&&data.monthlyBudgetPaise>0&&!budgets.some(b=>b.category==='__overall'))budgets.push({id:'overall',category:'__overall',limitPaise:data.monthlyBudgetPaise,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  const goals=[];if(Array.isArray(data.goals))for(const g of data.goals){if(g&&typeof g.id==='string'&&g.id.length<=100&&typeof g.name==='string'&&g.name.trim()&&Number.isSafeInteger(g.targetPaise)&&g.targetPaise>0&&Number.isSafeInteger(g.savedPaise)&&g.savedPaise>=0&&g.savedPaise<=g.targetPaise&&(!g.targetDate||validDate(g.targetDate)))goals.push({id:g.id,name:g.name.trim().slice(0,70),targetPaise:g.targetPaise,savedPaise:g.savedPaise,targetDate:g.targetDate||'',note:String(g.note||'').slice(0,140),createdAt:String(g.createdAt||new Date().toISOString()),updatedAt:String(g.updatedAt||new Date().toISOString())});else invalid++}
+  const accounts=[];if(Array.isArray(data.accounts))for(const a of data.accounts){if(a&&typeof a.name==='string'&&a.name.trim()&&a.name.length<=40&&['asset','liability','historical'].includes(a.kind)&&Number.isSafeInteger(a.openingBalancePaise)&&a.openingBalancePaise>=0&&a.openingBalancePaise<=10000000000)accounts.push({name:a.name.trim(),kind:a.kind,openingBalancePaise:a.openingBalancePaise,createdAt:String(a.createdAt||new Date().toISOString()),updatedAt:String(a.updatedAt||new Date().toISOString())});else invalid++}
+  if(!txs.length&&!budgets.length&&!goals.length&&!accounts.length)throw new Error('No valid records were found in this backup. Nothing was changed.');
+  const counts=await additiveRestore(['transactions','budgets','goals','accounts'],{transactions:txs,budgets,goals,accounts});
+  await loadAll();await ensureAccounts();renderAll();
+  const skipped=invalid+counts.transactionConflicts+counts.transactionDuplicates+counts.budgetConflicts+counts.goalConflicts+counts.goalDuplicates+counts.accountConflicts;
+  toast(`Merged ${counts.transactions} transactions, ${counts.budgets} budgets, ${counts.goals} goals and ${counts.accounts} accounts. ${skipped} conflicting, duplicate or invalid records skipped.`);
+ }catch(err){console.error(err);toast(err.message||'Restore failed. No import was completed.')}finally{$('#restoreInput').value=''}
+}
 async function clearCurrentMonth(){
  const key=thisMonth();
  const items=transactions.filter(t=>monthKey(t.date)===key);
@@ -336,15 +402,31 @@ function renderBudgetCategoryOptions(){const current=$('#budgetCategory').value;
 let pendingCategorySuggestion='';
 function refreshMerchantSuggestion(){const merchant=$('#entryMerchant').value.trim(),type=$('#entryType').value,suggestion=VolturaFinance.suggestMerchantCategory(merchant,transactions,type),hint=$('#smartHint'),button=$('#confirmCategorySuggestion');pendingCategorySuggestion=suggestion;if(!merchant||!suggestion||suggestion===$('#entryCategory').value){button.hidden=true;hint.textContent=merchant?'No category suggestion from your local history or merchant name. Choose a category manually.':'Add a vendor to see a local category suggestion.';return}hint.textContent='Local suggestion: '+suggestion+'. Review it, then choose whether to apply it.';button.textContent='Use '+suggestion;button.hidden=false}
 function applyMerchantSuggestion(){if(!pendingCategorySuggestion)return;$('#entryCategory').value=pendingCategorySuggestion;$('#smartHint').textContent='Category set to '+pendingCategorySuggestion+'. You can change it before saving.';$('#confirmCategorySuggestion').hidden=true;pendingCategorySuggestion=''}
+function setupVisualViewport(){
+ const viewport=window.visualViewport;
+ if(!viewport)return;
+ const update=()=>{
+  const height=Math.max(240,Math.round(viewport.height));
+  document.documentElement.style.setProperty('--voltura-visual-viewport-height',`${height}px`);
+  const keyboardOpen=window.innerHeight-viewport.height>140;
+  document.documentElement.classList.toggle('keyboard-visible',keyboardOpen);
+ };
+ viewport.addEventListener('resize',update,{passive:true});
+ viewport.addEventListener('scroll',update,{passive:true});
+ window.addEventListener('resize',update,{passive:true});
+ update();
+}
 function wireEvents(){
+ setupVisualViewport();
  $$('[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));installDialogAccessibility();$$('[data-go]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.go)));document.addEventListener('click',e=>{const trigger=e.target.closest('[data-open-entry]');if(trigger)openEntry({type:trigger.dataset.openEntry||'expense'})});
- $('#topAddButton').addEventListener('click',()=>openEntry());$('#ledgerAddButton').addEventListener('click',()=>openEntry());$('#clearMonthButton').addEventListener('click',clearCurrentMonth);$('#topSearchButton').addEventListener('click',()=>{navigate('ledger');$('#ledgerSearch').focus()});$('#addBudgetButton').addEventListener('click',()=>openBudget());$('#addGoalButton').addEventListener('click',()=>openGoal());$('#quickCreateGoal')?.addEventListener('click',()=>openGoal());$('#addAccountButton').addEventListener('click',()=>openAccount());$('#accountForm').addEventListener('submit',saveAccount);
+ $('#topAddButton').addEventListener('click',()=>openEntry());$('#mobileAddButton').addEventListener('click',()=>openEntry());$('#ledgerAddButton').addEventListener('click',()=>openEntry());$('#clearMonthButton').addEventListener('click',clearCurrentMonth);$('#topSearchButton').addEventListener('click',()=>{navigate('ledger');$('#ledgerSearch').focus()});$('#addBudgetButton').addEventListener('click',()=>openBudget());$('#addGoalButton').addEventListener('click',()=>openGoal());$('#quickCreateGoal')?.addEventListener('click',()=>openGoal());$('#addAccountButton').addEventListener('click',()=>openAccount());$('#accountForm').addEventListener('submit',saveAccount);
  $('#quickExpenseForm').addEventListener('submit',saveQuickExpense);$('#undoQuickExpense').addEventListener('click',undoQuickExpense);$('#addAnotherQuickExpense').addEventListener('click',addAnotherQuickExpense);$('#viewDashboardAfterQuickExpense').addEventListener('click',finishQuickExpense);$('#quickVoiceButton').addEventListener('click',()=>requestVoiceEntry('quick'));$('#quickExpenseDialog').addEventListener('close',()=>{if(lastQuickSavedId){clearTimeout(quickUndoTimer);quickUndoTimer=0;lastQuickSavedId=''}});$('#quickCategoryChoices').addEventListener('click',event=>{const button=event.target.closest('[data-quick-category]');if(button)setQuickExpenseCategory(button.dataset.quickCategory,true)});$('#quickExpenseMerchant').addEventListener('input',()=>{const guessed=inferCategory($('#quickExpenseMerchant').value,'expense');if(!quickCategoryTouched&&guessed!=='Other'&&$('#quickExpenseMerchant').value.trim())setQuickExpenseCategory(guessed)});$('#quickExpenseAmount').addEventListener('input',()=>{$('#quickExpenseError').hidden=true});
  $('#entryForm').addEventListener('submit',handleEntrySubmit);$('#entryAmount').addEventListener('input',()=>clearFieldError('entryAmount','entryAmountError'));$('#entryDate').addEventListener('change',()=>clearFieldError('entryDate','entryDateError'));$$('.type-tab').forEach(b=>b.addEventListener('click',()=>setEntryType(b.dataset.type)));$('#budgetForm').addEventListener('submit',saveBudget);$('#goalForm').addEventListener('submit',saveGoal);$('#contributeForm').addEventListener('submit',contribute);
  $$('[data-close]').forEach(b=>b.addEventListener('click',()=>$('#'+b.dataset.close).close()));$('#settingsButton').addEventListener('click',()=>showDialog('settingsDialog'));$('#topSettingsButton').addEventListener('click',()=>showDialog('settingsDialog'));$('#mobileMoreButton').addEventListener('click',()=>showDialog('moreNavDialog','.more-nav-item'));$('#moreSettingsButton').addEventListener('click',()=>{$('#moreNavDialog').close();showDialog('settingsDialog')});
  $('#themePreference').addEventListener('change',event=>saveThemePreference(event.target.value));$('#vibrationToggle').addEventListener('change',event=>saveVibrationPreference(event.target.checked));
  ['ledgerSearch','ledgerTypeFilter','ledgerCategoryFilter','ledgerSort'].forEach(id=>$('#'+id).addEventListener(id==='ledgerSearch'?'input':'change',renderLedger));
  $('#ledgerRows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),delBtn=e.target.closest('[data-delete]');if(edit){const t=transactions.find(x=>x.id===edit.dataset.edit);if(t)openEntry({item:t})}if(delBtn)deleteTransaction(delBtn.dataset.delete)});
+ $('#recentTransactions').addEventListener('click',e=>{const edit=e.target.closest('[data-recent-edit]'),remove=e.target.closest('[data-recent-delete]');if(edit){const t=transactions.find(x=>x.id===edit.dataset.recentEdit);if(t)openEntry({item:t})}if(remove)deleteTransaction(remove.dataset.recentDelete)});
  $('#accountsGrid').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-account]'),remove=e.target.closest('[data-delete-account]');if(edit){const a=accounts.find(x=>x.name===edit.dataset.editAccount);if(a)openAccount(a)}if(remove)deleteAccount(remove.dataset.deleteAccount)});
  $('#budgetCards').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-budget]'),remove=e.target.closest('[data-delete-budget]');if(edit)openBudget(budgets.find(b=>b.id===edit.dataset.editBudget));if(remove)deleteBudget(remove.dataset.deleteBudget)});
  $('#goalsGrid').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-goal]'),remove=e.target.closest('[data-delete-goal]'),contributeBtn=e.target.closest('[data-contribute-goal]');if(edit)openGoal(goals.find(g=>g.id===edit.dataset.editGoal));if(remove)deleteGoal(remove.dataset.deleteGoal);if(contributeBtn){const g=goals.find(x=>x.id===contributeBtn.dataset.contributeGoal);if(g)openContribution(g)}});
@@ -358,7 +440,7 @@ function wireEvents(){
 function showUpdateNotice(message,mode='activate'){const notice=$('#appUpdateNotice'),copy=$('#appUpdateMessage'),button=$('#applyAppUpdate');if(!notice||!copy||!button)return;copy.textContent=message;button.dataset.mode=mode;button.textContent=mode==='reload'?'Reload VOLTURA':'Update now';button.disabled=false;notice.hidden=false}
 function applyAvailableUpdate(){const button=$('#applyAppUpdate'),message=$('#appUpdateMessage');if(entrySaving||quickExpenseSaving||document.querySelector('dialog[open]')){toast('Finish or close the open form before applying the update. Your saved data is safe.');return}if(button.dataset.mode==='reload'){location.reload();return}const worker=waitingServiceWorker||serviceWorkerRegistration?.waiting;if(!worker){$('#appUpdateNotice').hidden=true;toast('No waiting update is available.');return}updateActivationRequested=true;button.disabled=true;button.textContent='Updating…';message.textContent='Applying the update. Your saved transactions stay on this device.';worker.postMessage({type:'SKIP_WAITING'});setTimeout(()=>{if(!updateActivationRequested)return;updateActivationRequested=false;button.disabled=false;button.textContent='Update now';message.textContent='The update is still waiting. You can keep using VOLTURA and try again.'},12000)}
 function registerServiceWorker(){if(!('serviceWorker'in navigator)||!location.protocol.startsWith('http'))return;serviceWorkerHadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!serviceWorkerHadController){serviceWorkerHadController=true;return}waitingServiceWorker=null;if(updateActivationRequested){location.reload();return}showUpdateNotice('The update is active. Reload VOLTURA when convenient.','reload')});$('#applyAppUpdate').addEventListener('click',applyAvailableUpdate);$('#dismissAppUpdate').addEventListener('click',()=>{$('#appUpdateNotice').hidden=true});navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(registration=>{serviceWorkerRegistration=registration;registration.update().catch(err=>console.warn('Update check:',err));if(registration.waiting&&registration.active){waitingServiceWorker=registration.waiting;showUpdateNotice('A VOLTURA update is ready. You can keep working or apply it now.')}registration.addEventListener('updatefound',()=>{const worker=registration.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&registration.active&&registration.waiting){waitingServiceWorker=registration.waiting;showUpdateNotice('A VOLTURA update is ready. You can keep working or apply it now.')}})})}).catch(err=>console.warn('Service worker:',err))}
-async function init(){try{db=await openDB();await migrateLegacy();await loadAll();await ensureAccounts();await loadUserPreferences();renderBudgetCategoryOptions();populateAccountSelects();wireEvents();renderAll();renderAutomations();await renderVoiceConsentState();registerServiceWorker();applyUrlAction()}catch(err){console.error(err);toast('Voltura could not open local storage. Use Chrome on the published HTTPS site.')}}
+async function init(){try{db=await openDB();await migrateLegacy();await loadAll();await ensureAccounts();await loadUserPreferences();renderBudgetCategoryOptions();populateAccountSelects();wireEvents();renderAll();renderAutomations();applyUrlAction();await renderVoiceConsentState();registerServiceWorker()}catch(err){console.error(err);toast('Voltura could not open local storage. Use Chrome on the published HTTPS site.')}}
 
 
 init();
