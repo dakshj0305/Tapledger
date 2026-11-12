@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-require('../finance-core.js');
+require('./finance-core.js');
 const finance = globalThis.VolturaFinance;
 
 const expense = (id, date, amountPaise, category = 'Food', merchant = 'Cafe North') => ({ id, type: 'expense', date, amountPaise, category, merchant });

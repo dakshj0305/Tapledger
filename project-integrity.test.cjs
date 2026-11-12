@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname);
 const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 
 test('static assets resolve from the GitHub Pages project root', () => {
@@ -51,6 +51,8 @@ test('quick launch, local enhancement, and offline shell are wired without exter
   assert.match(app, /function renderMonthlyReport/);
   assert.match(app, /function exportReportCSV/);
   assert.ok(worker.includes("'finance-core.js'"));
+  assert.ok(worker.includes("'motion-ui.css'"));
+  assert.ok(worker.includes("'motion-ui.js'"));
   assert.match(worker, /if\(url\.origin!==self\.location\.origin\)return/);
   assert.doesNotMatch(html, /<script[^>]+src="https?:/i);
   assert.doesNotMatch(html, /<link[^>]+href="https?:[^\"]+stylesheet/i);

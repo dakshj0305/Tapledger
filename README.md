@@ -38,3 +38,10 @@ GitHub Pages does not let this repository set all HTTP response security headers
 ## Trademark and naming
 
 “Voltura” may already be used by other businesses. Search the Indian Trade Marks Registry / IP India and relevant international registers before public launch. This source package does not establish that the name is available.
+
+
+## 2026 interaction refresh
+
+The presentation layer now includes a higher-contrast dark palette, restrained translucent surfaces, responsive pointer ambience, a scroll progress indicator, reveal-on-scroll transitions, and passive wheel/trackpad gesture sensing. These are progressive enhancements; native scrolling and all finance flows remain usable without them. Motion respects `prefers-reduced-motion`.
+
+The refresh deliberately adds no remote runtime, font, analytics, or API. GSAP is not bundled in this source package; the motion layer uses native browser APIs to preserve the offline-first and no-third-party-script constraints. If GSAP is later approved, vendor a reviewed local build and update the CSP/service-worker allowlist rather than loading it from a CDN.
