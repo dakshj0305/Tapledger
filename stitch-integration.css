@@ -1,0 +1,118 @@
+/* VOLTURA × Stitch — first integration pass.
+   Presentation only: preserves the existing DOM hooks, app logic and IndexedDB schema. */
+:root {
+  --color-background: #eceee9;
+  --color-surface: #f8f9f6;
+  --color-surface-raised: #ffffff;
+  --color-text: #0c1410;
+  --color-text-muted: #414844;
+  --color-primary: #0a2f22;
+  --color-on-primary: #ffffff;
+  --color-accent: #b8eb00;
+  --color-positive: #087a52;
+  --color-negative: #b42335;
+  --color-warning: #79520b;
+  --color-focus: #245fc5;
+  --color-border: #c1c8c3;
+  --volt-glass: rgba(248, 250, 245, .82);
+  --volt-glass-border: rgba(10, 47, 34, .14);
+  --volt-glass-shadow: 0 12px 32px rgba(10, 47, 34, .08), inset 0 1px rgba(255,255,255,.78);
+  --volt-radius: 16px;
+  --volt-radius-small: 9px;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: "Avenir Next", Avenir, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+:root[data-theme="dark"] {
+  --color-background: #101914;
+  --color-surface: #17241d;
+  --color-surface-raised: #1d2d24;
+  --color-text: #f3f7f2;
+  --color-text-muted: #c0cec4;
+  --color-primary: #b8eb00;
+  --color-on-primary: #102016;
+  --color-accent: #c5f45a;
+  --color-positive: #70d6a6;
+  --color-negative: #ff9a91;
+  --color-warning: #f2cf7a;
+  --color-focus: #a5c9ff;
+  --color-border: #43564a;
+  --volt-glass: rgba(23, 36, 29, .86);
+  --volt-glass-border: rgba(214, 235, 219, .15);
+  --volt-glass-shadow: 0 14px 34px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.06);
+}
+
+html, body, .app-frame, .main-content { background: var(--color-background) !important; color: var(--color-text) !important; }
+body { font-family: var(--sans); }
+.sidebar { background: #09271d !important; color: #f5f8f3 !important; border-right: 1px solid rgba(255,255,255,.12); }
+.brand-word { color: #f5f8f3 !important; letter-spacing: -.045em; }
+.brand-word small, .sidebar-label, .sidebar-foot { color: #c0d0c5 !important; }
+.nav-item { color: #d2ded5 !important; border-radius: 9px !important; min-height: 44px; }
+.nav-item:hover { background: rgba(255,255,255,.09) !important; color: #fff !important; }
+.nav-item.active { background: rgba(184,235,0,.16) !important; color: #e6ff9d !important; border-left: 3px solid var(--color-accent) !important; box-shadow: none !important; }
+.nav-item.active kbd { color: #e6ff9d !important; }
+.privacy-card { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.2) !important; border-radius: 12px !important; }
+.privacy-card strong { color: #fff !important; }
+.privacy-card p { color: #d1ded5 !important; }
+.topbar { background: var(--volt-glass) !important; color: var(--color-text) !important; border-bottom: 1px solid var(--color-border) !important; }
+.breadcrumb, .today-label { color: var(--color-text-muted) !important; }
+.breadcrumb strong { color: var(--color-text) !important; }
+.page-intro h1, .page-headline h1, .page-title, .section-heading h2, .section-heading h3 { color: var(--color-text) !important; font-family: var(--serif) !important; font-weight: 500 !important; letter-spacing: -.035em !important; }
+.page-intro h1 em, .page-title span, .section-heading h2 span, .section-heading h3 span { color: var(--color-positive) !important; }
+.eyebrow, .panel-kicker, .metric-label, .light-label, .panel-sub, .intro-copy, .chart-foot, .month-bars small, .budget-total-caption, .budget-summary, .mini-budget-row, .recent-sub, .empty-mini, .summary-tile span, .summary-tile small, .table-details small, .table-foot, .budget-category small, .budget-values span, .budget-foot, .goal-note, .goal-progress-label span, .goal-details, .insight-label, .insight-card p, .recurring-item small, .method-note, .shortcut-content p, .dialog-help, .fine-print, .settings-list p, .account-card-foot, .system-account-label, .account-kind, .account-balance-label, .form-field, .type-tab, .smart-hint { color: var(--color-text-muted) !important; }
+.panel, .cashflow-panel, .budget-snapshot, .category-panel, .recent-panel, .metric-card, .stat-card, .shortcut-card, .goal-card, .insight-card, .account-card, .budget-card, .goal-feature, .preference-settings { background: var(--color-surface) !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; border-radius: var(--volt-radius) !important; box-shadow: 0 4px 18px rgba(12,35,23,.035) !important; }
+.panel-sub, .budget-total, .budget-summary b, .account-balance, .recent-title, .legend-name, .legend-value, .table-details strong, .section-heading h2, .section-heading h3 { color: var(--color-text) !important; }
+.balance-hero, .insight-feature { background: linear-gradient(125deg, #09271d 0%, #124633 100%) !important; color: #f5f8f3 !important; border: 1px solid rgba(255,255,255,.14) !important; border-radius: 18px !important; box-shadow: 0 16px 38px rgba(9,39,29,.16) !important; }
+.balance-hero .balance-value, .balance-hero .balance-stat strong, .insight-feature h3 { color: #fff !important; }
+.balance-hero .metric-label, .balance-hero .light-label, .balance-hero .balance-foot, .balance-hero .balance-stat small, .insight-feature p:not(.eyebrow), .balance-hero .eyebrow, .insight-feature .eyebrow { color: #d4e3d8 !important; }
+.balance-hero .balance-trend { color: #d8f28c !important; }
+.balance-hero::before { border-color: rgba(224,246,228,.12) !important; }
+.budget-snapshot, .category-panel, .metric-card, .stat-card, .goal-feature, .budget-card { background: var(--color-surface-raised) !important; }
+.search-field, .ledger-toolbar select, .form-field input, .form-field select, .form-field textarea, .rupee-input, .preference-field select, .quick-account-field input, .quick-account-field select, .quick-merchant-field input { background: var(--color-surface-raised) !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; border-radius: var(--volt-radius-small) !important; }
+input::placeholder, textarea::placeholder { color: var(--color-text-muted) !important; opacity: 1; }
+.ledger-table th, .table-wrap, .ledger-panel { background: var(--color-surface) !important; color: var(--color-text) !important; }
+.ledger-table td { color: var(--color-text) !important; border-color: var(--color-border) !important; }
+.button, .icon-button, .text-action, .table-action, .range-btn { border-radius: 9px !important; font-family: var(--sans) !important; }
+.button-primary, .quick-save-button { background: var(--color-primary) !important; color: var(--color-on-primary) !important; border: 1px solid var(--color-primary) !important; box-shadow: 0 4px 12px rgba(10,47,34,.14) !important; font-weight: 700 !important; }
+.button-primary:hover, .quick-save-button:hover { filter: brightness(.94); }
+.button-light { background: var(--color-surface-raised) !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; }
+.button-quiet { background: transparent !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; }
+.text-action, .feature-link { color: var(--color-positive) !important; }
+.range-btn { color: var(--color-text-muted) !important; }
+.range-btn.active { background: var(--color-primary) !important; color: var(--color-on-primary) !important; }
+.donut { border: 1px solid var(--color-border) !important; }
+.dialog-card { background: var(--color-surface-raised) !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; border-radius: 18px !important; box-shadow: 0 24px 70px rgba(0,0,0,.22) !important; }
+.dialog-top h2, .settings-list strong { color: var(--color-text) !important; }
+.toast { background: #09271d !important; color: #fff !important; border: 1px solid #547263 !important; }
+.quick-expense-card { background: var(--color-surface-raised) !important; color: var(--color-text) !important; border: 1px solid var(--color-border) !important; border-radius: 18px !important; }
+.quick-expense-top h2, .quick-amount-input b, .quick-amount-input input { color: var(--color-text) !important; }
+.quick-amount-field, .quick-category-chip, .smart-hint { background: var(--color-surface) !important; color: var(--color-text) !important; border-color: var(--color-border) !important; }
+.quick-category-chip.active { background: var(--color-primary) !important; color: var(--color-on-primary) !important; border-color: var(--color-primary) !important; box-shadow: none !important; }
+
+/* Glass is reserved for chrome and non-critical summaries; dense data and forms stay opaque. */
+@supports ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+  .topbar, .privacy-card, .balance-hero, .insight-feature, .goal-feature, .budget-snapshot, .category-panel, .account-note {
+    -webkit-backdrop-filter: blur(14px) saturate(125%);
+    backdrop-filter: blur(14px) saturate(125%);
+  }
+  .topbar { background: var(--volt-glass) !important; }
+  .goal-feature, .budget-snapshot, .category-panel, .account-note { background: color-mix(in srgb, var(--color-surface) 90%, transparent) !important; border-color: var(--volt-glass-border) !important; box-shadow: var(--volt-glass-shadow) !important; }
+}
+.nav-item:focus-visible, .button:focus-visible, .icon-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .quick-category-chip:focus-visible { outline: 3px solid var(--color-focus) !important; outline-offset: 3px !important; }
+:where(p, small, label, span, th, td, button, a) { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .main-content { padding-left: 16px !important; padding-right: 16px !important; }
+  .page-intro { gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .balance-hero { gap: 16px !important; padding: 22px !important; }
+  .panel, .cashflow-panel, .budget-snapshot, .category-panel, .recent-panel { min-width: 0; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .topbar, .privacy-card, .balance-hero, .insight-feature, .goal-feature, .budget-snapshot, .category-panel, .account-note { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .topbar { background: var(--color-background) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+@media (forced-colors: active) {
+  .panel, .balance-hero, .insight-feature, .dialog-card, .button { forced-color-adjust: auto; border: 1px solid CanvasText !important; }
+}

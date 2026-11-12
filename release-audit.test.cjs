@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v22\.0/);
+  assert.match(worker, /voltura-platform-v22\.2/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -102,9 +102,9 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /class="version-tag">V22\.0</);
-  assert.match(read('sw.js'), /voltura-platform-v22\.0/);
-  assert.match(read('app.js'), /VOLTURA v22\.0/);
+  assert.match(read('index.html'), /class="version-tag">V22\.2</);
+  assert.match(read('sw.js'), /voltura-platform-v22\.2/);
+  assert.match(read('app.js'), /VOLTURA v22\.2/);
   assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
@@ -236,4 +236,16 @@ test('V22 visual overhaul fixes insight text compression and preserves mobile se
   assert.match(html, /data-view="budgets"/);
   assert.match(html, /data-view="goals"/);
   assert.match(app, /view==='budgets'\|\|view==='goals'/);
+});
+
+test('Stitch first-pass integration is local, linked last, and included in the offline shell', () => {
+  const html = read('index.html'), worker = read('sw.js'), css = read('stitch-integration.css');
+  assert.match(html, /href="\.\/stitch-integration\.css"/);
+  assert.ok(html.indexOf('stitch-integration.css') > html.indexOf('voltura-visual-overhaul.css'));
+  assert.match(worker, /'stitch-integration\.css'/);
+  assert.match(css, /prefers-reduced-transparency/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.doesNotMatch(css, /@import\s+url\s*\(/i);
+  assert.ok(fs.existsSync(path.join(root, 'design-reference/stitch/voltura_overview_dashboard/screen.png')));
 });

@@ -1,86 +1,75 @@
-## Current release — VOLTURA V21.1.1
+# VOLTURA — Personal finance, made clear.
 
-The current source package is V21.1.1, a dark-first/light-capable editorial finance workspace. The dashboard has a stronger monthly cash-flow hero, chapter navigation, clearer cash-flow and budget panels, category mix, recent activity with direct edit/delete actions, and a savings/insight section. Mobile navigation keeps Add prominent. The core release also hardens additive JSON restore and avoids rewriting existing transactions during startup migration. V21.1.1 corrects the CSS cascade order for unsupported backdrop blur, reduced transparency and forced-colors modes. The project remains static HTML/CSS/vanilla JavaScript, uses local IndexedDB (`tapledger-db`, v3), and adds no remote dependency.
+**Current source release: V22.2** · 13 November 2026
 
-# VOLTURA — Personal finance, made clear
+VOLTURA is a local-first personal-finance Progressive Web App (PWA) for recording income, expenses and transfers; reviewing accounts, budgets and savings goals; and understanding cash flow. The application is intentionally built with static HTML, CSS and vanilla JavaScript. It requires no framework build step and has no analytics, advertising, remote fonts or third-party runtime dependencies.
 
-**Current source release: V22.0** — a contrast and layout overhaul focused on the dashboard, insight-card wrapping, mobile navigation and explicit theme surface pairings. See `RELEASE-REPORT-V22.md`, `DESIGN-SYSTEM-V22.md` and `UI-QA-CHECKLIST-V22.md`. GSAP runtime is not bundled in V22.0 because the npm registry could not be reached during packaging; no remote CDN was added.
+## Current release
 
+V22.2 consolidates the redesign and progressive motion work from the conversation:
 
-VOLTURA is a static, local-first personal finance PWA for recording income, expenses and transfers, reviewing budgets and goals, and analysing the ledger later. Financial records are stored in IndexedDB in the current browser profile.
+- The supplied Stitch references for Overview, Accounts, Transactions Ledger, Budgets, the financial-intelligence design direction and the VOLTURA monogram are retained under `design-reference/stitch/`.
+- The live app has a first-pass shared visual layer: forest-green/chartreuse branding, editorial headings, clearer surface pairings, responsive wrapping and selective glass. Forms, transaction rows and dense data panels stay opaque for legibility.
+- The supplied “Smarter Growth” video is used as a motion reference: calm staggered reveals and restrained editorial pacing, not a literal marketing-page copy.
+- Liquid-metal-style pointer lighting and click feedback are implemented with local CSS/JavaScript. The supplied React/WebGL button is documented but is not installed as a React component.
+- Scroll chapter navigation and reveal effects use native scrolling, IntersectionObserver and CSS fallbacks. The supplied full-screen React ScrollTrigger component is not installed; pinned full-screen scrolling is deliberately not used in the finance UI.
+- GSAP is an optional progressive enhancement hook only. No GSAP distribution is included or loaded by default. When a reviewed local GSAP + ScrollTrigger build is added, the existing detection hooks can enhance transitions; no CDN is used.
+- All finance logic, routes, backup compatibility and the existing IndexedDB identity/schema are preserved.
+
+See `RELEASE-REPORT-V22.2.md`, `AUDIT-REPORT.md`, `QA-REPORT.md`, `CHANGELOG-V22.2.md` and the integration notes for detail and limitations.
 
 ## Run locally
 
-Use `RUN-LOCAL-WINDOWS.bat` on Windows or serve this folder with any static HTTP server. Use HTTPS when testing NFC URL cards on a phone. Opening `index.html` directly as a `file://` URL is not a supported production setup.
+Use a local HTTP server (recommended) rather than opening `index.html` as a `file://` URL:
+
+```sh
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000/`. On Windows, `RUN-LOCAL-WINDOWS.bat` starts a local server when Python is installed. NFC and installed-PWA URL handling require an HTTPS origin and device testing.
+
+## GitHub Pages target
+
+The configured project-site target documented by the source is:
+
+`https://dakshj0305.github.io/Tapledger/`
+
+Keep the project files (including `index.html`, `sw.js`, `manifest.webmanifest`, stylesheets, scripts and `icons/`) at the repository root. Preserve relative `./` asset paths and the quick-entry routes `?a=1`, `?i=1` and `?add=1`. `.nojekyll` is included. See `GITHUB-UPLOAD-GUIDE.md` before publishing.
+
+The ZIP is an upload-ready **source folder**, not an archive that GitHub automatically expands into a repository. Extract it first. For an existing GitHub repository, clone that repository and copy the extracted files into the clone so its existing `.git` history is retained. Do not replace the repository's history with the optional reconstructed bundle supplied separately.
 
 ## NFC quick expense
 
-1. Publish to the GitHub Pages project path: `https://dakshj0305.github.io/Tapledger/`.
-2. Open VOLTURA → Automations and copy the generated expense URL. It should end in `?a=1`.
-3. In NFC Tools, choose Write → Add a record → URL/URI, paste the complete URL and write it to a known-writable NFC Forum Type 2 tag. Do not permanently lock the tag.
-4. With the phone unlocked, tap the tag. Android opens the URL in the default browser unless an installed PWA captures that URL scope; installed-PWA link capture depends on OS/browser configuration and is **UNVERIFIED** on the target Galaxy S23 FE until physically tested.
-5. The page opens the quick expense sheet immediately. Enter amount, choose a category, optionally adjust the account/merchant/date/time/note, and save. You can undo for about five seconds, add another, or view the dashboard.
-6. The transaction is written to the same `transactions` store used by the dashboard and ledger.
+1. Publish the project at the HTTPS GitHub Pages path above.
+2. Open VOLTURA → Automations and copy the generated expense URL ending in `?a=1`.
+3. In an NFC writing app, write the complete URL as a URL/URI record to a compatible, writable NFC tag. Do not permanently lock the tag during testing.
+4. Tap the tag with the phone unlocked. Android/browser/PWA link capture varies by device and installation state and must be tested on the target hardware.
+5. The page opens the quick expense sheet. Enter and save the transaction; it is stored in the same `transactions` store used by the dashboard and ledger.
 
-The tag contains only a URL shortcut, not transaction data. It cannot display a UI over a locked phone or bypass the browser. The tag's write success must be verified separately: the previously scanned MF0ICU1 tag failed even when writing `TEST`; this release does not claim that card is writable.
+The tag stores only a URL shortcut, not transaction data. It cannot bypass the lock screen or browser security. A previous tag in the supplied project history failed even when writing a simple test record; this package makes no claim that every NFC tag is writable.
 
-**Recommended NFC expense URL:** `https://dakshj0305.github.io/Tapledger/?a=1`
+## Offline and storage behavior
 
-## Offline limits
+The service worker caches the app after a successful online visit and successful cache installation. A first-ever visit with no network cannot load an uncached app. IndexedDB is origin-specific and remains local to the browser profile.
 
-A service worker can cache the app after the first successful online visit and cache installation. A first-ever open with no network cannot load a site that has never been cached. No offline first-run guarantee is made.
+**Data compatibility is intentionally frozen:** database name `tapledger-db`, IndexedDB version `3`, the existing object stores/key paths/indexes and record shapes are retained. Financial amounts continue to use integer paise. New JSON exports are tagged `Voltura`; restore accepts the legacy `Voltura`, `Vellum`, `Cairn` and `TapLedger` tags. Restore is additive: existing primary keys win, incoming duplicates are skipped, and imports are applied in one transaction. No existing user database was opened or modified during this source-package audit.
 
-## Data compatibility
+Before moving to a different origin or domain, export a JSON backup from the old origin and restore it on the new origin. Do not use `voltura.finance` until domain ownership and DNS configuration have been confirmed.
 
-IndexedDB remains named `tapledger-db`, schema version 3. This is deliberately retained for compatibility with TapLedger/Vellum/Cairn-era records; renaming the internal database would make the existing local data appear to disappear. New JSON exports are tagged `Voltura`; imports continue to accept `Voltura`, `Vellum`, `Cairn` and `TapLedger` formats. No IndexedDB schema upgrade is introduced by this release. The JSON export's `schemaVersion` is a backup-format label, not the IndexedDB version.
+## Privacy, security and legal notes
 
-Browser storage is origin-specific. Moving from the project Pages origin to a custom domain requires exporting a JSON backup on the old origin and restoring it on the new origin. Do not use `voltura.finance` until you have registered and configured it.
+No application analytics, ads, external scripts, remote fonts or app cookies are included. Optional browser speech recognition may send audio/speech data to a browser or vendor service after the user opts in. Review `privacy.html`, `terms.html` and `cookies.html`; these are draft pages, not legal advice or a completed Indian-law review.
 
-## Privacy and security notes
-
-No analytics, ads, external scripts, remote fonts or application cookies are included by this source package. GitHub Pages still receives ordinary hosting requests and may process request logs under its own terms. Optional Web Speech recognition may send microphone audio or speech data to a browser/vendor service after you opt in. See `privacy.html`, `terms.html` and `cookies.html`; these are drafts and require review by a lawyer qualified in Indian law. Distribution in the EU, UK or US would require jurisdiction-specific review of privacy, consumer, children’s data and other applicable requirements; this note is not a complete jurisdictional analysis.
-
-GitHub Pages does not let this repository set all HTTP response security headers (for example, HSTS, X-Content-Type-Options, Referrer-Policy or a response-header CSP). The app uses a CSP meta policy, but meta CSP cannot replace server response headers in every respect. This is a source-level configuration note, not a security certification.
-
-## Trademark and naming
-
-“Voltura” may already be used by other businesses. Search the Indian Trade Marks Registry / IP India and relevant international registers before public launch. This source package does not establish that the name is available.
-
-
-## 2026 interaction refresh
-
-The presentation layer now includes a higher-contrast dark palette, restrained translucent surfaces, responsive pointer ambience, a scroll progress indicator, reveal-on-scroll transitions, and passive wheel/trackpad gesture sensing. These are progressive enhancements; native scrolling and all finance flows remain usable without them. Motion respects `prefers-reduced-motion`.
-
-The refresh deliberately adds no remote runtime, font, analytics, or API. GSAP is not bundled in this source package; the motion layer uses native browser APIs to preserve the offline-first and no-third-party-script constraints. If GSAP is later approved, vendor a reviewed local build and update the CSP/service-worker allowlist rather than loading it from a CDN.
+GitHub Pages does not let this repository define every HTTP response security header. The entry page contains a meta CSP, but meta CSP is not a substitute for server response headers in all cases. This package is not a security certification. Review the VOLTURA name against relevant trademark registers before a public launch.
 
 ## Automated verification
 
-This project has no build-time npm dependencies. With Node.js 18 or newer, run the dependency-free source and finance tests from the project directory:
+No build-time npm dependencies are required. With Node.js 18 or newer, run:
 
 ```sh
 for f in *.js; do node --check "$f" || exit 1; done
-node --test finance-core.test.cjs project-integrity.test.cjs release-audit.test.cjs restore-transaction.test.cjs
+node --test *.test.cjs
 sha256sum -c SHA256SUMS.txt
 ```
 
-See `AUDIT-REPORT.md` for the latest audit scope, results, corrections and remaining manual QA requirements. Passing source tests does not replace real-browser, device, accessibility or legal review.
-
-
-## Latest visual and update repairs (V20.9)
-
-The current build replaces unrelated promotional filler with finance-specific brand messaging, refreshes the VOLTURA monogram and PWA icons, improves the responsive bottom navigation and scroll chapter bar, and adds a focused visual repair stylesheet. The service worker now precaches that stylesheet, uses a new cache namespace, and performs an explicit update check without relying on stale HTTP cache entries. See `AUDIT-REPORT.md` for executed checks and remaining browser/device QA.
-
-
-## Fine-grain UI repair (V20.9)
-
-The scroll chapter progress indicator now has one authoritative responsive style rule; the earlier duplicate declaration left its width constrained on some layouts. The mobile and desktop sticky offsets now account for the top bar, small-screen spacing is tightened, and all buttons declare their intended type explicitly. SVG symbol viewBox attributes are canonicalized. Source comments, visible version label, service-worker cache namespace and current release documentation are aligned at V20.9.
-
-
-## Dashboard and responsive UI completion (V20.9)
-
-The dashboard now has explicit masthead, reporting-period, balance-detail and chapter layouts. The oversized unstyled prism was removed so the cash-flow hero stays compact and readable. The primary amount and supporting labels use dark high-contrast text on the lime surface; the insight panel now uses a full-width text column rather than wrapping copy into a narrow decorative-icon column. The chart's screen-reader data table is labelled without a long caption that could create horizontal overflow on narrow screens. Mobile masthead metadata stacks cleanly, and the chapter progress rail tracks actual scroll progress.
-
-The app's browser theme-color now follows the selected light/dark/system preference. Visual surfaces remain flat and matte, with restrained 3D tilt and native scroll motion; no remote GSAP dependency is introduced.
-
-
-The V20.9 interaction pass also removes a duplicate pointer-tilt listener and unused motion variables. Passive trackpad wheel input now gives the sticky chapter control a restrained temporary perspective response and resets to neutral without cancelling native scrolling. The sidebar wordmark now follows the active theme text token for readable light and dark appearances.
+The automated suite checks finance helpers, data-safe restore behavior, static integrity, PWA/offline asset references, release metadata and package checksums. Passing source tests does not replace real-browser, assistive-technology, device, security or legal review. The latest executed results and items not tested are recorded in `QA-REPORT.md`.

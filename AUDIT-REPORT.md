@@ -1,6 +1,22 @@
-# VOLTURA / Tapledger — Deep source audit
+# VOLTURA / Tapledger — source audit history
 
-Audit target: `Tapledger-scroll-experience.zip` (the supplied archive in this review)
+> **Current audit:** VOLTURA V22.2, 13 November 2026. The authoritative current scope, corrections and pass/fail status are in `RELEASE-REPORT-V22.2.md` and `QA-REPORT.md`. The older V20.9 audit narrative below is retained as historical project context and is not a current browser certification.
+
+## Current V22.2 audit addendum
+
+- Re-ran the four original test suites and added `release-packaging.test.cjs`; the final suite passes **39 tests, 0 failed**.
+- Re-ran `node --check` for every root JavaScript file.
+- Found and corrected stale release labels in README/release notes, nine stale entries in the package SHA manifest, and missing `.nojekyll` / `.gitignore` files.
+- Added a regression test that requires the README, release notes, visible app version, app source and service-worker cache to agree on V22.2, and verifies the checksum manifest covers every shipped file except itself.
+- Updated the GitHub upload instructions to explain ZIP extraction and preservation of the existing remote Git history.
+- A current headless Chromium screenshot attempt timed out; browser visual QA, actual PWA lifecycle, real IndexedDB persistence, NFC hardware and live Pages deployment remain unverified.
+- GSAP/ScrollTrigger remains optional and is not bundled or active in the default release; no CDN was added.
+
+---
+
+## Historical V20.9 baseline audit
+
+Audit target: `Tapledger-scroll-experience.zip` (older supplied archive)
 Audit date: 2026-11-12
 
 ## Scope and limits

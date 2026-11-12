@@ -54,7 +54,8 @@
  // The app swaps views without full page navigation; observe those state changes.
  if('MutationObserver'in window)new MutationObserver(schedule).observe(view,{attributes:true,attributeFilter:['class']});
  schedule();
- // Optional local GSAP enhancement. No remote script or runtime dependency is added.
+ // Optional local GSAP enhancement only: preserve native page scrolling; never pin the dashboard.
+ // No remote script or runtime dependency is added. See FULL-SCREEN-SCROLL-FX-INTEGRATION.md.
  if(window.gsap&&window.ScrollTrigger){
   window.gsap.registerPlugin(window.ScrollTrigger);
   chapters.forEach((el)=>{
