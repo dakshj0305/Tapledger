@@ -1,4 +1,4 @@
-# VOLTURA V27.0 project instructions
+# VOLTURA V27.1 project instructions
 
 VOLTURA is a static, local-first personal-finance app. Keep it small, direct and easy to use. Do not add a new framework or expand the feature set without an explicit request.
 
@@ -26,7 +26,7 @@ The primary action is Add transaction. Keep the entry path short: type, amount, 
 - Do not request microphone access. Voice entry is not part of V27.
 
 ## Design and accessibility
-- Use a calm, compact, task-first interface with clear labels, readable contrast and consistent spacing.
+- Use a bold, compact, task-first interface with clear labels, readable contrast and consistent spacing. The V27.1 palette is matte ink/off-white with volt-lime reserved for primary actions and key emphasis. Keep dashboard hierarchy strong and surfaces uncluttered.
 - Avoid decorative 3D, parallax, pinned scroll sections, looping animations, gradients, blur and glass effects.
 - GSAP 3.15.1 and ScrollTrigger may be used only for subtle, non-essential motion. The app must work fully without them.
 - Respect `prefers-reduced-motion` and keep all content visible when motion is disabled.

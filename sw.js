@@ -1,5 +1,5 @@
-const CACHE='voltura-platform-v27.0-simple-core';
-const APP_FILES=['','index.html','voltura.css','dashboard-art-direction.css','simple-mode.css','clean-ui.css','simple-motion.js','finance-core.js','app.js','quick-boot.js','vendor/gsap/gsap.min.js','vendor/gsap/ScrollTrigger.min.js','vendor/gsap/THIRD-PARTY-NOTICE.txt','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
+const CACHE='voltura-platform-v27.1-loud-clean';
+const APP_FILES=['','index.html','voltura.css','dashboard-art-direction.css','simple-mode.css','clean-ui.css','voltura-v27.css','simple-motion.js','finance-core.js','app.js','quick-boot.js','vendor/gsap/gsap.min.js','vendor/gsap/ScrollTrigger.min.js','vendor/gsap/THIRD-PARTY-NOTICE.txt','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
 const appURL=file=>new URL(file||'./',self.registration.scope).href;
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL)))));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting())});

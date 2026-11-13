@@ -1,4 +1,4 @@
-# V27.0 product decisions
+# V27.1 product decisions
 
 ## Main path
 1. Open Overview.
@@ -18,7 +18,7 @@
 Savings goals, local pattern detection, reports, automations/NFC management, voice entry, decorative animation, coach-style language and long editorial content are not part of the primary experience. Legacy data stores are preserved for compatibility; the simplification does not silently erase user data.
 
 ## Motion budget
-GSAP and ScrollTrigger are used for a short, one-time reveal of the balance, budget and recent-transaction surfaces. No looping motion, parallax, pinned sections, scroll hijacking or animated counters. Reduced-motion preference disables the enhancement.
+GSAP and ScrollTrigger provide a short dashboard entrance, one-time budget/recent-activity reveals, restrained navigation transitions and a budget progress reveal. No looping motion, parallax, pinned sections, scroll hijacking or animated counters. Reduced-motion preference disables the enhancement. All content remains visible if GSAP is unavailable.
 
 ## Data safety
 - Existing IndexedDB database name, version and stores are unchanged.

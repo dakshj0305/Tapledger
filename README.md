@@ -1,6 +1,6 @@
 # VOLTURA — Personal finance, made simple.
 
-**Current source release: V27.0** · 13 November 2026
+**Current source release: V27.1** · 13 November 2026
 
 VOLTURA is a small, local-first personal finance app. It helps you record income, expenses and transfers, see your account balances, set monthly budgets and review recent transactions.
 
@@ -16,7 +16,7 @@ VOLTURA is a small, local-first personal finance app. It helps you record income
 Transactions and related records stay in this browser using IndexedDB. The app does not connect to banks. Browser data can be cleared by device/browser settings, so use Backup JSON periodically. A backup from one origin must be restored after moving to another domain.
 
 ## Motion
-GSAP 3.15.1 and ScrollTrigger are locally hosted and used only for subtle, one-time content reveals. Motion is disabled when the device requests reduced motion. The app remains fully usable without GSAP.
+GSAP 3.15.1 and ScrollTrigger are locally hosted. They add a short dashboard entrance, one-time section reveals, restrained view transitions and a budget-progress reveal. Motion is disabled when the device requests reduced motion; all content and interactions remain available without GSAP.
 
 ## Netlify
 This is a static site. No build command is required; publish directory is `.`. Deploy the extracted project root containing `index.html`.
@@ -30,4 +30,4 @@ This is a static site. No build command is required; publish directory is `.`. D
 - `node --test build-css.test.cjs finance-core.test.cjs restore-transaction.test.cjs simple-app.test.cjs`
 - `node --check app.js` (and the other runtime JavaScript files)
 
-This app is a personal record-keeping tool, not a bank feed or professional financial advice service.
+The V27.1 visual refresh uses a matte ink-and-volt-lime palette, clearer type hierarchy and a two-column desktop overview that collapses cleanly on mobile. No remote runtime assets are required.\n\nThis app is a personal record-keeping tool, not a bank feed or professional financial advice service.
