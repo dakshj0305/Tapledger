@@ -52,7 +52,7 @@ test('desktop accessibility scan has no critical or serious WCAG violations', as
   await page.waitForSelector('#view-overview.active');
   const results = await new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   const highImpact = results.violations.filter(item => item.impact === 'critical' || item.impact === 'serious');
-  assert.deepEqual(highImpact.map(item => ({ id: item.id, impact: item.impact, description: item.description })), []);
+  assert.deepEqual(highImpact.map(item => ({ id: item.id, impact: item.impact, nodes: item.nodes.map(node => ({ target: node.target, html: node.html, summary: node.failureSummary })) })), [], 'axe accessibility findings');
   await context.close();
 });
 

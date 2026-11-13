@@ -1,7 +1,7 @@
 /* VOLTURA finance motion — local GSAP 3.15.1 plugins; progressive enhancement only. */
 (()=>{'use strict';
 const g=window.gsap,S=window.ScrollTrigger,M=window.MotionPathPlugin,D=window.DrawSVGPlugin,F=window.Flip;
-if(!g||!S){document.documentElement.dataset.gsap='unavailable';return;}g.registerPlugin(...[S,M,D,F].filter(Boolean));document.documentElement.dataset.gsap='ready';
+if(!g||!S){document.documentElement.dataset.gsap='unavailable';return;}g.registerPlugin(...[S,M,D,F].filter(Boolean));document.documentElement.dataset.gsap='ready';document.documentElement.dataset.gsapPlugins=[S&&'ScrollTrigger',M&&'MotionPath',D&&'DrawSVG',F&&'Flip'].filter(Boolean).join(' ');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)'),coarse=matchMedia('(hover: none), (pointer: coarse)'),roots=new WeakMap(),refresh=()=>requestAnimationFrame(()=>S.refresh());
 const selectors='.page-intro,.balance-hero,.stat-card,.chart-card,.panel,.ledger-card,.budget-card,.goal-card,.settings-card,.cashflow-panel,.overview-grid > *,.stats-grid > *';
 function bars(chart){if(!chart||reduce.matches)return;const els=[...chart.querySelectorAll('.bar')].filter(x=>x.dataset.gsapBarReady!=='1');if(!els.length)return;els.forEach(x=>x.dataset.gsapBarReady='1');g.fromTo(els,{scaleY:0,transformOrigin:'50% 100%'},{scaleY:1,duration:.78,stagger:.035,ease:'power3.out',scrollTrigger:{trigger:chart,start:'top 88%',once:true,invalidateOnRefresh:true}});}
