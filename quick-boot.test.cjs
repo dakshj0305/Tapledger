@@ -76,5 +76,5 @@ test('quick boot is loaded before the single runtime stylesheet and dialogs star
   assert.match(html, /id="quickExpenseFields" hidden/);
   assert.match(html, /id="quickExpenseLoading" role="status"/);
   assert.match(html, /id="entryLaunchLoading"[^>]*role="status"[^>]*hidden/);
-  assert.match(html, /<span class="version-tag">V26\.0<\/span>/);
+  assert.match(html, /<span class="version-tag">V26\\.2<\/span>/);
 });

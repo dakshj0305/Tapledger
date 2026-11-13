@@ -16,7 +16,7 @@ test('all bundled GSAP assets report the same version',()=>{
 });
 
 test('service worker precaches all new local GSAP assets and has a new cache namespace',()=>{
- const sw=read('sw.js');assert.match(sw,/voltura-platform-v26\.1\.2-gsap-finance-motion/);
+ const sw=read('sw.js');assert.match(sw,/voltura-platform-v26\.2-dashboard-redesign/);
  for(const file of ['gsap-motion.js','vendor/gsap/DrawSVGPlugin.min.js','vendor/gsap/MotionPathPlugin.min.js','vendor/gsap/Flip.min.js']){assert.ok(sw.includes("'"+file+"'"),'precache contains '+file);assert.ok(fs.existsSync(file),'precache target exists: '+file);}
 });
 
