@@ -1,568 +1,470 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-fixed-dim":"#a9cfbc","on-secondary-fixed":"#161f00","on-primary-fixed":"#002115","on-primary":"#ffffff","inverse-surface":"#2e312e","error-container":"#ffdad6","surface-container-low":"#f2f4ef","on-tertiary":"#ffffff","on-surface":"#191c1a","surface-dim":"#d8dbd6","surface":"#f8faf5","on-tertiary-container":"#00a472","on-surface-variant":"#414844","surface-tint":"#426656","secondary-fixed-dim":"#a8d700","tertiary-fixed-dim":"#4edea3","inverse-on-surface":"#eff1ec","primary":"#00190f","on-tertiary-fixed":"#002113","outline-variant":"#c1c8c3","surface-container-lowest":"#ffffff","secondary-container":"#bef113","tertiary-fixed":"#6ffbbe","surface-bright":"#f8faf5","primary-container":"#0a2f22","on-tertiary-fixed-variant":"#005236","on-secondary-container":"#526b00","on-error":"#ffffff","inverse-primary":"#a9cfbc","on-error-container":"#93000a","on-primary-container":"#739887","on-primary-fixed-variant":"#2b4d3f","surface-container":"#edefe9","tertiary":"#00190e","on-secondary":"#ffffff","tertiary-container":"#00301e","secondary-fixed":"#c1f419","error":"#ba1a1a","surface-container-highest":"#e1e3de","on-secondary-fixed-variant":"#3b4d00","surface-container-high":"#e7e9e4","background":"#f8faf5","secondary":"#4f6600","surface-variant":"#e1e3de","outline":"#717974","primary-fixed":"#c4ebd7","on-background":"#191c1a"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","margin-lg":"3rem","space-xl":"2.5rem","margin":"1.5rem","margin-sm":"1rem","space-md":"1rem","space-xs":"0.25rem","gutter-lg":"2rem","gutter-sm":"1rem","gutter":"1.5rem","space-lg":"1.5rem"},"fontFamily":{"label-sm":["Plus Jakarta Sans"],"headline-sm":["Newsreader"],"display-md-mobile":["Newsreader"],"body-sm":["Plus Jakarta Sans"],"data-mono-lg":["Plus Jakarta Sans"],"headline-md":["Newsreader"],"display-lg-mobile":["Newsreader"],"label-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"display-lg":["Newsreader"],"data-mono-md":["Plus Jakarta Sans"],"display-md":["Newsreader"],"body-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"headline-lg":["Newsreader"]},"fontSize":{"label-sm":["0.6875rem",{"lineHeight":"0.875rem","letterSpacing":"0.06em","fontWeight":"700"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","fontWeight":"500"}],"display-md-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.01em","fontWeight":"400"}],"body-sm":["0.875rem",{"lineHeight":"1.25rem","fontWeight":"400"}],"data-mono-lg":["1.5rem",{"lineHeight":"1.75rem","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.01em","fontWeight":"500"}],"display-lg-mobile":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.015em","fontWeight":"400"}],"label-md":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.04em","fontWeight":"600"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","fontWeight":"400"}],"display-lg":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.02em","fontWeight":"400"}],"data-mono-md":["1rem",{"lineHeight":"1.25rem","letterSpacing":"-0.01em","fontWeight":"500"}],"display-md":["2.5rem",{"lineHeight":"3rem","letterSpacing":"-0.02em","fontWeight":"400"}],"body-md":["1rem",{"lineHeight":"1.5rem","fontWeight":"400"}],"label-lg":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.01em","fontWeight":"600"}],"headline-lg":["2rem",{"lineHeight":"2.5rem","letterSpacing":"-0.015em","fontWeight":"500"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-sm"><img alt="VOLTURA Wordmark Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCciWsidnmoVPzjdHRxnyezwSc0UWd1HFuOBLhiT-Ea9-MxVNkDyph7VS3csGrCSG2MNEOMBFaHz4yyl3P8ZjmAx7PXxxtvdNY-j5yRUCi2k6HBKniQTGP7gRAxl5hrXOKYUPSl4sPA4GmHuqK28lUcQAD_4g5uwMu-x_x3c9Hf4IoiaOKz37CQto0dHQ9uTpbYoibMrw_yqLroScUcJ6KEhPNvE8SE9zGXnPRfQwbQ"><span class="font-headline-md text-headline-md tracking-tight text-primary font-semibold">VOLTURA</span></div><div class="px-space-md pt-space-xs pb-space-md"><button class="w-full flex items-center justify-center gap-space-xs bg-primary-container text-on-primary py-space-sm px-space-md rounded-lg font-label-md text-label-md transition-colors hover:bg-primary" type="button"><span class="material-symbols-outlined text-secondary-fixed text-lg">add</span><span class="tracking-wide">ADD TRANSACTION</span></button></div><nav class="px-space-sm space-y-space-xs" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="overview" href="#"><span class="material-symbols-outlined text-xl">dashboard</span><span>Overview</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg transition-colors bg-surface-container-high text-primary font-semibold" data-path="transactions" href="#"><span class="material-symbols-outlined text-xl">receipt_long</span><span>Transactions</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="accounts" href="#"><span class="material-symbols-outlined text-xl">account_balance</span><span>Accounts</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="budgets" href="#"><span class="material-symbols-outlined text-xl">pie_chart</span><span>Budgets</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="savings-goals" href="#"><span class="material-symbols-outlined text-xl">savings</span><span>Savings Goals</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="insights" href="#"><span class="material-symbols-outlined text-xl">query_stats</span><span>Insights</span></a></nav></div><div class="flex flex-col pb-space-lg"><nav class="px-space-sm space-y-space-xs mb-space-md" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="settings" href="#"><span class="material-symbols-outlined text-xl">settings</span><span>Settings</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="backup-and-data" href="#"><span class="material-symbols-outlined text-xl">cloud_sync</span><span>Backup &amp; Data</span></a></nav><div class="px-space-md mx-space-sm py-space-sm rounded-lg bg-surface-container flex items-center justify-between"><div class="flex flex-col gap-1 w-full"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Vault Enclave</span></div><span class="font-label-sm text-label-sm text-primary font-semibold">Active</span></div><div class="text-[10px] text-on-surface-variant font-mono truncate leading-tight">Build: v22.2-release (2025-02-18) • SW: voltura-platform-v22.2 • Offline Cached</div></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-lg text-on-surface font-label-md text-label-md cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-base text-on-surface-variant">calendar_today</span><span>Oct 1 – Oct 31, 2024</span><span class="material-symbols-outlined text-base text-on-surface-variant">expand_more</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-lg text-on-surface-variant font-label-sm text-label-sm border border-outline-variant/30 cursor-pointer hover:border-outline-variant transition-colors"><span class="material-symbols-outlined text-base">search</span><span>Search records...</span><kbd class="bg-surface-container-high text-on-surface px-space-xs py-0.5 rounded text-[10px] font-semibold">⌘K</kbd></div></div><div class="flex items-center gap-space-md"><button class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Theme Toggle" type="button"><span class="material-symbols-outlined text-lg">light_mode</span></button><button class="relative w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Notifications" type="button"><span class="material-symbols-outlined text-lg">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="flex items-center gap-space-sm pl-space-xs cursor-pointer"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUgeOROk719y2PSt9y08xoZRy44RhCVkiEEc2Ycc9PdUhihA8EsTIZnOjzVk6BEibnq-AwegGFDEIMMcC_nvgl25vdj-k4RML2JnMA22Hev0t_IO1rWa3TeIFC0-k5ZZxpkXlByrNu4-SuXcxAFhP6vInVPGyhryEENQwh6cc1nspjdhYhwUBG33Ebgfp_6RjjIhgyEaIeDRFgCuMGj3o6-wCfRqw2oNeiiRc_N4A"><div class="hidden xl:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface leading-tight font-semibold">Marcus Sterling</span><span class="font-label-sm text-label-sm text-on-surface-variant">Private Wealth</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen px-gutter-lg py-gutter-lg"><div class="flex flex-col w-full">
-<!-- Top Section: Header & Live Institutional Telemetry -->
-<section class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-lg">
-<div class="flex flex-col">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-fixed-dim":"#a9cfbc","on-secondary-fixed":"#161f00","on-primary-fixed":"#002115","on-primary":"#ffffff","inverse-surface":"#2e312e","error-container":"#ffdad6","surface-container-low":"#f2f4ef","on-tertiary":"#ffffff","on-surface":"#191c1a","surface-dim":"#d8dbd6","surface":"#f8faf5","on-tertiary-container":"#00a472","on-surface-variant":"#414844","surface-tint":"#426656","secondary-fixed-dim":"#a8d700","tertiary-fixed-dim":"#4edea3","inverse-on-surface":"#eff1ec","primary":"#00190f","on-tertiary-fixed":"#002113","outline-variant":"#c1c8c3","surface-container-lowest":"#ffffff","secondary-container":"#bef113","tertiary-fixed":"#6ffbbe","surface-bright":"#f8faf5","primary-container":"#0a2f22","on-tertiary-fixed-variant":"#005236","on-secondary-container":"#526b00","on-error":"#ffffff","inverse-primary":"#a9cfbc","on-error-container":"#93000a","on-primary-container":"#739887","on-primary-fixed-variant":"#2b4d3f","surface-container":"#edefe9","tertiary":"#00190e","on-secondary":"#ffffff","tertiary-container":"#00301e","secondary-fixed":"#c1f419","error":"#ba1a1a","surface-container-highest":"#e1e3de","on-secondary-fixed-variant":"#3b4d00","surface-container-high":"#e7e9e4","background":"#f8faf5","secondary":"#4f6600","surface-variant":"#e1e3de","outline":"#717974","primary-fixed":"#c4ebd7","on-background":"#191c1a"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","margin-lg":"3rem","space-xl":"2.5rem","margin":"1.5rem","margin-sm":"1rem","space-md":"1rem","space-xs":"0.25rem","gutter-lg":"2rem","gutter-sm":"1rem","gutter":"1.5rem","space-lg":"1.5rem"},"fontFamily":{"label-sm":["Plus Jakarta Sans"],"headline-sm":["Newsreader"],"display-md-mobile":["Newsreader"],"body-sm":["Plus Jakarta Sans"],"data-mono-lg":["Plus Jakarta Sans"],"headline-md":["Newsreader"],"display-lg-mobile":["Newsreader"],"label-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"display-lg":["Newsreader"],"data-mono-md":["Plus Jakarta Sans"],"display-md":["Newsreader"],"body-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"headline-lg":["Newsreader"]},"fontSize":{"label-sm":["0.6875rem",{"lineHeight":"0.875rem","letterSpacing":"0.06em","fontWeight":"700"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","fontWeight":"500"}],"display-md-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.01em","fontWeight":"400"}],"body-sm":["0.875rem",{"lineHeight":"1.25rem","fontWeight":"400"}],"data-mono-lg":["1.5rem",{"lineHeight":"1.75rem","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.01em","fontWeight":"500"}],"display-lg-mobile":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.015em","fontWeight":"400"}],"label-md":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.04em","fontWeight":"600"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","fontWeight":"400"}],"display-lg":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.02em","fontWeight":"400"}],"data-mono-md":["1rem",{"lineHeight":"1.25rem","letterSpacing":"-0.01em","fontWeight":"500"}],"display-md":["2.5rem",{"lineHeight":"3rem","letterSpacing":"-0.02em","fontWeight":"400"}],"body-md":["1rem",{"lineHeight":"1.5rem","fontWeight":"400"}],"label-lg":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.01em","fontWeight":"600"}],"headline-lg":["2rem",{"lineHeight":"2.5rem","letterSpacing":"-0.015em","fontWeight":"500"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-sm"><img alt="VOLTURA Monogram Logo" class="h-8 w-8 object-contain rounded-md" src="https://lh3.googleusercontent.com/aida/ALJJyrCciWsidnmoVPzjdHRxnyezwSc0UWd1HFuOBLhiT-Ea9-MxVNkDyph7VS3csGrCSG2MNEOMBFaHz4yyl3P8ZjmAx7PXxxtvdNY-j5yRUCi2k6HBKniQTGP7gRAxl5hrXOKYUPSl4sPA4GmHuqK28lUcQAD_4g5uwMu-x_x3c9Hf4IoiaOKz37CQto0dHQ9uTpbYoibMrw_yqLroScUcJ6KEhPNvE8SE9zGXnPRfQwbQ"><span class="font-headline-md text-headline-md tracking-tight text-primary font-semibold">VOLTURA</span></div><div class="px-space-md pt-space-xs pb-space-md"><button class="w-full flex items-center justify-center gap-space-xs bg-primary-container text-on-primary py-space-sm px-space-md rounded-lg font-label-md text-label-md transition-colors hover:bg-primary" type="button"><span class="material-symbols-outlined text-secondary-fixed text-lg">add</span><span class="tracking-wide">ADD TRANSACTION</span></button></div><nav class="px-space-sm space-y-space-xs" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="overview" href="#"><span class="material-symbols-outlined text-xl">dashboard</span><span>Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="transactions" href="#"><span class="material-symbols-outlined text-xl">receipt_long</span><span>Transactions</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg transition-colors bg-surface-container-high text-primary font-semibold" data-path="accounts" href="#"><span class="material-symbols-outlined text-xl">account_balance</span><span>Accounts</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="budgets" href="#"><span class="material-symbols-outlined text-xl">pie_chart</span><span>Budgets</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="savings-goals" href="#"><span class="material-symbols-outlined text-xl">savings</span><span>Savings Goals</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="insights" href="#"><span class="material-symbols-outlined text-xl">query_stats</span><span>Insights</span></a></nav></div><div class="flex flex-col pb-space-lg"><nav class="px-space-sm space-y-space-xs mb-space-md" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="settings" href="#"><span class="material-symbols-outlined text-xl">settings</span><span>Settings</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="backup-and-data" href="#"><span class="material-symbols-outlined text-xl">cloud_sync</span><span>Backup &amp; Data</span></a></nav><div class="px-space-md mx-space-sm py-space-sm rounded-lg bg-surface-container flex items-center justify-between"><div class="flex flex-col gap-0.5 w-full"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Vault Enclave</span></div><span class="w-2 h-2 rounded-full bg-secondary"></span></div><span class="font-mono text-[10px] text-on-surface-variant truncate mt-0.5">Build: v22.2-release (2025-02-18) • SW: voltura-platform-v22.2 • Offline Cached</span></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-lg text-on-surface font-label-md text-label-md cursor-pointer hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-base text-on-surface-variant">calendar_today</span><span>Oct 1 – Oct 31, 2024</span><span class="material-symbols-outlined text-base text-on-surface-variant">expand_more</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-lg text-on-surface-variant font-label-sm text-label-sm border border-outline-variant/30 cursor-pointer hover:border-outline-variant transition-colors"><span class="material-symbols-outlined text-base">search</span><span>Search records...</span><kbd class="bg-surface-container-high text-on-surface px-space-xs py-0.5 rounded text-[10px] font-semibold">⌘K</kbd></div></div><div class="flex items-center gap-space-md"><button class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Theme Toggle" type="button"><span class="material-symbols-outlined text-lg">light_mode</span></button><button class="relative w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Notifications" type="button"><span class="material-symbols-outlined text-lg">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="flex items-center gap-space-sm pl-space-xs cursor-pointer"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUgeOROk719y2PSt9y08xoZRy44RhCVkiEEc2Ycc9PdUhihA8EsTIZnOjzVk6BEibnq-AwegGFDEIMMcC_nvgl25vdj-k4RML2JnMA22Hev0t_IO1rWa3TeIFC0-k5ZZxpkXlByrNu4-SuXcxAFhP6vInVPGyhryEENQwh6cc1nspjdhYhwUBG33Ebgfp_6RjjIhgyEaIeDRFgCuMGj3o6-wCfRqw2oNeiiRc_N4A"><div class="hidden xl:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface leading-tight font-semibold">Marcus Sterling</span><span class="font-label-sm text-label-sm text-on-surface-variant">Private Wealth</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen px-gutter-lg py-gutter-lg"><div class="flex flex-col w-full pb-margin-lg">
+<!-- Header Section with Key Metrics & Global Orchestration -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl">
+<div>
 <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
 <span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
-<span>Institutional Vault Ledger</span>
-<span class="text-outline-variant">/</span>
-<span class="font-semibold text-primary">Consolidated Core</span>
+<span>Institutional Treasury • Synchronized Live Ledger</span>
 </div>
-<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Transactions &amp; Journal</h1>
-<p class="font-body-md text-body-md text-on-surface-variant mt-1">Real-time consolidated ledger across all synchronized sovereign accounts.</p>
+<h1 class="font-headline-lg text-headline-lg text-primary font-semibold tracking-tight">Accounts &amp; Liquidity</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Continuous multi-depository clearing and consolidated capital telemetry.</p>
 </div>
-<!-- Actions & Operational Controls -->
-<div class="flex items-center flex-wrap gap-space-sm">
-<button class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors shadow-sm" type="button">
-<span class="material-symbols-outlined text-base text-on-surface-variant">file_download</span>
-<span>Batch Export</span>
+<!-- Quick Action Suite -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<button class="flex items-center gap-space-xs bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-md text-label-md px-space-md py-space-sm rounded-lg shadow-sm transition-all duration-200" onclick="openModal('transferModal')">
+<span class="material-symbols-outlined text-base">swap_horiz</span>
+<span>Internal Transfer</span>
 </button>
-<button class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors shadow-sm" type="button">
-<span class="material-symbols-outlined text-base text-on-surface-variant">sync_saved_locally</span>
-<span>Reconcile Accounts</span>
+<button class="flex items-center gap-space-xs bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md px-space-md py-space-sm rounded-lg shadow-sm transition-all duration-200" onclick="openModal('vaultModal')">
+<span class="material-symbols-outlined text-base">lock_clock</span>
+<span>Manual / Cold Vault</span>
 </button>
-<button class="flex items-center gap-space-xs bg-primary-container text-on-primary px-space-md py-space-sm rounded-lg font-label-md text-label-md hover:bg-primary transition-colors shadow-sm" id="trigger-drawer-btn" type="button">
-<span class="material-symbols-outlined text-secondary-container text-base">add_circle</span>
-<span>New Entry</span>
-</button>
-</div>
-</section>
-<!-- Metric Telemetry Ribbon -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-lg">
-<!-- Total Inflow -->
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
-<div class="flex items-center gap-space-md">
-<div class="w-10 h-10 rounded-lg bg-primary-fixed-dim/40 flex items-center justify-center text-primary-container">
-<span class="material-symbols-outlined text-xl">south_west</span>
-</div>
-<div>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Filtered Inflow</span>
-<span class="font-data-mono-lg text-data-mono-lg text-primary font-semibold tabular-nums">+₹38,400.00</span>
-</div>
-</div>
-<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-primary-fixed-dim/30 text-on-primary-fixed-variant font-medium">+14.2% MoM</span>
-</div>
-<!-- Total Outflow -->
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
-<div class="flex items-center gap-space-md">
-<div class="w-10 h-10 rounded-lg bg-error-container/60 flex items-center justify-center text-error">
-<span class="material-symbols-outlined text-xl">north_east</span>
-</div>
-<div>
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Filtered Outflow</span>
-<span class="font-data-mono-lg text-data-mono-lg text-on-surface font-semibold tabular-nums">-₹16,842.10</span>
-</div>
-</div>
-<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-error-container/40 text-on-error-container font-medium">-3.8% MoM</span>
-</div>
-<!-- Net Movement -->
-<div class="bg-primary-container p-space-md rounded-xl shadow-sm flex items-center justify-between text-on-primary">
-<div class="flex items-center gap-space-md">
-<div class="w-10 h-10 rounded-lg bg-surface-container-lowest/10 flex items-center justify-center text-secondary-container">
-<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
-</div>
-<div>
-<span class="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wider block">Net Capital Movement</span>
-<span class="font-data-mono-lg text-data-mono-lg text-secondary-container font-semibold tabular-nums">+₹21,557.90</span>
-</div>
-</div>
-<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-lowest/15 text-on-primary font-medium">99.8% Settled</span>
-</div>
-</div>
-<!-- Multi-Tier Filter & Omnibox Architecture -->
-<section class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-md flex flex-col gap-space-md">
-<div class="flex flex-col lg:flex-row items-center justify-between gap-space-md">
-<!-- Search Omnibox -->
-<div class="relative w-full lg:max-w-md">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-<input class="w-full h-11 pl-10 pr-12 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-all" placeholder="Filter merchant, metadata, memo..." type="text">
-<kbd class="absolute right-3 top-1/2 -translate-y-1/2 bg-surface-container-high px-1.5 py-0.5 rounded font-label-sm text-label-sm text-on-surface-variant font-mono text-[10px]">/</kbd>
-</div>
-<!-- Type Toggles -->
-<div class="flex items-center p-1 bg-surface-container-low rounded-lg w-full lg:w-auto overflow-x-auto">
-<button class="px-space-md py-1.5 rounded font-label-md text-label-md bg-surface-container-lowest text-primary shadow-sm font-semibold transition-all" type="button">All Types</button>
-<button class="px-space-md py-1.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Inflow</button>
-<button class="px-space-md py-1.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Expense</button>
-<button class="px-space-md py-1.5 rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Transfer</button>
-</div>
-<!-- Quick Density & Action Switches -->
-<div class="flex items-center gap-space-xs self-end lg:self-auto">
-<span class="font-label-sm text-label-sm text-on-surface-variant mr-1">Density:</span>
-<button class="w-8 h-8 rounded bg-surface-container text-on-surface flex items-center justify-center hover:bg-surface-container-high" id="density-compact" title="Compact" type="button">
-<span class="material-symbols-outlined text-base">format_align_justify</span>
-</button>
-<button class="w-8 h-8 rounded bg-surface-container-high text-primary font-bold flex items-center justify-center" id="density-comfortable" title="Comfortable" type="button">
-<span class="material-symbols-outlined text-base">density_medium</span>
+<button class="flex items-center gap-space-xs bg-primary-container text-on-primary hover:bg-primary font-label-md text-label-md px-space-md py-space-sm rounded-lg shadow-md transition-all duration-200" onclick="openModal('plaidModal')">
+<span class="material-symbols-outlined text-secondary-fixed text-base">add_link</span>
+<span>Link New Institution</span>
 </button>
 </div>
 </div>
-<!-- Secondary Filter Bar -->
-<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
-<!-- Date Picker Trigger -->
-<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined text-sm text-on-surface-variant">calendar_month</span>
-<span>Oct 1 – Oct 31, 2024</span>
-<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
-</button>
-<!-- Account Select -->
-<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined text-sm text-on-surface-variant">account_balance</span>
-<span>All Accounts [5]</span>
-<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
-</button>
-<!-- Category Filter -->
-<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined text-sm text-on-surface-variant">category</span>
-<span>All Categories</span>
-<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
-</button>
-<!-- Status Filter -->
-<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined text-sm text-on-surface-variant">verified</span>
-<span>Status: Any</span>
-<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_drop_down</span>
-</button>
-<!-- Active Filter Badges Container -->
-<div class="flex items-center gap-space-xs ml-auto flex-wrap"><div class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface-variant px-space-sm py-1 rounded-full font-label-sm text-label-sm"><span>Currency: INR</span><button class="hover:text-error flex items-center" type="button"><span class="material-symbols-outlined text-xs">close</span></button></div><div class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface-variant px-space-sm py-1 rounded-full font-label-sm text-label-sm"><span>Amount &gt; ₹50.00</span><button class="hover:text-error flex items-center" type="button"><span class="material-symbols-outlined text-xs">close</span></button></div><button class="font-label-sm text-label-sm text-secondary hover:underline ml-1" type="button">Clear all</button></div>
+<!-- Primary Liquidity Telemetry Banner (Architectural Tier 1) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl mb-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+<!-- Total Synchronized Capital Highlight -->
+<div class="lg:col-span-4 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Total Synchronized Balance</span>
+<span class="flex items-center gap-1 bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+            6 Accounts Live
+          </span>
 </div>
-</section>
-<!-- Detailed Ledger Workspace (Table + Quick Context Slide) -->
-<div class="relative w-full flex gap-space-md items-start">
-<!-- Primary Ledger Table Module -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex-1 transition-all">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse" id="ledger-table">
-<thead>
-<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
-<th class="py-space-sm px-space-md w-10 text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</th>
-<th class="py-space-sm px-space-md">Date &amp; Time</th>
-<th class="py-space-sm px-space-md">Merchant / Counterparty</th>
-<th class="py-space-sm px-space-md">Category</th>
-<th class="py-space-sm px-space-md">Account</th>
-<th class="py-space-sm px-space-md">Status</th>
-<th class="py-space-sm px-space-md text-right">Amount (INR)</th>
-<th class="py-space-sm px-space-md text-center w-28">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y-0 text-on-surface font-body-sm text-body-sm" id="table-body">
-<!-- Row 1: High Inflow -->
-<tr class="group hover:bg-surface-container-low transition-colors table-row-comfortable cursor-pointer">
-<td class="px-space-md py-space-sm text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="font-label-md text-label-md text-on-surface block">Oct 28, 2024</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">14:22 EST</span>
-</td>
-<td class="px-space-md py-space-sm">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-primary-container text-secondary-container flex items-center justify-center font-bold text-xs uppercase font-label-md">
-                    SV
-                  </div>
-<div class="flex flex-col min-w-0">
+<div class="flex items-baseline gap-space-xs my-space-xs"><span class="font-display-lg text-display-lg text-primary tracking-tight font-serif">₹2,84,95,000</span><span class="font-data-mono-lg text-data-mono-lg text-on-surface-variant font-mono">.40</span></div>
+<div class="flex items-center gap-space-md mt-space-sm pt-space-sm text-on-surface-variant font-body-sm text-body-sm">
 <div class="flex items-center gap-1">
-<span class="font-label-lg text-label-lg text-primary font-semibold truncate">Sovereign Asset Liquidity LLC</span>
-<span class="material-symbols-outlined text-xs text-primary-container" title="Verified Sovereign Entity">verified</span>
+<span class="material-symbols-outlined text-sm text-secondary">verified_user</span>
+<span>Real-time aggregate</span>
 </div>
-<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Q3 Capital Distribution • Wire ID: #98231</span>
+<span class="text-outline-variant">•</span>
+<div>Net Capital ratio: <span class="font-semibold text-primary">98.5%</span></div>
 </div>
 </div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-primary-fixed-dim/40 text-on-primary-fixed-variant">
-                  Yield &amp; Dividend
-                </span>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
-<span class="w-2 h-2 rounded-full bg-primary-container"></span>
-<span>JPMorgan Trust •• 4091</span>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Settled
-                </span>
-</td>
-<td class="px-space-md py-space-sm text-right whitespace-nowrap">
-<span class="font-data-mono-md text-data-mono-md font-semibold text-primary tabular-nums">+₹32,500.00</span>
-</td>
-<td class="px-space-md py-space-sm text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Edit Entry" type="button">
-<span class="material-symbols-outlined text-sm">edit</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Split Transaction" type="button">
-<span class="material-symbols-outlined text-sm">call_split</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Receipt Attached" type="button">
-<span class="material-symbols-outlined text-sm">receipt</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 2: Expense Outflow -->
-<tr class="group hover:bg-surface-container-low transition-colors table-row-comfortable cursor-pointer bg-surface-container-low/20">
-<td class="px-space-md py-space-sm text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="font-label-md text-label-md text-on-surface block">Oct 26, 2024</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">09:41 EST</span>
-</td>
-<td class="px-space-md py-space-sm">
+<!-- Asset Allocation Spectrum & Health Index -->
+<div class="lg:col-span-8 flex flex-col justify-center">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-space-sm">
 <div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center font-bold text-xs uppercase font-label-md">
-                    AW
-                  </div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1">
-<span class="font-label-lg text-label-lg text-primary font-semibold truncate">Amazon Web Services</span>
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider">Treasury Spread Distribution</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">Rebalanced Today</span>
 </div>
-<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Cloud Infrastructure • Production Tier-4</span>
-</div>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant">
-                  Operations &amp; Tech
-                </span>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
-<span class="w-2 h-2 rounded-full bg-outline"></span>
-<span>Amex Platinum •• 9012</span>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Settled
-                </span>
-</td>
-<td class="px-space-md py-space-sm text-right whitespace-nowrap">
-<span class="font-data-mono-md text-data-mono-md font-semibold text-error tabular-nums">-₹4,120.40</span>
-</td>
-<td class="px-space-md py-space-sm text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Edit Entry" type="button">
-<span class="material-symbols-outlined text-sm">edit</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Split Transaction" type="button">
-<span class="material-symbols-outlined text-sm">call_split</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Attach Receipt" type="button">
-<span class="material-symbols-outlined text-sm">attach_file</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 3: Split Transaction Example -->
-<tr class="group hover:bg-surface-container-low transition-colors table-row-comfortable cursor-pointer">
-<td class="px-space-md py-space-sm text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="font-label-md text-label-md text-on-surface block">Oct 24, 2024</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">19:15 EST</span>
-</td>
-<td class="px-space-md py-space-sm">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center font-bold text-xs uppercase font-label-md">
-                    RH
-                  </div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1">
-<span class="font-label-lg text-label-lg text-primary font-semibold truncate">Restoration Hardware Gallery</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Executive Studio Furnishing (Split in 2)</span>
-</div>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-fixed/40 text-on-secondary-fixed">
-                  Split [Capital/Personal]
-                </span>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
-<span class="w-2 h-2 rounded-full bg-outline"></span>
-<span>Amex Platinum •• 9012</span>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Settled
-                </span>
-</td>
-<td class="px-space-md py-space-sm text-right whitespace-nowrap">
-<span class="font-data-mono-md text-data-mono-md font-semibold text-error tabular-nums">-₹8,250.00</span>
-</td>
-<td class="px-space-md py-space-sm text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Edit Entry" type="button">
-<span class="material-symbols-outlined text-sm">edit</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-primary-container font-bold" title="Split Configured" type="button">
-<span class="material-symbols-outlined text-sm">alt_route</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Receipt Attached" type="button">
-<span class="material-symbols-outlined text-sm">receipt</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 4: Pending Cleared Transfer -->
-<tr class="group hover:bg-surface-container-low transition-colors table-row-comfortable cursor-pointer">
-<td class="px-space-md py-space-sm text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="font-label-md text-label-md text-on-surface block">Oct 23, 2024</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">11:02 EST</span>
-</td>
-<td class="px-space-md py-space-sm">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-secondary-container/40 text-on-secondary-container flex items-center justify-center font-bold text-xs uppercase font-label-md">
-                    MS
-                  </div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1">
-<span class="font-label-lg text-label-lg text-primary font-semibold truncate">Morgan Stanley Private Wealth</span>
-<span class="material-symbols-outlined text-xs text-primary-container">verified</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Internal Sweep • Treasury Yield Allocation</span>
-</div>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant">
-                  Transfer Sweep
-                </span>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
-<span class="w-2 h-2 rounded-full bg-primary-fixed"></span>
-<span>Morgan Stanley •• 1184</span>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant font-medium">
-<span class="w-1.5 h-1.5 rounded-full bg-outline-variant animate-pulse"></span> Pending Cleared
-                </span>
-</td>
-<td class="px-space-md py-space-sm text-right whitespace-nowrap">
-<span class="font-data-mono-md text-data-mono-md font-semibold text-primary tabular-nums">+₹5,900.00</span>
-</td>
-<td class="px-space-md py-space-sm text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Edit Entry" type="button">
-<span class="material-symbols-outlined text-sm">edit</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Split Transaction" type="button">
-<span class="material-symbols-outlined text-sm">call_split</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Attach Receipt" type="button">
-<span class="material-symbols-outlined text-sm">attach_file</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 5: Retainer Outflow -->
-<tr class="group hover:bg-surface-container-low transition-colors table-row-comfortable cursor-pointer">
-<td class="px-space-md py-space-sm text-center">
-<input class="w-4 h-4 rounded bg-surface accent-primary cursor-pointer" type="checkbox">
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="font-label-md text-label-md text-on-surface block">Oct 21, 2024</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">16:48 EST</span>
-</td>
-<td class="px-space-md py-space-sm">
-<div class="flex items-center gap-space-sm">
-<div class="w-8 h-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center font-bold text-xs uppercase font-label-md">
-                    KG
-                  </div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1">
-<span class="font-label-lg text-label-lg text-primary font-semibold truncate">Kirkland &amp; Ellis Advisory</span>
-<span class="material-symbols-outlined text-xs text-primary-container">verified</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Retainer Inv #0918-B • Legal Trust Account</span>
-</div>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant">
-                  Professional Advisory
-                </span>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
-<span class="w-2 h-2 rounded-full bg-primary-container"></span>
-<span>JPMorgan Trust •• 4091</span>
-</div>
-</td>
-<td class="px-space-md py-space-sm whitespace-nowrap">
-<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Settled
-                </span>
-</td>
-<td class="px-space-md py-space-sm text-right whitespace-nowrap">
-<span class="font-data-mono-md text-data-mono-md font-semibold text-error tabular-nums">-₹4,471.70</span>
-</td>
-<td class="px-space-md py-space-sm text-center whitespace-nowrap">
-<div class="flex items-center justify-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Edit Entry" type="button">
-<span class="material-symbols-outlined text-sm">edit</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Split Transaction" type="button">
-<span class="material-symbols-outlined text-sm">call_split</span>
-</button>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" title="Receipt Attached" type="button">
-<span class="material-symbols-outlined text-sm">receipt</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Pagination & Ledger Summary Footer -->
-<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md px-space-md py-space-sm bg-surface-container-low text-on-surface-variant">
-<div class="flex items-center gap-space-md font-label-sm text-label-sm">
-<span>Displaying <strong class="text-primary font-semibold">1 – 25</strong> of <strong class="text-primary font-semibold">184</strong> transactions</span>
-<span class="text-outline-variant">|</span>
 <div class="flex items-center gap-space-xs">
-<span>Rows per page:</span>
-<select class="bg-surface font-label-sm text-label-sm text-on-surface rounded px-space-xs py-0.5 border-none focus:outline-none">
-<option>25</option>
-<option>50</option>
-<option>100</option>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Liquidity Health Score:</span>
+<span class="bg-primary-container text-secondary-fixed font-label-md text-label-md px-2 py-0.5 rounded-full font-mono">98 / 100 EXCELLENT</span>
+</div>
+</div>
+<!-- Proportional Color Ribbon Bar -->
+<div class="w-full h-3.5 bg-surface-container rounded-full overflow-hidden flex gap-0.5 p-0.5">
+<div class="h-full bg-primary-container rounded-l-full transition-all duration-500 hover:opacity-90" style="width: 50.0%;" title="High-Yield Savings: 50.0%"></div>
+<div class="h-full bg-surface-tint transition-all duration-500 hover:opacity-90" style="width: 24.0%;" title="Depository &amp; Checking: 24.0%"></div>
+<div class="h-full bg-primary-fixed-dim transition-all duration-500 hover:opacity-90" style="width: 22.5%;" title="Investment &amp; Brokerage: 22.5%"></div>
+<div class="h-full bg-error rounded-r-full transition-all duration-500 hover:opacity-90" style="width: 3.5%;" title="Liabilities: 3.5%"></div>
+</div>
+<!-- Legend Columns -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md mt-space-md pt-space-xs"><div class="flex flex-col"><div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2.5 h-2.5 rounded-sm bg-primary-container"></span><span>HY Reserve</span></div><span class="font-label-md text-label-md text-primary font-mono mt-0.5">50.0% (₹1,42.5L)</span></div><div class="flex flex-col"><div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2.5 h-2.5 rounded-sm bg-surface-tint"></span><span>Checking</span></div><span class="font-label-md text-label-md text-primary font-mono mt-0.5">24.0% (₹68.4L)</span></div><div class="flex flex-col"><div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2.5 h-2.5 rounded-sm bg-primary-fixed-dim"></span><span>Brokerage</span></div><span class="font-label-md text-label-md text-primary font-mono mt-0.5">22.5% (₹64.0L)</span></div><div class="flex flex-col"><div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="w-2.5 h-2.5 rounded-sm bg-error"></span><span>Liabilities</span></div><span class="font-label-md text-label-md text-error font-mono mt-0.5">1.5% (-₹4.3L)</span></div></div>
+</div>
+</div>
+</div>
+<!-- Breakdown Tier Cards (4 Structural Categories) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter-sm mb-space-xl">
+<!-- 1. Depository & Checking -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Depository &amp; Cash</span>
+<span class="material-symbols-outlined text-primary-container text-xl">account_balance_wallet</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary font-serif font-medium">₹68,45,020.00</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>2 Synchronized Accounts</span>
+<span class="text-secondary font-semibold">Immediate Access</span>
+</div>
+</div>
+<!-- 2. High-Yield Savings -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"><div><div class="flex items-center justify-between mb-space-sm"><span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">High-Yield Savings</span><span class="material-symbols-outlined text-primary-container text-xl">savings</span></div><div class="font-headline-md text-headline-md text-primary font-serif font-medium">₹1,42,50,000.00</div></div><div class="mt-space-md pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span>4.85% APY Compounding</span><span class="text-secondary font-semibold">+₹34,333 / mo</span></div></div>
+<!-- 3. Investment & Brokerage -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Investments</span>
+<span class="material-symbols-outlined text-primary-container text-xl">trending_up</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary font-serif font-medium">₹64,00,020.00</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Morgan Stanley Direct</span>
+<span class="text-secondary font-semibold">+14.2% YTD</span>
+</div>
+</div>
+<!-- 4. Liabilities & Facilities -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Liabilities &amp; Credit</span>
+<span class="material-symbols-outlined text-error text-xl">credit_card</span>
+</div>
+<div class="font-headline-md text-headline-md text-error font-serif font-medium">-₹4,35,000.00</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>2 Facilities Outstanding</span>
+<span class="text-on-surface-variant">All Auto-Pay Live</span>
+</div>
+</div>
+</div>
+<!-- Accounts Roster Section Header -->
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary font-medium">Institution Roster</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Active Open Banking, Plaid Link, and Secured Endpoints.</p>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>Auto-sync interval: 15 min</span>
+<span class="material-symbols-outlined text-base text-secondary">sync</span>
+</div>
+</div>
+<!-- Account Cards Mosaic Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter mb-space-xl">
+<!-- Card 1: Mercury Business Operating -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold font-mono"><span class="material-symbols-outlined text-xl">business_center</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Mercury Business</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Checking •••• 4821</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-1')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-1"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Mercury Business')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Mercury Business Operating', '•••• 4821', '₹42,18,050.00', 'APY 0.0%', 'Active Checking')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('Mercury_Operating_Oct2024.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Synchronized Balance</div><div class="font-headline-lg text-headline-lg text-primary font-serif font-medium mt-1">₹42,18,050.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">Yield APY</span><span class="font-semibold text-primary">0.0% Standard</span></div><div><span class="text-on-surface-variant block">Channel</span><span class="font-semibold text-primary">Operating Ops</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 12m ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Mercury Business')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+<!-- Card 2: Chase Private Client -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold"><span class="material-symbols-outlined text-xl">account_balance</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Chase Private Client</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Checking •••• 9012</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-2')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-2"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Chase Private Client')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Chase Private Client', '•••• 9012', '₹26,26,970.00', 'Primary Discretionary', 'Verified API')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('Chase_Private_Oct2024.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Available Liquidity</div><div class="font-headline-lg text-headline-lg text-primary font-serif font-medium mt-1">₹26,26,970.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">Role</span><span class="font-semibold text-primary">Primary Day-to-Day</span></div><div><span class="text-on-surface-variant block">Wire Facility</span><span class="font-semibold text-primary">Unlimited Direct</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 24m ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Chase Private Client')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+<!-- Card 3: Marcus High Yield Reserve -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-primary-container text-secondary-fixed flex items-center justify-center font-bold"><span class="material-symbols-outlined text-xl">savings</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Marcus Reserve</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Savings •••• 3144</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-3')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-3"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Marcus High Yield Reserve')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Marcus High Yield Reserve', '•••• 3144', '₹1,42,50,000.00', '4.85% APY', 'Earned YTD ₹4,12,000.00')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('Marcus_Reserve_Oct2024.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Reserve Principal</div><div class="font-headline-lg text-headline-lg text-primary font-serif font-medium mt-1">₹1,42,50,000.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">High-Yield APY</span><span class="font-semibold text-secondary">4.85% Fixed</span></div><div><span class="text-on-surface-variant block">Earned YTD</span><span class="font-semibold text-primary">+₹4,12,000.00</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 5m ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Marcus High Yield')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+<!-- Card 4: Morgan Stanley Wealth Portfolio -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold"><span class="material-symbols-outlined text-xl">query_stats</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Morgan Stanley Wealth</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Brokerage •••• 6710</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-4')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-4"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Morgan Stanley Wealth')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Morgan Stanley Wealth Portfolio', '•••• 6710', '₹64,00,020.00', '+14.2% YTD', 'Managed Custodial')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('MorganStanley_Wealth_Q3.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Custodial Portfolio Value</div><div class="font-headline-lg text-headline-lg text-primary font-serif font-medium mt-1">₹64,00,020.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">YTD Return</span><span class="font-semibold text-secondary">+14.2% Net</span></div><div><span class="text-on-surface-variant block">Risk Mandate</span><span class="font-semibold text-primary">Balanced Core</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 1h ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Morgan Stanley')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+<!-- Card 5: Amex Platinum Card -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold"><span class="material-symbols-outlined text-xl">credit_card</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Amex Platinum</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Credit •••• 1004</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-5')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-5"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Amex Platinum Card')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Amex Platinum Card', '•••• 1004', '-₹3,21,040.00', 'Auto-pay scheduled', 'Due in 14 days')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('Amex_Statement_Oct2024.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Current Statement Obligation</div><div class="font-headline-lg text-headline-lg text-error font-serif font-medium mt-1">-₹3,21,040.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">Settlement Schedule</span><span class="font-semibold text-primary">Due in 14 days</span></div><div><span class="text-on-surface-variant block">Clearing Protocol</span><span class="font-semibold text-secondary">Auto-Pay Active</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 8m ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Amex Platinum')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+<!-- Card 6: Apple Card -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative group"><div><div class="flex items-start justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold"><span class="material-symbols-outlined text-xl">contactless</span></div><div><h3 class="font-label-lg text-label-lg text-primary font-semibold">Apple Card</h3><p class="font-label-sm text-label-sm text-on-surface-variant">Credit •••• 5521</p></div></div><div class="relative"><button class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleCardMenu('menu-6')"><span class="material-symbols-outlined text-lg">more_vert</span></button><div class="hidden absolute right-0 top-9 w-48 bg-surface-container-lowest rounded-lg shadow-xl py-1 z-30 font-label-sm text-label-sm" id="menu-6"><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="triggerResync('Apple Card')"><span class="material-symbols-outlined text-base">sync</span>Re-sync Vault</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="showAccountDetails('Apple Card Titanium', '•••• 5521', '-₹1,13,960.00', '2% Daily Cash Active', 'Goldman Sachs Bank USA')"><span class="material-symbols-outlined text-base">info</span>Account Details</a><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)" onclick="downloadStatement('AppleCard_Statement_Oct2024.pdf')"><span class="material-symbols-outlined text-base">description</span>Statement PDF</a><div class="h-px bg-surface-container my-1"></div><a class="flex items-center gap-2 px-3 py-2 text-on-surface hover:bg-surface-container-high" href="javascript:void(0)"><span class="material-symbols-outlined text-base">tune</span>Settings</a></div></div></div><div class="mt-space-lg"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Revolving Balance</div><div class="font-headline-lg text-headline-lg text-error font-serif font-medium mt-1">-₹1,13,960.00</div></div><div class="mt-space-md grid grid-cols-2 gap-space-sm bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">Incentive Yield</span><span class="font-semibold text-secondary">2% Daily Cash</span></div><div><span class="text-on-surface-variant block">Issuer</span><span class="font-semibold text-primary">Goldman Sachs</span></div></div></div><div class="mt-space-lg pt-space-sm flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary"></span>Verified sync 42m ago</span><button class="hover:text-primary transition-colors flex items-center gap-1" onclick="triggerResync('Apple Card')"><span class="material-symbols-outlined text-sm">refresh</span>Sync</button></div></div>
+</div>
+<!-- Editorial Treasury Intelligence Banner & Audit Feed -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-stretch">
+<!-- Cashflow Velocity Chart Module -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-space-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Dynamic Liquidity Profile</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-serif font-medium">30-Day Historical Clearing &amp; Float</h3>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-2.5 py-1 bg-surface-container rounded-md font-semibold text-primary">Trailing 30D</span>
+<span class="px-2.5 py-1 text-on-surface-variant hover:text-primary cursor-pointer">Quarterly</span>
+</div>
+</div>
+<!-- Vector Visualizer Curve -->
+<div class="w-full h-44 relative my-space-sm flex items-end">
+<svg class="w-full h-full text-primary" fill="none" preserveAspectRatio="none" viewBox="0 0 600 160">
+<defs>
+<linearGradient id="liquidityFill" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0a2f22" stop-opacity="0.16"></stop>
+<stop offset="100%" stop-color="#0a2f22" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<path d="M0,130 C60,125 120,110 180,95 C240,80 300,105 360,70 C420,35 480,55 540,30 C570,18 590,22 600,20 L600,160 L0,160 Z" fill="url(#liquidityFill)"></path>
+<path d="M0,130 C60,125 120,110 180,95 C240,80 300,105 360,70 C420,35 480,55 540,30 C570,18 590,22 600,20" stroke="#0a2f22" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="600" cy="20" fill="#bef113" r="4.5" stroke="#0a2f22" stroke-width="2"></circle>
+</svg>
+</div>
+<div class="grid grid-cols-4 gap-space-sm pt-space-md border-t border-surface-container font-label-sm text-label-sm"><div><span class="text-on-surface-variant block">Avg Float</span><span class="font-data-mono-md text-data-mono-md text-primary font-mono">₹27.8L</span></div><div><span class="text-on-surface-variant block">Deposit Inflows</span><span class="font-data-mono-md text-data-mono-md text-secondary font-mono">+₹24,80,000.00</span></div><div><span class="text-on-surface-variant block">Liabilities Cleared</span><span class="font-data-mono-md text-data-mono-md text-on-surface font-mono">-₹12,41,030.00</span></div><div><span class="text-on-surface-variant block">Runway Reserve</span><span class="font-data-mono-md text-data-mono-md text-primary font-mono">22.4 Mos</span></div></div>
+</div>
+<!-- Editorial Vault Security Callout -->
+<div class="lg:col-span-4 bg-primary-container text-on-primary rounded-xl p-space-xl shadow-md flex flex-col justify-between relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-space-md">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary-fixed font-semibold">Institutional Grade Vault</span>
+<span class="material-symbols-outlined text-secondary-fixed text-2xl">verified</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-primary font-serif font-medium mb-space-sm">Cold Storage &amp; Dual Custody Controls</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container">All accounts adhere to sovereign multi-signature access parameters with continuous zero-knowledge cryptographic verification.</p>
+</div>
+<div class="mt-space-lg relative z-10 bg-surface-container-highest/10 p-space-md rounded-lg backdrop-blur-sm">
+<div class="flex items-center justify-between text-xs font-mono text-secondary-fixed mb-1">
+<span>HSM Vault Signature:</span>
+<span>ONLINE</span>
+</div>
+<p class="font-mono text-[11px] text-on-primary-fixed-variant truncate">0x9F41...B288A (Quorum 3 of 4 Active)</p>
+</div>
+</div>
+</div>
+<!-- Notification Toast Component -->
+<div class="fixed bottom-6 right-6 bg-primary-container text-on-primary px-space-md py-space-sm rounded-lg shadow-xl flex items-center gap-space-sm z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toast">
+<span class="material-symbols-outlined text-secondary-fixed text-lg" id="toastIcon">check_circle</span>
+<span class="font-label-md text-label-md" id="toastMessage">Action completed successfully</span>
+</div>
+<!-- MODAL: Internal Funds Transfer -->
+<div class="fixed inset-0 bg-primary/45 backdrop-blur-sm z-50 hidden flex items-center justify-center p-gutter" id="transferModal">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-space-xl shadow-2xl relative">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-serif font-medium">Internal Funds Transfer</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Instant settlement across authenticated depositories</p>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center" onclick="closeModal('transferModal')">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<form class="space-y-space-md" onsubmit="handleTransferSubmit(event)">
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Origin Account</label>
+<select class="w-full h-11 px-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" id="originAccount"><option value="chase">Chase Private Client (Checking •••• 9012) — ₹26,26,970.00</option><option value="mercury">Mercury Business Operating (Checking •••• 4821) — ₹42,18,050.00</option><option value="marcus">Marcus High Yield (Savings •••• 3144) — ₹1,42,50,000.00</option></select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Destination Account</label>
+<select class="w-full h-11 px-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" id="destinationAccount">
+<option value="marcus">Marcus High Yield Reserve (Savings •••• 3144)</option>
+<option value="chase">Chase Private Client (Checking •••• 9012)</option>
+<option value="morgan">Morgan Stanley Wealth (Brokerage •••• 6710)</option>
+<option value="amex">Amex Platinum Settlement (Credit •••• 1004)</option>
 </select>
 </div>
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Transfer Capital Amount</label>
+<div class="relative">
+<span class="absolute left-3.5 top-2.5 font-mono text-on-surface-variant">₹</span>
+<input class="w-full h-11 pl-8 pr-3 bg-surface-container-low rounded-lg font-data-mono-md text-data-mono-md text-on-surface focus:outline-none focus:bg-surface-container-lowest font-mono" min="1" placeholder="10,000.00" required="" step="0.01" type="number">
 </div>
-<div class="flex items-center gap-space-xs">
-<button class="w-8 h-8 rounded bg-surface hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant disabled:opacity-40" disabled="" type="button">
-<span class="material-symbols-outlined text-base">chevron_left</span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg font-label-sm text-label-sm text-on-surface-variant flex items-center justify-between">
+<span>Clearing Protocol: FedNow / Instant Book</span>
+<span class="text-secondary font-semibold font-mono">Fee: ₹0.00</span>
+</div>
+<div class="pt-space-sm flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container font-label-md text-label-md" onclick="closeModal('transferModal')" type="button">Cancel</button>
+<button class="bg-primary-container text-on-primary hover:bg-primary px-space-lg py-space-sm rounded-lg font-label-md text-label-md shadow-md" type="submit">Execute Transfer</button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL: Link New Institution (Plaid) -->
+<div class="fixed inset-0 bg-primary/45 backdrop-blur-sm z-50 hidden flex items-center justify-center p-gutter" id="plaidModal">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-space-xl shadow-2xl relative">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-serif font-medium">Link Financial Institution</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Encrypted Open Banking integration via Plaid Core</p>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center" onclick="closeModal('plaidModal')">
+<span class="material-symbols-outlined text-lg">close</span>
 </button>
-<button class="w-8 h-8 rounded bg-primary-container text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center" type="button">1</button>
-<button class="w-8 h-8 rounded bg-surface hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">2</button>
-<button class="w-8 h-8 rounded bg-surface hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">3</button>
-<span class="px-1 text-outline-variant">...</span>
-<button class="w-8 h-8 rounded bg-surface hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">8</button>
-<button class="w-8 h-8 rounded bg-surface hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant" type="button">
-<span class="material-symbols-outlined text-base">chevron_right</span>
+</div>
+<div class="grid grid-cols-3 gap-space-sm mb-space-lg">
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('JPMorgan Chase')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">account_balance</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Chase</span>
+</button>
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('Bank of America')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">account_balance</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">BofA</span>
+</button>
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('Goldman Sachs')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">domain</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Goldman</span>
+</button>
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('Fidelity Investments')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">show_chart</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Fidelity</span>
+</button>
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('Silicon Valley Bank')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">hub</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">SVB</span>
+</button>
+<button class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg flex flex-col items-center text-center transition-colors" onclick="simulateInstitutionSelect('Custom API Link')">
+<span class="material-symbols-outlined text-2xl text-primary mb-1">api</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Direct API</span>
 </button>
 </div>
+<div class="p-space-md bg-surface-container-low rounded-lg flex items-center gap-space-sm mb-space-lg">
+<span class="material-symbols-outlined text-secondary text-2xl">lock</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">End-to-end 256-bit encryption. Credentials are never stored on Voltura local nodes.</p>
+</div>
+<div class="flex items-center justify-end">
+<button class="px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container font-label-md text-label-md" onclick="closeModal('plaidModal')" type="button">Dismiss</button>
 </div>
 </div>
-<!-- Quick Edit & Split Categorization Drawer (Context Sidebar) -->
-<aside class="w-96 bg-surface-container-lowest rounded-xl shadow-md p-space-md flex flex-col shrink-0 transition-all duration-300" id="quick-drawer" style="backdrop-filter: blur(10px); border: 1px solid rgba(193, 200, 195, 0.45); background: rgba(255, 255, 255, 0.88);">
-<div class="flex items-center justify-between pb-space-sm mb-space-sm">
-<div class="flex items-center gap-space-xs">
-<span class="material-symbols-outlined text-primary-container">edit_note</span>
-<span class="font-headline-sm text-headline-sm text-primary font-medium">Quick Drawer</span>
 </div>
-<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary" id="close-drawer-btn" type="button">
-<span class="material-symbols-outlined text-sm">close</span>
+<!-- MODAL: Cold Storage / Manual Vault -->
+<div class="fixed inset-0 bg-primary/45 backdrop-blur-sm z-50 hidden flex items-center justify-center p-gutter" id="vaultModal">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-space-xl shadow-2xl relative">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-serif font-medium">Add Manual / Cold Storage Vault</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Air-gapped ledgers, physical bullion, or real estate equity</p>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center" onclick="closeModal('vaultModal')">
+<span class="material-symbols-outlined text-lg">close</span>
 </button>
 </div>
-<div class="bg-surface-container-low p-space-sm rounded-lg mb-space-md">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Selected Entry</span>
-<span class="font-label-lg text-label-lg text-primary font-semibold block truncate">Restoration Hardware Gallery</span>
-<div class="flex items-center justify-between mt-1">
-<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 24, 2024</span>
-<span class="font-data-mono-md text-data-mono-md font-bold text-error tabular-nums">-₹8,250.00</span>
+<form class="space-y-space-md" onsubmit="handleVaultSubmit(event)">
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Vault Name / Asset Label</label>
+<input class="w-full h-11 px-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" placeholder="e.g., Zurich Gold Bullion Depository" required="" type="text">
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Classification</label>
+<select class="w-full h-11 px-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest">
+<option>Physical Bullion / Precious Metal</option>
+<option>Cold Hardware Cryptographic Vault</option>
+<option>Real Estate Direct Equity</option>
+<option>Private Equity / SAFE Note</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Declared Valuation</label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 font-mono text-on-surface-variant">₹</span>
+<input class="w-full h-11 pl-7 pr-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest font-mono" placeholder="50,000.00" required="" step="0.01" type="number">
 </div>
 </div>
-<!-- Action Tabs inside Drawer -->
-<div class="flex bg-surface-container p-0.5 rounded-lg mb-space-md">
-<button class="flex-1 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md font-semibold shadow-sm text-center" type="button">Split Rules</button>
-<button class="flex-1 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md text-center" type="button">Receipt &amp; Tax</button>
 </div>
-<!-- Split Formulation Component -->
-<div class="flex flex-col gap-space-sm flex-1">
-<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
-<span>Split Schedule</span>
-<span class="text-secondary font-semibold cursor-pointer hover:underline">+ Add Split Allocation</span>
+<div>
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-1 font-semibold">Custodian / Physical Coordinates</label>
+<input class="w-full h-11 px-3 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" placeholder="e.g., Safebox #402, Geneva Free Port" type="text">
 </div>
-<!-- Split Part 1 -->
-<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-md text-label-md text-primary font-semibold">Part A: Capital Asset</span><span class="font-data-mono-md text-data-mono-md font-bold text-primary tabular-nums">₹6,000.00</span></div><select class="w-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm font-medium rounded p-1.5 border border-outline-variant/50 focus:outline-none focus:border-primary shadow-sm"><option>Commercial Property &amp; Office</option><option>Direct Advisory</option></select></div>
-<!-- Split Part 2 -->
-<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-md text-label-md text-primary font-semibold">Part B: Personal Discretionary</span><span class="font-data-mono-md text-data-mono-md font-bold text-primary tabular-nums">₹2,250.00</span></div><select class="w-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm font-medium rounded p-1.5 border border-outline-variant/50 focus:outline-none focus:border-primary shadow-sm"><option>Personal Living Expense</option><option>Executive Furnishings</option></select></div>
-<!-- Receipt Micro Preview Card -->
-<div class="mt-space-sm p-space-sm bg-surface-container-high/40 rounded-lg flex items-center justify-between">
-<div class="flex items-center gap-space-xs">
-<span class="material-symbols-outlined text-secondary text-lg">receipt_long</span>
-<span class="font-label-sm text-label-sm text-on-surface truncate max-w-[170px]">RH_Invoice_#48911.pdf</span>
+<div class="pt-space-sm flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container font-label-md text-label-md" onclick="closeModal('vaultModal')" type="button">Cancel</button>
+<button class="bg-primary-container text-on-primary hover:bg-primary px-space-lg py-space-sm rounded-lg font-label-md text-label-md shadow-md" type="submit">Register Asset Vault</button>
 </div>
-<span class="font-label-sm text-label-sm text-primary font-semibold cursor-pointer hover:underline">View</span>
-</div>
-<!-- Drawer Action Footer -->
-<div class="mt-auto pt-space-md flex items-center gap-space-xs">
-<button class="flex-1 bg-primary-container text-on-primary py-space-sm rounded-lg font-label-md text-label-md hover:bg-primary transition-colors text-center font-semibold" id="save-split-btn" type="button">
-            Apply Split
-          </button>
-<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" id="discard-split-btn" type="button">
-            Reset
-          </button>
+</form>
 </div>
 </div>
-</aside>
+<!-- MODAL: Detailed Account Inspector -->
+<div class="fixed inset-0 bg-primary/45 backdrop-blur-sm z-50 hidden flex items-center justify-center p-gutter" id="inspectorModal">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-space-xl shadow-2xl relative">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Ledger Telemetry</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-serif font-medium" id="inspectTitle">Account Details</h3>
+</div>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center" onclick="closeModal('inspectorModal')">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="space-y-space-md mb-space-lg">
+<div class="bg-surface-container-low p-space-md rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Primary Account Mask</span>
+<span class="font-mono font-semibold text-primary" id="inspectMask">•••• 0000</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cleared Stored Balance</span>
+<span class="font-mono font-semibold text-primary" id="inspectBalance">$0.00</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Current Yield / Terms</span>
+<span class="font-semibold text-secondary" id="inspectApy">0.0%</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Custodial Category</span>
+<span class="font-semibold text-on-surface" id="inspectCategory">Depository</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<button class="bg-primary-container text-on-primary hover:bg-primary px-space-lg py-space-sm rounded-lg font-label-md text-label-md" onclick="closeModal('inspectorModal')">Close Inspector</button>
+</div>
+</div>
 </div>
 </div>
 <script>
-  // Ledger table density and drawer toggle interactions
-  const densityCompactBtn = document.getElementById('density-compact');
-  const densityComfortableBtn = document.getElementById('density-comfortable');
-  const tableRows = document.querySelectorAll('#table-body tr');
-  const quickDrawer = document.getElementById('quick-drawer');
-  const closeDrawerBtn = document.getElementById('close-drawer-btn');
-  const triggerDrawerBtn = document.getElementById('trigger-drawer-btn');
-
-  // Toggle density styles
-  densityCompactBtn?.addEventListener('click', () => {
-    tableRows.forEach(row => {
-      row.classList.remove('py-space-sm');
-      row.querySelectorAll('td').forEach(td => {
-        td.style.paddingTop = '0.375rem';
-        td.style.paddingBottom = '0.375rem';
-      });
+  // Menu visibility toggling
+  function toggleCardMenu(menuId) {
+    const menus = ['menu-1', 'menu-2', 'menu-3', 'menu-4', 'menu-5', 'menu-6'];
+    menus.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && id !== menuId) {
+        el.classList.add('hidden');
+      }
     });
-    densityCompactBtn.classList.replace('bg-surface-container', 'bg-surface-container-high');
-    densityComfortableBtn.classList.replace('bg-surface-container-high', 'bg-surface-container');
-  });
+    const target = document.getElementById(menuId);
+    if (target) {
+      target.classList.toggle('hidden');
+    }
+  }
 
-  densityComfortableBtn?.addEventListener('click', () => {
-    tableRows.forEach(row => {
-      row.querySelectorAll('td').forEach(td => {
-        td.style.paddingTop = '';
-        td.style.paddingBottom = '';
+  // Close menus when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.group') && !event.target.closest('[id^="menu-"]')) {
+      const menus = ['menu-1', 'menu-2', 'menu-3', 'menu-4', 'menu-5', 'menu-6'];
+      menus.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
       });
-    });
-    densityComfortableBtn.classList.replace('bg-surface-container', 'bg-surface-container-high');
-    densityCompactBtn.classList.replace('bg-surface-container-high', 'bg-surface-container');
-  });
-
-  // Quick Drawer close/open toggles
-  closeDrawerBtn?.addEventListener('click', () => {
-    quickDrawer.classList.toggle('hidden');
-  });
-
-  triggerDrawerBtn?.addEventListener('click', () => {
-    if (quickDrawer.classList.contains('hidden')) {
-      quickDrawer.classList.remove('hidden');
     }
   });
 
-  document.getElementById('save-split-btn')?.addEventListener('click', () => {
-    quickDrawer.classList.add('opacity-50');
+  // Modal helpers
+  function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('hidden');
+  }
+
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  }
+
+  // Toast notification feedback system
+  function showToast(message, isSuccess = true) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    if (!toast || !toastMsg || !toastIcon) return;
+
+    toastMsg.innerText = message;
+    toastIcon.innerText = isSuccess ? 'check_circle' : 'info';
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
     setTimeout(() => {
-      quickDrawer.classList.remove('opacity-50');
-    }, 400);
-  });
+      toast.classList.add('translate-y-24', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }, 3200);
+  }
+
+  // Interactive Re-sync simulation
+  function triggerResync(accountName) {
+    showToast('Re-synchronizing ' + accountName + ' API feeds...');
+  }
+
+  // Statement PDF download trigger
+  function downloadStatement(filename) {
+    showToast('Generating signed PDF: ' + filename);
+  }
+
+  // Inspector modal data injection
+  function showAccountDetails(title, mask, balance, apy, category) {
+    document.getElementById('inspectTitle').innerText = title;
+    document.getElementById('inspectMask').innerText = mask;
+    document.getElementById('inspectBalance').innerText = balance;
+    document.getElementById('inspectApy').innerText = apy;
+    document.getElementById('inspectCategory').innerText = category;
+    openModal('inspectorModal');
+  }
+
+  // Form submit handlers
+  function handleTransferSubmit(e) {
+    e.preventDefault();
+    closeModal('transferModal');
+    showToast('Internal transfer initiated across clearinghouse nodes.');
+  }
+
+  function handleVaultSubmit(e) {
+    e.preventDefault();
+    closeModal('vaultModal');
+    showToast('New asset vault securely registered to balance sheet.');
+  }
+
+  function simulateInstitutionSelect(name) {
+    closeModal('plaidModal');
+    showToast('Plaid handshake initialized for ' + name);
+  }
 </script></main></div>
 
 </body></html>

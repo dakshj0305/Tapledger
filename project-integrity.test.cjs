@@ -43,7 +43,9 @@ test('quick launch, local enhancement, and offline shell are wired without exter
   assert.match(boot, /params\.get\('a'\).*'expense'/s);
   assert.match(boot, /params\.get\('i'\).*'income'/s);
   assert.match(boot, /__volturaLaunchIntent/);
-  assert.doesNotMatch(boot, /showModal|focus\(/);
+  assert.match(boot, /dialog\.showModal\(\)/);
+  assert.match(boot, /nfc-launch/);
+  assert.match(boot, /quickExpenseSave.*disabled=true/);
   assert.match(app, /setupVisualViewport/);
   assert.match(app, /history\.replaceState/);
   assert.match(app, /applyUrlAction\(\);await renderVoiceConsentState/);
@@ -55,9 +57,9 @@ test('quick launch, local enhancement, and offline shell are wired without exter
   assert.match(app, /function renderMonthlyReport/);
   assert.match(app, /function exportReportCSV/);
   assert.ok(worker.includes("'finance-core.js'"));
-  assert.ok(worker.includes("'motion-ui.css'"));
+  assert.ok(worker.includes("'voltura.css'"));
   assert.ok(worker.includes("'motion-ui.js'"));
-  assert.ok(worker.includes("'voltura-visual-overhaul.css'"));
+  assert.ok(!worker.includes("'voltura-visual-overhaul.css'"));
   assert.match(worker, /if\(url\.origin!==self\.location\.origin\)return/);
   assert.doesNotMatch(html, /<script[^>]+src="https?:/i);
   assert.doesNotMatch(html, /<link[^>]+href="https?:[^\"]+stylesheet/i);

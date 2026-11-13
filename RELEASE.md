@@ -1,39 +1,36 @@
-# VOLTURA release notes — current V25.2
+# VOLTURA release notes — current V26.0
 
-**Build:** `VOLTURA-25.2-ATELIER-20261113`  
+**Build:** `VOLTURA-26.0-UNIFIED-20261113`  
 **Date:** 13 November 2026  
 **Deployment:** Not pushed or deployed by this release task.
 
-V25.2 is the visual repair release after the Stitch design first pass, liquid-metal-style interaction adaptation, scroll-motion adaptation and “Smarter Growth” motion-reference pass. It retains the app's static HTML/CSS/vanilla-JavaScript architecture and the existing IndexedDB v3 contract.
+V26.0 combines the strongest parts of the prior Observatory, Kinetic Relic, Stitch and Atelier work into one coherent product direction. The interface uses editorial financial hierarchy, mineral-paper surfaces, deep-pine navigation, a chartreuse action accent, selective dimensional motion and a consistent light/dark system. Financial controls and data tables remain matte and readable.
 
 ## Included
 
-- Shared Stitch-derived presentation system and retained source references for Overview, Accounts, Transactions Ledger, Budgets, Financial Intelligence and VOLTURA identity.
-- Selective glass surfaces with opaque financial forms and dense data surfaces.
-- Local liquid-metal-style pointer lighting and click ripple, without the supplied React/WebGL shader.
-- Native-scroll chapter tracking and IntersectionObserver/CSS reveal fallback, with reduced-motion handling.
-- Motion pacing based on the supplied short “Smarter Growth” reference video.
-- PWA manifest, icons, service-worker cache, offline shell and project-relative URLs.
-- Additive atomic JSON restore and migration safeguards from prior audited releases.
+- One active local runtime stylesheet, `voltura.css`, generated reproducibly by `node build-css.cjs` from nine maintained local source layers plus `voltura-unified-overrides.css`.
+- Focused first-paint quick entry for `?a=1`, `?i=1` and `?add=1`; Save stays disabled until IndexedDB and application handlers are ready.
+- Existing transaction, account, budget, goal, intelligence, report, backup/restore, CSV, voice-consent and NFC shortcut features retained.
+- Light/dark appearance, 16px mobile inputs, visible keyboard focus, reduced-motion, forced-colors and reduced-transparency fallbacks.
+- Local-only CSS/Canvas/JavaScript motion; no external font, CDN, analytics or third-party runtime.
+- Updated service-worker cache `voltura-platform-v26.0` and self-hosted PWA assets.
 
 ## Deliberate compatibility decisions
 
-The supplied React components are not copied into `/components/ui`: this repository is not a shadcn, Tailwind or TypeScript project. The project remains vanilla JavaScript so the existing PWA and financial workflows are not needlessly rewritten. The full-screen pinned React slideshow is not used. Its useful transition ideas are adapted to native page scrolling.
+- Static HTML/CSS/vanilla JavaScript; no framework migration.
+- IndexedDB database `tapledger-db`, version 3; stores, keys, indexes, record shapes and migration behavior unchanged.
+- Money remains integer paise; JSON export remains tagged `Voltura`, with legacy `TapLedger`, `Cairn` and `Vellum` import support.
+- Project-relative URLs remain compatible with GitHub Pages `/Tapledger/` hosting.
+- No pinned scroll scenes or wheel hijacking.
 
-GSAP was explicitly requested, but there is no local GSAP/ScrollTrigger distribution in the supplied project or available workspace. The source detects a locally supplied runtime and offers progressive enhancement hooks; GSAP is **not bundled or active by default**. No remote CDN dependency is introduced.
+## Removed approved dead files
 
-## Data contract
+`observatory.css`, `kinetic.css` and `vivid-depth.js` were not active runtime dependencies and have been removed. `vivid-depth.css` remains as a historical source file but is not loaded. The source CSS layers remain available for reproducible builds and traceability; only `voltura.css` is loaded by the app.
 
-- IndexedDB database: `tapledger-db`
-- IndexedDB version: `3`
-- Stores/key paths/indexes and saved record shapes: unchanged
-- Financial amount storage: integer paise
-- Quick routes: `?a=1`, `?i=1`, `?add=1`
-- JSON restore: additive, duplicate-safe and transactionally applied
+## GSAP status
 
-## Verification summary
+GSAP is **not bundled**. The official distribution is absent from the supplied project and local package cache. External DNS resolution failed during retrieval attempts, so this release does not use a CDN, fabricate a substitute, or claim GSAP integration. Existing local motion remains progressive and offline-safe.
 
-See `RELEASE-REPORT-V25.2.md`, `CHANGELOG-V25.2.md` and `QA-REPORT.md`. The current package was checked with Node syntax validation, all dependency-free automated tests, manifest parsing, local asset/precache tests, checksum verification and ZIP integrity validation. A headless Chromium run timed out; rendered desktop/mobile browser QA, real IndexedDB persistence, PWA install/update/offline behavior, NFC hardware and the deployed Pages site remain unverified.
+## Verification boundaries
 
-
-V25.2 consolidates the visual cascade into the Atelier design system and removes competing card tilt transforms. The dimensional orbital object remains a progressive CSS 3D / Canvas 2D enhancement. GSAP was not available in the supplied project or package cache; this build does not claim to include GSAP.
+See `QA-REPORT-V26.0.md`. Automated tests and static checks do not certify physical NFC behavior, Android PWA link capture, deployed GitHub Pages behavior, screen-reader compatibility, legal compliance or every browser/device combination. Chromium headless execution timed out in this environment, so rendered visual browser QA remains unverified.

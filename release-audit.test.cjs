@@ -50,9 +50,9 @@ test('scroll chapters and liquid-metal enhancement are wired and degrade gracefu
 
 test('visual repair layer, brand mark, and mobile navigation are complete', () => {
   const html = read('index.html');
-  const css = read('polish.css');
+  const css = read('voltura.css');
   const mark = read('icons/voltura-mark.svg');
-  assert.match(html, /href="\.\/polish\.css"/);
+  assert.match(html, /href="\.\/voltura\.css"/);
   assert.match(html, /class="brand-manifesto"/);
   assert.doesNotMatch(html, /In every bottle|Real Magic of sharing pure Refreshment/);
   assert.match(css, /@media\(max-width:700px\)/);
@@ -66,8 +66,8 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v25\.2/);
-  assert.match(worker, /'polish\.css'/);
+  assert.match(worker, /voltura-platform-v26\.0/);
+  assert.match(worker, /'voltura\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
 });
@@ -75,7 +75,7 @@ test('service worker cache version and update checks are advanced', () => {
 
 test('brand icon assets and manifest theme color match the refreshed identity', () => {
   const manifest = JSON.parse(read('manifest.webmanifest'));
-  assert.equal(manifest.theme_color.toLowerCase(), '#132a21');
+  assert.equal(manifest.theme_color.toLowerCase(), '#173d2d');
   for (const size of [192, 512]) {
     for (const suffix of ['', '-maskable']) {
       const file = path.join(root, `icons/icon-${size}${suffix}.png`);
@@ -102,15 +102,15 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.2-ATELIER-20261113"/);
-  assert.match(read('sw.js'), /voltura-platform-v25\.2/);
-  assert.match(read('app.js'), /VOLTURA v25\.2/);
+  assert.match(read('index.html'), /data-build-id="VOLTURA-26\.0-UNIFIED-20261113"/);
+  assert.match(read('sw.js'), /voltura-platform-v26\.0/);
+  assert.match(read('app.js'), /VOLTURA v26\.0/);
   assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
 
 test('dashboard masthead, balance hero and detail row have explicit responsive layout rules', () => {
-  const html = read('index.html'), css = read('polish.css');
+  const html = read('index.html'), css = read('voltura.css');
   assert.match(html, /class="dashboard-masthead"/);
   assert.match(html, /class="balance-detail-row"/);
   assert.doesNotMatch(html, /class="prism-stage"/);
@@ -120,15 +120,15 @@ test('dashboard masthead, balance hero and detail row have explicit responsive l
 });
 
 test('primary balance value and insight copy meet the intended high-contrast surfaces', () => {
-  const css = read('atelier.css');
-  assert.match(css, /\.balance-value\{font:400 clamp/);
-  assert.match(css, /\.balance-hero \.metric-label[^}]*color:#c9d2c8!important/);
-  assert.match(css, /\.insight-feature \.feature-link[^}]*color:#e1c99b!important/);
-  assert.match(css, /\.insight-feature h3[^}]*color:#f1eadc!important/);
+  const css = read('voltura.css');
+  assert.match(css, /\.balance-value\{font:700 clamp/);
+  assert.match(css, /\.balance-hero \.metric-label[^}]*color:#c4d0c5!important/);
+  assert.match(css, /\.insight-feature \.feature-link[^}]*color:var\(--v26-pine\)!important/);
+  assert.match(css, /\.insight-feature h3[^}]*color:var\(--v26-ink\)!important/);
 });
 
 test('accessible cash-flow data table does not use a long intrinsic-width caption', () => {
-  const html = read('index.html'), css = read('polish.css');
+  const html = read('index.html'), css = read('voltura.css');
   assert.match(html, /<table aria-label="Monthly income and expense chart data in Indian rupees" class="sr-only"/);
   assert.doesNotMatch(html, /<table[^>]*id="cashflowChartData"[^>]*>\s*<caption/);
   assert.match(css, /#cashflowChartData\{width:1px!important/);
@@ -136,21 +136,21 @@ test('accessible cash-flow data table does not use a long intrinsic-width captio
 
 test('theme-color follows the selected appearance and chapter progress follows scroll position', () => {
   const app = read('app.js'), story = read('scroll-story.js');
-  assert.match(app, /themeMeta\.content=dark\?'#0e1b15':'#eeeae1'/);
+  assert.match(app, /themeMeta\.content=dark\?'#101a15':'#f0eee6'/);
   assert.match(story, /const start=rect\.top\+scrollY/);
   assert.match(story, /fill\.style\.width=`\$\{progress\*100\}%`/);
 });
 
 
 test('sidebar brand wordmark remains readable in both light and dark themes', () => {
-  const css = read('polish.css');
+  const css = read('voltura.css');
   assert.match(css, /\.brand-word\{color:var\(--color-text\)!important/);
   assert.match(css, /\.brand-word small\{[^}]*color:var\(--color-text-muted\)!important/);
 });
 
 
 test('passive trackpad sensing drives a subtle chapter-nav tilt and resets without hijacking scroll', () => {
-  const js = read('motion-ui.js'), css = read('polish.css'), motionCss = read('motion-ui.css');
+  const js = read('motion-ui.js'), css = read('voltura.css'), motionCss = read('motion-ui.css');
   assert.match(js, /addEventListener\('wheel'/);
   assert.match(js, /wheelReset=setTimeout/);
   assert.match(js, /addEventListener\('wheel',[\s\S]*?\{passive:true\}/);
@@ -161,15 +161,18 @@ test('passive trackpad sensing drives a subtle chapter-nav tilt and resets witho
 });
 
 
-test('V21.1 dashboard layer is self-hosted, dark-first, responsive and bounded-glass', () => {
-  const html=read('index.html'), css=read('voltura-visual-system.css'), worker=read('sw.js');
-  assert.match(html,/href="\.\/voltura-visual-system\.css"/);
-  assert.match(css,/--v-bg:\s*#0b1211/);
-  assert.match(css,/@media \(max-width:640px\)/);
-  assert.match(css,/prefers-reduced-transparency/);
+test('V26 unified runtime design is self-hosted, matte, responsive and accessible', () => {
+  const html=read('index.html'), css=read('voltura.css'), worker=read('sw.js');
+  assert.match(html,/href="\.\/voltura\.css"/);
+  assert.doesNotMatch(html,/href="\.\/(?:style|design-system|polish|voltura-visual-system|voltura-visual-overhaul|stitch-integration|atelier|vivid-depth)\.css"/);
+  assert.match(css,/--v26-paper:#f0eee6/);
+  assert.match(css,/--v26-pine-deep:#102c21/);
+  assert.match(css,/@media\(max-width:700px\)/);
+  assert.match(css,/prefers-reduced-motion/);
   assert.match(css,/forced-colors:active/);
-  assert.match(css,/backdrop-filter:blur\(10px\)/);
-  assert.match(worker,/'voltura-visual-system\.css'/);
+  assert.match(css,/nfc-launch/);
+  assert.match(worker,/'voltura\.css'/);
+  assert.doesNotMatch(css,/backdrop-filter:blur\(/);
 });
 
 test('recent dashboard transactions expose edit and delete through existing handlers', () => {
@@ -225,50 +228,43 @@ test('glass fallbacks follow the final cascade and preserve contrast in reduced-
 });
 
 
-test('V22 visual overhaul fixes insight text compression and preserves mobile secondary destinations', () => {
-  const css = read('voltura-visual-overhaul.css');
-  const html = read('index.html');
-  const app = read('app.js');
-  assert.match(css, /\.insight-feature,\.goal-feature\s*\{[^}]*flex-direction:column/s);
-  assert.match(css, /\.insight-copy\s*\{[^}]*max-width:100%/s);
-  assert.match(css, /\.insight-feature \.feature-link\s*\{[^}]*align-self:flex-start/s);
-  assert.match(html, /href="\.\/voltura-visual-overhaul\.css"/);
-  assert.match(html, /data-view="budgets"/);
-  assert.match(html, /data-view="goals"/);
-  assert.match(app, /view==='budgets'\|\|view==='goals'/);
+test('unified runtime retains responsive secondary destinations and Stitch-derived structure', () => {
+  const css=read('voltura.css'),html=read('index.html'),app=read('app.js');
+  assert.match(css,/\.insight-feature/);
+  assert.match(css,/@media\(max-width:700px\)/);
+  assert.match(html,/data-view="budgets"/);
+  assert.match(html,/data-view="goals"/);
+  assert.match(app,/view==='budgets'\|\|view==='goals'/);
 });
 
-test('Stitch first-pass integration is local, linked last, and included in the offline shell', () => {
-  const html = read('index.html'), worker = read('sw.js'), css = read('stitch-integration.css');
-  assert.match(html, /href="\.\/stitch-integration\.css"/);
-  assert.ok(html.indexOf('stitch-integration.css') > html.indexOf('voltura-visual-overhaul.css'));
-  assert.match(worker, /'stitch-integration\.css'/);
-  assert.match(css, /prefers-reduced-transparency/);
-  assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /forced-colors/);
-  assert.doesNotMatch(css, /@import\s+url\s*\(/i);
-  assert.ok(fs.existsSync(path.join(root, 'design-reference/stitch/voltura_overview_dashboard/screen.png')));
+test('Stitch design references are retained while runtime styles are consolidated', () => {
+  const html=read('index.html'),worker=read('sw.js'),css=read('voltura.css');
+  assert.doesNotMatch(html,/href="\.\/stitch-integration\.css"/);
+  assert.match(worker,/'voltura\.css'/);
+  assert.match(css,/Source layer: stitch-integration\.css/);
+  assert.ok(fs.existsSync(path.join(root,'design-reference/stitch/voltura_overview_dashboard/screen.png')));
 });
 
-test('Atelier is the sole final art-direction layer and replaces conflicting visual overrides', () => {
-  const html=read('index.html'), css=read('atelier.css'), worker=read('sw.js');
-  assert.match(html,/href="\.\/atelier\.css"/);
-  assert.ok(html.indexOf('atelier.css') > html.indexOf('stitch-integration.css'));
-  assert.doesNotMatch(html,/href="\.\/(?:observatory|kinetic)\.css"/);
+test('approved dead design assets are removed and Atelier tokens are unified', () => {
+  const html=read('index.html'),css=read('voltura.css'),worker=read('sw.js');
+  assert.match(html,/href="\.\/voltura\.css"/);
+  assert.doesNotMatch(html,/href="\.\/(?:observatory|kinetic|atelier)\.css"/);
   assert.doesNotMatch(html,/src="\.\/vivid-depth\.js"/);
-  assert.match(worker,/'atelier\.css'/);
+  assert.ok(!fs.existsSync(path.join(root,'observatory.css')));
+  assert.ok(!fs.existsSync(path.join(root,'kinetic.css')));
+  assert.ok(!fs.existsSync(path.join(root,'vivid-depth.js')));
+  assert.match(worker,/'voltura\.css'/);
   assert.match(css,/--atelier-paper:#eeeae1/);
-  assert.match(css,/--atelier-gold:#b99a64/);
+  assert.match(css,/--v26-acid:#d8f36b/);
   assert.match(css,/data-theme=\"dark\"/);
   assert.match(css,/prefers-reduced-motion/);
 });
 
 
-test('V25 Kinetic Relic is local, reduced-motion aware, and offline cached', () => {
-  const html=read('index.html'), css=read('atelier.css'), js=read('kinetic.js'), worker=read('sw.js');
-  assert.match(html,/href="\.\/atelier\.css"/);
+test('Kinetic Relic remains a local progressive enhancement with graceful rendering fallbacks', () => {
+  const html=read('index.html'),css=read('voltura.css'),js=read('kinetic.js'),worker=read('sw.js');
   assert.match(html,/src="\.\/kinetic\.js"/);
-  assert.match(worker,/'atelier\.css','kinetic\.js'/);
+  assert.match(worker,/'kinetic\.js'/);
   assert.match(css,/perspective/);
   assert.match(css,/prefers-reduced-motion/);
   assert.match(js,/requestAnimationFrame/);
