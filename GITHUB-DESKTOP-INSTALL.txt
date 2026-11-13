@@ -1,0 +1,21 @@
+VOLTURA V26.1.1 — GITHUB DESKTOP DROP-IN
+
+CONTENTS
+This archive contains the complete VOLTURA application project at the repository root, including index.html, CSS/JS, service worker, manifest, tests, and locally bundled GSAP + ScrollTrigger.
+
+INSTALL INTO YOUR CLONED REPOSITORY
+1. Close any running local preview of VOLTURA.
+2. Make a backup copy of your cloned repository folder.
+3. Extract ALL contents of this ZIP directly into the ROOT of your cloned repository folder (the folder that contains the hidden .git directory).
+4. If Windows asks whether to replace files, choose to replace the application files. Do NOT delete the hidden .git folder.
+5. Open GitHub Desktop. Review the changed/deleted files. Confirm that index.html, app.js, style.css, sw.js, gsap-motion.js, and vendor/gsap/ are present at the repository root.
+6. Commit the changes with a clear message, then Push origin.
+7. If using GitHub Pages, verify Settings > Pages points to the branch and folder containing index.html, then check the Actions deployment result. A Git push does not itself guarantee a successful Pages deployment.
+
+IMPORTANT
+- Do not upload this ZIP as a ZIP file if your goal is to update the live website. Extract it first.
+- Do not extract into a new nested VOLTURA subfolder; extract directly into the cloned repository root.
+- Do not overwrite or remove .git.
+- This archive contains application source and runtime assets; it does not include your Git repository history or GitHub settings.
+- Existing browser financial data is stored separately in the browser's local IndexedDB; keep your browser profile and backups safe.
+- After deployment, hard-refresh the site (Ctrl+Shift+R) and verify the deployed URL.
