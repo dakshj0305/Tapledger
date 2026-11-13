@@ -17,22 +17,25 @@ The source package is not a React/shadcn/Tailwind/TypeScript project. It is a st
 5. **Invalid weekly report records:** malformed dates and unsafe/negative amounts are excluded from report totals.
 6. **Weekly sum overflow:** if a weekly total exceeds `Number.MAX_SAFE_INTEGER`, the helper throws an explicit `RangeError` rather than returning a silently imprecise financial total.
 7. **IndexedDB availability:** database initialization now explicitly rejects with a descriptive error if IndexedDB is unavailable, instead of failing with an opaque reference error.
-8. **Atomic batch-write failure handling:** batch writes now validate their operation list and abort an already-open IndexedDB transaction if scheduling any operation throws synchronously. This prevents previously queued operations from accidentally committing after a partial scheduling failure. Error/abort completion is guarded against duplicate settlement.
+8. **Service-worker cache write lifetime:** runtime asset and navigation cache writes now extend the fetch event lifetime; Cache Storage failures are contained so a successful network response is still returned.
+9. **Service-worker cache isolation:** the hardened worker uses a new `voltura-platform-v26.0.1` cache namespace. This prevents a waiting worker from overwriting entries used by the currently active worker during installation.
+10. **Atomic batch-write failure handling:** batch writes now validate their operation list and abort an already-open IndexedDB transaction if scheduling any operation throws synchronously. This prevents previously queued operations from accidentally committing after a partial scheduling failure. Error/abort completion is guarded against duplicate settlement.
 
 ## Regression coverage added
-Four new finance-helper tests cover:
+Five new regression tests cover:
 - safe-integer budget threshold boundaries;
 - invalid month/date/amount handling in weekly reports;
 - explicit failure on aggregate overflow;
 - impossible dates in unusual-expense detection.
 
 ## Verification performed
-- `node --test *.test.cjs`: **52 passed, 0 failed**.
+- `node --test *.test.cjs`: **54 passed, 0 failed**.
 - `node --check` on all eight root JavaScript files: **8 passed**.
 - `node build-css.cjs`: completed successfully; the dedicated CSS build regression test passed.
 - Focused release-audit, project-integrity, restore-transaction and CSS-build tests: **36 passed, 0 failed**.
 - SHA-256 manifest regenerated and checked by the release-packaging test.
 - ZIP CRC/integrity verified after packaging.
+- Service-worker cache version advanced to a separate hardened cache namespace.
 
 ## Not certified / still requires browser or device access
 - Full application runtime using a real browser origin and persistent IndexedDB.
