@@ -25,3 +25,86 @@ jobs:
           for file in app.js finance-core.js quick-boot.js simple-motion.js sw.js; do node --check "$file"; done
       - name: Run regression tests
         run: node --test build-css.test.cjs finance-core.test.cjs restore-transaction.test.cjs simple-app.test.cjs
+      - name: Assemble and verify Netlify-ready site
+        shell: bash
+        run: |
+          set -euo pipefail
+          out=netlify-package
+          mkdir -p "$out/icons" "$out/vendor/gsap"
+          files=(
+            index.html quick-boot.js manifest.webmanifest
+            voltura.css dashboard-art-direction.css simple-mode.css clean-ui.css voltura-v27.css
+            finance-core.js app.js simple-motion.js sw.js
+            privacy.html terms.html cookies.html legal.css netlify.toml .nojekyll
+          )
+          for file in "${files[@]}"; do cp "$file" "$out/$file"; done
+          cp icons/icon-192.png icons/icon-512.png icons/icon-192-maskable.png icons/icon-512-maskable.png icons/voltura-mark.svg "$out/icons/"
+          cp vendor/gsap/gsap.min.js vendor/gsap/ScrollTrigger.min.js vendor/gsap/THIRD-PARTY-NOTICE.txt "$out/vendor/gsap/"
+          cat > "$out/NETLIFY-DEPLOY.txt" <<'EOF'
+          VOLTURA V27.1 — NETLIFY DEPLOY PACKAGE
+
+          This is the ready-to-publish static site root. index.html is at the ZIP root.
+          No build command is required. netlify.toml sets the publish directory to ".".
+
+          MANUAL DEPLOY
+          1. Extract this ZIP.
+          2. Open https://app.netlify.com/drop.
+          3. Drag the extracted folder (the folder containing index.html) into Netlify Drop.
+          4. Wait for the deploy to finish, then open the generated site URL.
+
+          GIT DEPLOY
+          Import https://github.com/dakshj0305/Tapledger and use the main branch.
+          Build command: leave blank. Publish directory: .
+
+          IMPORTANT DATA NOTE
+          VOLTURA stores records locally in the browser, not in a cloud account.
+          A new Netlify domain is a different browser origin. Before switching from
+          another URL, export a JSON backup in Data & settings > Backup, then restore
+          it on the new Netlify URL. Keep a separate backup somewhere safe.
+
+          The app is static and uses local GSAP files. No API keys, server runtime,
+          database credentials or environment variables are required.
+          EOF
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = 'netlify-package';
+          const mustExist = [
+            'index.html','quick-boot.js','manifest.webmanifest','voltura.css',
+            'dashboard-art-direction.css','simple-mode.css','clean-ui.css','voltura-v27.css',
+            'finance-core.js','app.js','simple-motion.js','sw.js',
+            'privacy.html','terms.html','cookies.html','legal.css','netlify.toml',
+            'icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png',
+            'icons/icon-512-maskable.png','icons/voltura-mark.svg',
+            'vendor/gsap/gsap.min.js','vendor/gsap/ScrollTrigger.min.js',
+            'vendor/gsap/THIRD-PARTY-NOTICE.txt'
+          ];
+          for (const file of mustExist) {
+            if (!fs.existsSync(path.join(root,file))) throw new Error('Missing deploy asset: '+file);
+          }
+          const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
+          if (!/^\s*<!doctype html>/i.test(html)) throw new Error('index.html must be at the publish root');
+          if (/src=["']https?:\/\//i.test(html)) throw new Error('Unexpected remote script or asset reference');
+          for (const page of ['privacy.html','terms.html','cookies.html']) {
+            const text = fs.readFileSync(path.join(root,page),'utf8');
+            if (!text.includes('./legal.css')) throw new Error(page+' is missing its local stylesheet');
+          }
+          JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
+          const config = fs.readFileSync(path.join(root,'netlify.toml'),'utf8');
+          if (!/publish\s*=\s*["']\.["']/.test(config)) throw new Error('Netlify publish directory must be project root');
+          const sw = fs.readFileSync(path.join(root,'sw.js'),'utf8');
+          const cacheList = sw.match(/const APP_FILES=\[([\s\S]*?)\];/);
+          if (!cacheList) throw new Error('Could not parse service-worker precache list');
+          for (const match of cacheList[1].matchAll(/'([^']+)'/g)) {
+            const file = match[1];
+            if (file && !fs.existsSync(path.join(root,file))) throw new Error('Service-worker precache asset missing: '+file);
+          }
+          console.log('Netlify package verified: '+mustExist.length+' required paths; manifest valid; service-worker precache complete.');
+          NODE
+      - name: Upload Netlify-ready ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: VOLTURA-Netlify-V27.1
+          path: netlify-package/
+          if-no-files-found: error
+          retention-days: 14

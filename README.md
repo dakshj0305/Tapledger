@@ -19,7 +19,9 @@ Transactions and related records stay in this browser using IndexedDB. The app d
 GSAP 3.15.1 and ScrollTrigger are locally hosted. They add a short dashboard entrance, one-time section reveals, restrained view transitions and a budget-progress reveal. Motion is disabled when the device requests reduced motion; all content and interactions remain available without GSAP.
 
 ## Netlify
-This is a static site. No build command is required; publish directory is `.`. Deploy the extracted project root containing `index.html`.
+This is a static site. No build command is required; publish directory is `.`. The automated verification workflow assembles a clean Netlify-ready site package with `index.html` at the archive root. Extract the package and drag the extracted folder to Netlify Drop, or connect this Git repository with a blank build command and publish directory `.`.
+
+Before moving from another domain, export a JSON backup and restore it on the new Netlify domain: browser storage is origin-specific.
 
 ## Quick-entry links
 - `/?a=1` opens a focused expense form.
@@ -30,4 +32,6 @@ This is a static site. No build command is required; publish directory is `.`. D
 - `node --test build-css.test.cjs finance-core.test.cjs restore-transaction.test.cjs simple-app.test.cjs`
 - `node --check app.js` (and the other runtime JavaScript files)
 
-The V27.1 visual refresh uses a matte ink-and-volt-lime palette, clearer type hierarchy and a two-column desktop overview that collapses cleanly on mobile. No remote runtime assets are required.\n\nThis app is a personal record-keeping tool, not a bank feed or professional financial advice service.
+The V27.1 visual refresh uses a matte ink-and-volt-lime palette, clearer type hierarchy and a two-column desktop overview that collapses cleanly on mobile. No remote runtime assets are required.
+
+This app is a personal record-keeping tool, not a bank feed or professional financial advice service.
