@@ -64,3 +64,36 @@ test('additive restore planner preserves existing IDs and rejects duplicate inco
   assert.equal(existing[0].amountPaise, 100);
   assert.equal(incoming[0].amountPaise, 999);
 });
+
+test('budget status validates inputs and avoids floating-point overflow at safe integer limits', () => {
+  assert.equal(finance.budgetStatus(-1, 10000), 'unset');
+  assert.equal(finance.budgetStatus(Number.MAX_SAFE_INTEGER - 1, Number.MAX_SAFE_INTEGER), 'warning');
+  assert.equal(finance.budgetStatus(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), 'exceeded');
+  assert.equal(finance.budgetStatus(1.5, 100), 'unset');
+});
+
+test('weekly summary rejects invalid months and ignores malformed or invalid-date records', () => {
+  assert.deepEqual(finance.weeklyExpenseSummary([], '2025-13'), []);
+  assert.deepEqual(finance.weeklyExpenseSummary([], 'not-a-month'), []);
+  const rows = [
+    expense('valid', '2025-02-03', 100),
+    expense('invalid-date', '2025-02-31', 900),
+    expense('invalid-amount', '2025-02-04', Number.MAX_SAFE_INTEGER + 1),
+    expense('negative', '2025-02-05', -1)
+  ];
+  assert.equal(finance.weeklyExpenseSummary(rows, '2025-02').reduce((sum, week) => sum + week.totalPaise, 0), 100);
+});
+
+test('weekly summary fails explicitly instead of silently corrupting totals beyond safe integer precision', () => {
+  const rows = [
+    expense('large-a', '2025-01-02', Number.MAX_SAFE_INTEGER),
+    expense('large-b', '2025-01-03', 1)
+  ];
+  assert.throws(() => finance.weeklyExpenseSummary(rows, '2025-01'), RangeError);
+});
+
+test('unusual expense detector rejects impossible calendar dates', () => {
+  const history = Array.from({ length: 5 }, (_, i) => expense(String(i), `2025-0${i + 1}-10`, 1000));
+  const impossible = expense('impossible', '2025-02-30', 5000);
+  assert.deepEqual(finance.detectUnusualExpenses([...history, impossible]), []);
+});

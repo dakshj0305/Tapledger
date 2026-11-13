@@ -40,16 +40,23 @@
   function compareTransactions(a, b) {
     return String(a.date || '').localeCompare(String(b.date || '')) || String(a.time || '').localeCompare(String(b.time || '')) || String(a.createdAt || '').localeCompare(String(b.createdAt || '')) || String(a.id || '').localeCompare(String(b.id || ''));
   }
-  function calendarDate(value) {
+  function validCalendarDate(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
     const date = new Date(`${value}T12:00:00`);
-    if (!Number.isFinite(date.getTime())) return null;
-    date.setMonth(date.getMonth() - 12);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return Number.isFinite(date.getTime()) &&
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` === value;
+  }
+  function calendarDate(value) {
+    if (!validCalendarDate(value)) return null;
+    const [year, month, day] = value.split('-').map(Number);
+    const targetYear = year - 1;
+    const targetDay = Math.min(day, new Date(targetYear, month, 0).getDate());
+    return `${targetYear}-${String(month).padStart(2, '0')}-${String(targetDay).padStart(2, '0')}`;
   }
   function detectUnusualExpenses(transactions) {
     const byCategory = new Map();
     for (const item of transactions || []) {
-      if (item.type !== 'expense' || !Number.isSafeInteger(item.amountPaise) || item.amountPaise <= 0 || !/^\d{4}-\d{2}-\d{2}$/.test(item.date || '')) continue;
+      if (item.type !== 'expense' || !Number.isSafeInteger(item.amountPaise) || item.amountPaise <= 0 || !validCalendarDate(item.date)) continue;
       const list = byCategory.get(item.category) || [];
       list.push(item);
       byCategory.set(item.category, list);
@@ -98,12 +105,16 @@
     return { additions, conflicts, duplicates };
   }
   function budgetStatus(usedPaise, limitPaise) {
-    if (!Number.isSafeInteger(limitPaise) || limitPaise <= 0) return 'unset';
-    if (usedPaise >= limitPaise) return 'exceeded';
-    if (usedPaise * 100 >= limitPaise * 80) return 'warning';
+    if (!Number.isSafeInteger(usedPaise) || usedPaise < 0 ||
+        !Number.isSafeInteger(limitPaise) || limitPaise <= 0) return 'unset';
+    const used = BigInt(usedPaise);
+    const limit = BigInt(limitPaise);
+    if (used >= limit) return 'exceeded';
+    if (used * 100n >= limit * 80n) return 'warning';
     return 'within';
   }
   function weeklyExpenseSummary(transactions, monthKey) {
+    if (typeof monthKey !== 'string' || !/^(\d{4})-(0[1-9]|1[0-2])$/.test(monthKey)) return [];
     const [year, month] = monthKey.split('-').map(Number);
     const first = new Date(year, month - 1, 1);
     const lastDay = new Date(year, month, 0).getDate();
@@ -111,10 +122,16 @@
     let end = Math.min(lastDay, 7 - ((first.getDay() + 6) % 7));
     const weeks = [];
     while (start <= lastDay) {
-      const totalPaise = (transactions || []).reduce((sum, item) => {
-        const day = Number(String(item.date || '').slice(8, 10));
-        return sum + (item.type === 'expense' && item.date?.slice(0, 7) === monthKey && day >= start && day <= end ? item.amountPaise : 0);
+      const total = (transactions || []).reduce((sum, item) => {
+        if (item?.type !== 'expense' || item.date?.slice(0, 7) !== monthKey ||
+            !validCalendarDate(item.date) || !Number.isSafeInteger(item.amountPaise) || item.amountPaise < 0) return sum;
+        const day = Number(item.date.slice(8, 10));
+        if (day < start || day > end) return sum;
+        const next = sum + item.amountPaise;
+        if (!Number.isSafeInteger(next)) throw new RangeError(`Weekly expense total exceeds the safe integer range for ${monthKey}.`);
+        return next;
       }, 0);
+      const totalPaise = total;
       weeks.push({ startDay: start, endDay: end, totalPaise });
       start = end + 1;
       end = Math.min(lastDay, start + 6);

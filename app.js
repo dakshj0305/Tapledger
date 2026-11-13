@@ -46,9 +46,34 @@ function safeNonnegativeAmount(v){const text=String(v??'').trim();if(!/^\d+(?:\.
 function validDate(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;const d=new Date(`${value}T12:00:00`);return Number.isFinite(d.getTime())&&dateKey(d)===value}
 
 // IndexedDB: upgrade adds new stores while preserving v1 expenses/settings.
-function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('expenses'))d.createObjectStore('expenses',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});if(!d.objectStoreNames.contains('transactions')){const s=d.createObjectStore('transactions',{keyPath:'id'});s.createIndex('date','date');s.createIndex('type','type');s.createIndex('category','category')}if(!d.objectStoreNames.contains('budgets'))d.createObjectStore('budgets',{keyPath:'id'});if(!d.objectStoreNames.contains('goals'))d.createObjectStore('goals',{keyPath:'id'});if(!d.objectStoreNames.contains('accounts'))d.createObjectStore('accounts',{keyPath:'name'})};req.onblocked=()=>toast('Database upgrade is waiting. Close older Voltura or legacy TapLedger tabs, then return here.');req.onsuccess=()=>{const opened=req.result;opened.onversionchange=()=>opened.close();resolve(opened)};req.onerror=()=>reject(req.error)})}
+function openDB(){return new Promise((resolve,reject)=>{if(typeof indexedDB==='undefined'||!indexedDB||typeof indexedDB.open!=='function'){reject(new Error('IndexedDB is unavailable in this browser or browsing mode.'));return}let req;try{req=indexedDB.open(DB_NAME,DB_VERSION)}catch(error){reject(error);return}req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('expenses'))d.createObjectStore('expenses',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});if(!d.objectStoreNames.contains('transactions')){const s=d.createObjectStore('transactions',{keyPath:'id'});s.createIndex('date','date');s.createIndex('type','type');s.createIndex('category','category')}if(!d.objectStoreNames.contains('budgets'))d.createObjectStore('budgets',{keyPath:'id'});if(!d.objectStoreNames.contains('goals'))d.createObjectStore('goals',{keyPath:'id'});if(!d.objectStoreNames.contains('accounts'))d.createObjectStore('accounts',{keyPath:'name'})};req.onblocked=()=>toast('Database upgrade is waiting. Close older Voltura or legacy TapLedger tabs, then return here.');req.onsuccess=()=>{const opened=req.result;opened.onversionchange=()=>opened.close();resolve(opened)};req.onerror=()=>reject(req.error)})}
 function storeRequest(store,mode,method,value){return new Promise((resolve,reject)=>{let tx,request,result;try{tx=db.transaction(store,mode);const objectStore=tx.objectStore(store);request=value===undefined?objectStore[method]():objectStore[method](value)}catch(error){reject(error);return}request.onsuccess=()=>{result=request.result};request.onerror=()=>{reject(request.error||new Error('Database request failed.'))};tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error||request.error||new Error('Database transaction failed.'));tx.onabort=()=>reject(tx.error||new Error('Database transaction was aborted.'))})}
-function batchWrite(storeNames,operations){return new Promise((resolve,reject)=>{let tx;try{tx=db.transaction(storeNames,'readwrite');for(const op of operations){const store=tx.objectStore(op.store);if(op.action==='delete')store.delete(op.key);else if(op.action==='clear')store.clear();else store.put(op.value)}}catch(error){reject(error);return}tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Database write failed.'));tx.onabort=()=>reject(tx.error||new Error('Database write was aborted.'))})}
+function batchWrite(storeNames,operations){
+ return new Promise((resolve,reject)=>{
+  let tx,finished=false;
+  const fail=error=>{if(finished)return;finished=true;reject(error instanceof Error?error:new Error('Database write failed.'))};
+  try{
+   if(!db)throw new Error('Local database is not ready.');
+   if(!Array.isArray(storeNames)||!storeNames.length||!Array.isArray(operations))throw new TypeError('Invalid database batch.');
+   tx=db.transaction(storeNames,'readwrite');
+   for(const op of operations){
+    if(!op||!storeNames.includes(op.store)||!['put','delete','clear'].includes(op.action))throw new TypeError('Invalid database operation.');
+    const store=tx.objectStore(op.store);
+    if(op.action==='delete')store.delete(op.key);
+    else if(op.action==='clear')store.clear();
+    else if(!op.value||typeof op.value!=='object')throw new TypeError('Invalid database record.');
+    else store.put(op.value);
+   }
+  }catch(error){
+   if(tx){try{tx.abort()}catch{}}
+   fail(error);
+   return;
+  }
+  tx.oncomplete=()=>{if(finished)return;finished=true;resolve()};
+  tx.onerror=()=>fail(tx.error||new Error('Database write failed.'));
+  tx.onabort=()=>fail(tx.error||new Error('Database write was aborted; no batch records were committed.'));
+ });
+}
 const getAll=store=>storeRequest(store,'readonly','getAll');
 const put= (store,value)=>storeRequest(store,'readwrite','put',value);
 const del=(store,key)=>storeRequest(store,'readwrite','delete',key);
