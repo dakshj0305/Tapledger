@@ -3070,3 +3070,17 @@ html.nfc-launch #quickExpenseDialog[open],html.nfc-launch #entryDialog[open]{z-i
 .dashboard-masthead{position:relative!important;isolation:isolate!important;overflow:hidden!important}
 .dashboard-masthead .masthead-copy,.dashboard-masthead .masthead-index{position:relative!important;z-index:2!important}
 .masthead-index{background:var(--v26-paper)!important;border-left:2px solid var(--v26-coral)!important;padding:10px 12px 10px 16px!important;z-index:3!important}
+
+
+/* Accessibility contrast and accessible-name repairs from Chromium + axe scan. */
+.nav-item.active kbd{color:#172a43!important}
+#todayLabel{color:#536158!important}
+.masthead-index>span,.masthead-index>small{color:#42546b!important}
+.relic-label{color:#70552f!important}
+a[href$="#overview-flow"]>span,a[href$="#overview-spending"]>span{color:#46564b!important}
+.savings-stat>span,#savingsRate,.position-note>span,.position-note>p{color:#42546b!important}
+.range-btn:not(.active){color:#536158!important}
+.mini-budget-row>span{color:#4b5b52!important}
+#overview-spending .eyebrow,#overview-spending .text-action{color:#405b70!important}
+.category-panel .panel-kicker,.category-panel .panel-sub,.panel-head>.micro-index,.category-panel .empty-mini{color:#4b5b52!important}
+.recent-panel .panel-kicker,.recent-panel .panel-sub,.recent-panel .empty-mini,.recent-panel .text-action{color:#4b5b52!important}

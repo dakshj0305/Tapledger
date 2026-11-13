@@ -1,0 +1,44 @@
+name: VOLTURA release verification
+
+on:
+  push:
+    branches:
+      - feat/gsap-finance-motion-v26.1.2
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-and-finance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          for file in app.js finance-core.js gsap-motion.js quick-boot.js sw.js motion-ui.js scroll-story.js liquid-metal.js; do
+            node --check "$file"
+          done
+      - name: Run finance, storage, startup and integration tests
+        run: |
+          node --test finance-core.test.cjs quick-boot.test.cjs restore-transaction.test.cjs project-integrity.test.cjs gsap-finance-motion.test.cjs
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Run desktop, mobile, reduced-motion and accessibility smoke tests
+        run: node --test browser-smoke.test.cjs

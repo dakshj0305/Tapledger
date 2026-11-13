@@ -1,5 +1,14 @@
 GSAP (GreenSock Animation Platform) v3.15.1
-Copyright (c) 2008-2026 GreenSock. All rights reserved.
-License: GSAP Standard License (no-charge license).
-Official source: https://github.com/greensock/GSAP
-Documentation: https://gsap.com/docs/v3/Installation/
+Copyright (c) 2008-2026, GreenSock. All rights reserved.
+
+Included local files:
+- gsap.min.js (existing core)
+- ScrollTrigger.min.js (existing scroll plugin)
+- DrawSVGPlugin.min.js
+- MotionPathPlugin.min.js
+- Flip.min.js
+
+License: GSAP Standard "No Charge" License. Commercial use is permitted for the license's defined Permitted Uses.
+Do not remove or alter proprietary notices. Review current terms: https://gsap.com/standard-license
+
+Official documentation: https://gsap.com/docs/v3/Installation/
