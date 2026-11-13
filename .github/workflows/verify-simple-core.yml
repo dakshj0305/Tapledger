@@ -1,0 +1,27 @@
+name: VOLTURA simple-core verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build CSS
+        run: node build-css.cjs
+      - name: Check JavaScript syntax
+        run: |
+          for file in app.js finance-core.js quick-boot.js simple-motion.js sw.js; do node --check "$file"; done
+      - name: Run regression tests
+        run: node --test build-css.test.cjs finance-core.test.cjs restore-transaction.test.cjs simple-app.test.cjs
