@@ -1,6 +1,6 @@
 'use strict';
 
-/* VOLTURA v25.1 — static, local-first personal finance PWA.
+/* VOLTURA v25.2 — static, local-first personal finance PWA.
    Internal DB/store names intentionally retain their TapLedger identity for existing data compatibility.
    Currency amounts are stored as integer paise to avoid floating point drift. */
 const DB_NAME='tapledger-db', DB_VERSION=3, CURRENCY='INR';
@@ -273,7 +273,22 @@ function haptic(kind='tap'){
  const patterns={tap:10,success:[15,20,25],error:[40,20,30]};
  try{navigator.vibrate(patterns[kind]||patterns.tap)}catch{}
 }
-function applyThemePreference(value){const allowed=['system','light','dark'];const theme=allowed.includes(value)?value:'system';document.documentElement.dataset.theme=theme;const dark=theme==='dark'||(theme==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);const themeMeta=document.querySelector('meta[name="theme-color"]');if(themeMeta)themeMeta.content=dark?'#0b1110':'#f3f5ef';const select=$('#themePreference');if(select&&select.value!==theme)select.value=theme;}
+let systemThemeListenerInstalled=false;
+function applyThemePreference(value){
+ const allowed=['system','light','dark'];
+ const theme=allowed.includes(value)?value:'system';
+ const systemQuery=typeof matchMedia==='function'?matchMedia('(prefers-color-scheme: dark)'):null;
+ const dark=theme==='dark'||(theme==='system'&&!!systemQuery?.matches);
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ document.documentElement.dataset.themePreference=theme;
+ const themeMeta=document.querySelector('meta[name="theme-color"]');
+ if(themeMeta)themeMeta.content=dark?'#0e1b15':'#eeeae1';
+ const select=$('#themePreference');if(select&&select.value!==theme)select.value=theme;
+ if(!systemThemeListenerInstalled&&systemQuery?.addEventListener){
+  systemQuery.addEventListener('change',()=>{if(document.documentElement.dataset.themePreference==='system')applyThemePreference('system')});
+  systemThemeListenerInstalled=true;
+ }
+}
 async function loadUserPreferences(){
  let theme='system',savedVibration=null;
  try{const values=await Promise.all([getSetting('theme-pref-v1'),getSetting('vibration-enabled-v1')]);theme=values[0]?.value||'system';savedVibration=values[1]?.value}catch(error){console.warn('Could not read display preferences:',error)}

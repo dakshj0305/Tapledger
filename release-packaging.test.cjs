@@ -19,14 +19,14 @@ function listFiles(directory, relative = '.') {
   return result;
 }
 
-test('release labels and source build identifiers consistently identify V25.1', () => {
-  assert.match(read('README.md'), /Current source release: V25\.1/);
-  assert.match(read('RELEASE.md'), /current V25\.1/);
-  assert.match(read('RELEASE-REPORT-V25.1.md'), /VOLTURA V25\.1/);
-  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.1-KINETIC-RELIC-20261113"/);
-  assert.match(read('app.js'), /VOLTURA v25\.1/);
-  assert.match(read('sw.js'), /voltura-platform-v25\.1/);
-  assert.match(read('CHANGELOG-V25.1.md'), /V25\.1/);
+test('release labels and source build identifiers consistently identify V25.2', () => {
+  assert.match(read('README.md'), /Current source release: V25\.2/);
+  assert.match(read('RELEASE.md'), /current V25\.2/);
+  assert.match(read('RELEASE-REPORT-V25.2.md'), /VOLTURA V25\.2/);
+  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.2-ATELIER-20261113"/);
+  assert.match(read('app.js'), /VOLTURA v25\.2/);
+  assert.match(read('sw.js'), /voltura-platform-v25\.2/);
+  assert.match(read('CHANGELOG-V25.2.md'), /V25\.2/);
 });
 
 test('SHA-256 manifest covers every shipped file and matches current bytes', () => {

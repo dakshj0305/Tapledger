@@ -66,7 +66,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v25\.1/);
+  assert.match(worker, /voltura-platform-v25\.2/);
   assert.match(worker, /'polish\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -75,7 +75,7 @@ test('service worker cache version and update checks are advanced', () => {
 
 test('brand icon assets and manifest theme color match the refreshed identity', () => {
   const manifest = JSON.parse(read('manifest.webmanifest'));
-  assert.equal(manifest.theme_color.toLowerCase(), '#0b1110');
+  assert.equal(manifest.theme_color.toLowerCase(), '#132a21');
   for (const size of [192, 512]) {
     for (const suffix of ['', '-maskable']) {
       const file = path.join(root, `icons/icon-${size}${suffix}.png`);
@@ -102,9 +102,9 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.1-KINETIC-RELIC-20261113"/);
-  assert.match(read('sw.js'), /voltura-platform-v25\.1/);
-  assert.match(read('app.js'), /VOLTURA v25\.1/);
+  assert.match(read('index.html'), /data-build-id="VOLTURA-25\.2-ATELIER-20261113"/);
+  assert.match(read('sw.js'), /voltura-platform-v25\.2/);
+  assert.match(read('app.js'), /VOLTURA v25\.2/);
   assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
@@ -120,11 +120,11 @@ test('dashboard masthead, balance hero and detail row have explicit responsive l
 });
 
 test('primary balance value and insight copy meet the intended high-contrast surfaces', () => {
-  const css = read('polish.css');
-  assert.match(css, /\.balance-main \.balance-value\{color:#17201D!important/);
-  assert.match(css, /\.balance-main \.metric-label[^}]*color:#253128!important/);
-  assert.match(css, /\.insight-feature \.feature-link\{color:#D8FF3F!important/);
-  assert.match(css, /\.insight-feature p:not\(\.eyebrow\)\{color:#D1DAD3!important/);
+  const css = read('atelier.css');
+  assert.match(css, /\.balance-value\{font:400 clamp/);
+  assert.match(css, /\.balance-hero \.metric-label[^}]*color:#c9d2c8!important/);
+  assert.match(css, /\.insight-feature \.feature-link[^}]*color:#e1c99b!important/);
+  assert.match(css, /\.insight-feature h3[^}]*color:#f1eadc!important/);
 });
 
 test('accessible cash-flow data table does not use a long intrinsic-width caption', () => {
@@ -136,7 +136,7 @@ test('accessible cash-flow data table does not use a long intrinsic-width captio
 
 test('theme-color follows the selected appearance and chapter progress follows scroll position', () => {
   const app = read('app.js'), story = read('scroll-story.js');
-  assert.match(app, /themeMeta\.content=dark\?'#0b1110':'#f3f5ef'/);
+  assert.match(app, /themeMeta\.content=dark\?'#0e1b15':'#eeeae1'/);
   assert.match(story, /const start=rect\.top\+scrollY/);
   assert.match(story, /fill\.style\.width=`\$\{progress\*100\}%`/);
 });
@@ -250,23 +250,26 @@ test('Stitch first-pass integration is local, linked last, and included in the o
   assert.ok(fs.existsSync(path.join(root, 'design-reference/stitch/voltura_overview_dashboard/screen.png')));
 });
 
-test('V24 Wealth Observatory is linked last and keeps the authored editorial palette', () => {
-  const html = read('index.html'), css = read('observatory.css'), worker = read('sw.js');
-  assert.ok(html.indexOf('observatory.css') > html.indexOf('vivid-depth.css'));
-  assert.match(worker, /'observatory\.css'/);
-  assert.match(css, /Georgia/);
-  assert.match(css, /cartographic|repeating-radial-gradient/);
-  assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /data-theme="dark"/);
+test('Atelier is the sole final art-direction layer and replaces conflicting visual overrides', () => {
+  const html=read('index.html'), css=read('atelier.css'), worker=read('sw.js');
+  assert.match(html,/href="\.\/atelier\.css"/);
+  assert.ok(html.indexOf('atelier.css') > html.indexOf('stitch-integration.css'));
+  assert.doesNotMatch(html,/href="\.\/(?:observatory|kinetic)\.css"/);
+  assert.doesNotMatch(html,/src="\.\/vivid-depth\.js"/);
+  assert.match(worker,/'atelier\.css'/);
+  assert.match(css,/--atelier-paper:#eeeae1/);
+  assert.match(css,/--atelier-gold:#b99a64/);
+  assert.match(css,/data-theme=\"dark\"/);
+  assert.match(css,/prefers-reduced-motion/);
 });
 
 
 test('V25 Kinetic Relic is local, reduced-motion aware, and offline cached', () => {
-  const html=read('index.html'), css=read('kinetic.css'), js=read('kinetic.js'), worker=read('sw.js');
-  assert.match(html,/href="\.\/kinetic\.css"/);
+  const html=read('index.html'), css=read('atelier.css'), js=read('kinetic.js'), worker=read('sw.js');
+  assert.match(html,/href="\.\/atelier\.css"/);
   assert.match(html,/src="\.\/kinetic\.js"/);
-  assert.match(worker,/'kinetic\.css','kinetic\.js'/);
-  assert.match(css,/perspective:1000px/);
+  assert.match(worker,/'atelier\.css','kinetic\.js'/);
+  assert.match(css,/perspective/);
   assert.match(css,/prefers-reduced-motion/);
   assert.match(js,/requestAnimationFrame/);
   assert.match(js,/ResizeObserver/);
@@ -274,10 +277,11 @@ test('V25 Kinetic Relic is local, reduced-motion aware, and offline cached', () 
 });
 
 
-test('V25.1 kinetic enhancements degrade safely without Canvas 2D or ResizeObserver', () => {
+test('V25.2 kinetic enhancements degrade safely without Canvas 2D or ResizeObserver', () => {
   const js=read('kinetic.js');
-  assert.match(js,/if\(!ctx\)\{canvas\.remove\(\);return;\}/);
-  assert.match(js,/'ResizeObserver' in window/);
+  assert.match(js,/else canvas\.remove\(\)/);
+  assert.doesNotMatch(js,/canvas\.remove\(\);return/);
+  assert.match(js,/'ResizeObserver'in window/);
   assert.match(js,/window\.addEventListener\('resize'/);
   assert.match(js,/prefers-reduced-motion/);
 });

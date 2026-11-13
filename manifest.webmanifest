@@ -1,12 +1,12 @@
 {
-  "name": "VOLTURA — Personal Finance",
+  "name": "VOLTURA \u2014 Personal Finance",
   "short_name": "VOLTURA",
   "description": "A local-first personal finance ledger with quick expense capture.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0B1110",
-  "theme_color": "#0B1110",
+  "background_color": "#eeeae1",
+  "theme_color": "#132a21",
   "icons": [
     {
       "src": "./icons/icon-192.png",

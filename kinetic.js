@@ -1,17 +1,97 @@
-/* VOLTURA Kinetic Relic: lightweight, local-first 3D projection and spring motion.
-   Uses Canvas 2D + CSS 3D; no WebGL, network calls, or financial-data access. */
-(()=>{'use strict';
- const reduce=window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
- const canHover=window.matchMedia ? window.matchMedia('(hover:hover) and (pointer:fine)').matches : false;
- const $=(s,r=document)=>r.querySelector(s);
+/* VOLTURA Atelier motion layer.
+   Decorative CSS 3D + Canvas 2D only. No WebGL, network calls, or finance-data access. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
+ const finePointer=window.matchMedia?.('(hover:hover) and (pointer:fine)').matches??false;
+ const $=(selector,root=document)=>root.querySelector(selector);
  const masthead=$('.dashboard-masthead');
- if(masthead){const stage=document.createElement('div');stage.className='kinetic-stage';stage.setAttribute('aria-hidden','true');stage.innerHTML='<div class="kinetic-relic"><i class="relic-ring"></i><i class="relic-ring ring-two"></i><i class="relic-ring ring-three"></i><i class="relic-core"></i></div><span class="relic-label">CAPITAL / FIELD 001</span>' ;masthead.append(stage);
-  for(let i=0;i<13;i++){const s=document.createElement('i');s.className='kinetic-spark';s.style.left=(8+(i*37)%88)+'%';s.style.top=(8+(i*53)%78)+'%';s.style.animationDelay=(-i*.37)+'s';masthead.append(s)}
-  if(!reduce){let tx=0,ty=0,cx=0,cy=0,raf=0;const relic=$('.kinetic-relic',stage);const move=e=>{const r=stage.getBoundingClientRect();tx=((e.clientX-r.left)/r.width-.5)*18;ty=((e.clientY-r.top)/r.height-.5)*-18;if(!raf)raf=requestAnimationFrame(tick)};function tick(){cx+=(tx-cx)*.075;cy+=(ty-cy)*.075;relic.style.transform=`translate3d(${cx*.35}px,${cy*.35}px,35px) rotateX(${cy}deg) rotateY(${cx}deg)`;raf=0;if(Math.abs(tx-cx)+Math.abs(ty-cy)>.04)raf=requestAnimationFrame(tick)}masthead.addEventListener('pointermove',move,{passive:true});masthead.addEventListener('pointerleave',()=>{tx=0;ty=0;if(!raf)raf=requestAnimationFrame(tick)},{passive:true})}
+
+ // Dimensional orbital object: decorative and hidden from assistive technology.
+ if(masthead&&!masthead.querySelector('.kinetic-stage')){
+  const stage=document.createElement('div');
+  stage.className='kinetic-stage';
+  stage.setAttribute('aria-hidden','true');
+  stage.innerHTML='<div class="kinetic-relic"><i class="relic-ring"></i><i class="relic-ring ring-two"></i><i class="relic-ring ring-three"></i><i class="relic-core"></i></div><span class="relic-label">CAPITAL / FIELD 001</span>';
+  masthead.append(stage);
+  for(let i=0;i<9;i++){
+   const spark=document.createElement('i');
+   spark.className='kinetic-spark';
+   spark.style.left=(10+(i*37)%82)+'%';
+   spark.style.top=(12+(i*53)%72)+'%';
+   spark.style.animationDelay=(-i*.43)+'s';
+   masthead.append(spark);
+  }
+  if(!reduce&&finePointer){
+   const relic=$('.kinetic-relic',stage);let targetX=0,targetY=0,currentX=0,currentY=0,raf=0;
+   const tick=()=>{
+    currentX+=(targetX-currentX)*.075;currentY+=(targetY-currentY)*.075;
+    relic.style.transform=`translate3d(${currentX*.28}px,${currentY*.28}px,28px) rotateX(${currentY}deg) rotateY(${currentX}deg)`;
+    raf=0;
+    if(Math.abs(targetX-currentX)+Math.abs(targetY-currentY)>.04)raf=requestAnimationFrame(tick);
+   };
+   stage.addEventListener('pointermove',event=>{
+    const rect=stage.getBoundingClientRect();if(!rect.width||!rect.height)return;
+    targetX=((event.clientX-rect.left)/rect.width-.5)*12;
+    targetY=((event.clientY-rect.top)/rect.height-.5)*-12;
+    if(!raf)raf=requestAnimationFrame(tick);
+   },{passive:true});
+   stage.addEventListener('pointerleave',()=>{targetX=0;targetY=0;if(!raf)raf=requestAnimationFrame(tick)},{passive:true});
+  }
  }
- const hero=$('.balance-hero');if(hero){const canvas=document.createElement('canvas');canvas.className='kinetic-canvas';canvas.setAttribute('aria-hidden','true');hero.prepend(canvas);const ctx=canvas.getContext ? canvas.getContext('2d',{alpha:true}) : null;let w=0,h=0,dpr=1,frame=0,raf=0; if(!ctx){canvas.remove();return;}const pts=Array.from({length:180},(_,i)=>({a:Math.random()*Math.PI*2,b:Math.acos(2*Math.random()-1),r:.72+Math.random()*.28,s:.35+Math.random()*1.6,p:Math.random()*Math.PI*2}));function size(){const r=hero.getBoundingClientRect();w=r.width;h=r.height;dpr=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}function draw(){raf=0;frame+=.004;ctx.clearRect(0,0,w,h);const cx=w*.79,cy=h*.5,R=Math.min(w,h)*.37;const projected=[];for(const p of pts){const a=p.a+frame*.22;const x=Math.sin(p.b)*Math.cos(a),y=Math.cos(p.b),z=Math.sin(p.b)*Math.sin(a);const depth=2.8/(2.8-z*.55);projected.push({x:cx+x*R*depth,y:cy+y*R*depth,z,s:p.s*depth})}projected.sort((a,b)=>a.z-b.z);for(const p of projected){const alpha=.16+(p.z+1)*.27;ctx.beginPath();ctx.fillStyle=p.z>.45?'rgba(217,255,63,'+alpha+')':'rgba(139,157,255,'+alpha+')';ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fill()}for(let j=0;j<3;j++){ctx.beginPath();ctx.ellipse(cx,cy,R*(1+j*.16),R*(.24+j*.06),-.35+j*.45,0,Math.PI*2);ctx.strokeStyle=j===0?'rgba(217,255,63,.22)':'rgba(255,255,255,.10)';ctx.lineWidth=1;ctx.stroke()}if(!reduce)raf=requestAnimationFrame(draw)}size();if(!reduce)draw();else draw();if('ResizeObserver' in window){new ResizeObserver(()=>{size();if(!raf)raf=requestAnimationFrame(draw)}).observe(hero)}else window.addEventListener('resize',()=>{size();if(!raf)raf=requestAnimationFrame(draw)},{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else if(!raf)raf=requestAnimationFrame(draw)})}
- // Spring-like pointer tilt on instrument panels. No touch or reduced-motion hijacking.
- if(!reduce&&canHover){document.querySelectorAll('.panel,.account-card,.budget-card,.goal-card,.insight-card').forEach(card=>{let frame=0;card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{card.style.transform=`perspective(900px) rotateX(${-y*3.5}deg) rotateY(${x*4.5}deg) translateZ(4px)`})},{passive:true});card.addEventListener('pointerleave',()=>{cancelAnimationFrame(frame);card.style.transform=''},{passive:true})})}
- // Enter/leave choreography for views, without altering app navigation or scroll behavior.
- const views=[...document.querySelectorAll('.view')];const observer=new MutationObserver(()=>{const active=views.find(v=>v.classList.contains('active'));if(active&&!reduce){active.animate([{opacity:.7,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}],{duration:520,easing:'cubic-bezier(.16,1,.3,1)'})}});views.forEach(v=>observer.observe(v,{attributes:true,attributeFilter:['class']}));
+
+ // Canvas is optional. A missing/blocked 2D context must not abort other UI motion.
+ const hero=$('.balance-hero');
+ if(hero&&!hero.querySelector('.kinetic-canvas')){
+  const canvas=document.createElement('canvas');canvas.className='kinetic-canvas';canvas.setAttribute('aria-hidden','true');hero.prepend(canvas);
+  let ctx=null;
+  try{ctx=canvas.getContext?.('2d',{alpha:true})??null}catch(_){ctx=null}
+  if(ctx){
+   let width=0,height=0,dpr=1,phase=0,raf=0;
+   const points=Array.from({length:128},()=>({a:Math.random()*Math.PI*2,b:Math.acos(2*Math.random()-1),s:.4+Math.random()*1.2}));
+   const resize=()=>{
+    const rect=hero.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);
+    dpr=Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+    canvas.style.width=width+'px';canvas.style.height=height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+   };
+   const draw=animate=>{
+    raf=0;ctx.clearRect(0,0,width,height);if(animate)phase+=.003;
+    const cx=width*.79,cy=height*.5,radius=Math.min(width,height)*.34;
+    const projected=points.map(point=>{
+     const angle=point.a+phase*.18,x=Math.sin(point.b)*Math.cos(angle),y=Math.cos(point.b),z=Math.sin(point.b)*Math.sin(angle);
+     const depth=2.8/(2.8-z*.48);return{x:cx+x*radius*depth,y:cy+y*radius*depth,z,size:point.s*depth};
+    }).sort((a,b)=>a.z-b.z);
+    for(const point of projected){
+     const alpha=.10+(point.z+1)*.20;ctx.beginPath();
+     ctx.fillStyle=point.z>.4?`rgba(224,201,155,${alpha})`:`rgba(185,154,100,${alpha})`;
+     ctx.arc(point.x,point.y,point.size,0,Math.PI*2);ctx.fill();
+    }
+    for(let ring=0;ring<2;ring++){
+     ctx.beginPath();ctx.ellipse(cx,cy,radius*(1+ring*.17),radius*(.22+ring*.055),-.35+ring*.45,0,Math.PI*2);
+     ctx.strokeStyle=ring?'rgba(255,255,255,.07)':'rgba(224,201,155,.20)';ctx.lineWidth=1;ctx.stroke();
+    }
+    if(animate&&!reduce)raf=requestAnimationFrame(()=>draw(true));
+   };
+   resize();draw(!reduce);
+   if('ResizeObserver'in window){const observer=new ResizeObserver(()=>{resize();if(!raf)raf=requestAnimationFrame(()=>draw(!reduce))});observer.observe(hero)}
+   else window.addEventListener('resize',()=>{resize();if(!raf)raf=requestAnimationFrame(()=>draw(!reduce))},{passive:true});
+   document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}
+    else if(!raf&&!reduce)raf=requestAnimationFrame(()=>draw(true));
+   });
+  }else canvas.remove();
+ }
+
+ // View transitions remain independent of Canvas and are skipped for reduced motion.
+ if('MutationObserver'in window){
+  const views=[...document.querySelectorAll('.view')];
+  const observer=new MutationObserver(()=>{
+   const active=views.find(view=>view.classList.contains('active'));
+   if(active&&!reduce&&typeof active.animate==='function')active.animate(
+    [{opacity:.78,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],
+    {duration:420,easing:'cubic-bezier(.2,.75,.2,1)'}
+   );
+  });
+  views.forEach(view=>observer.observe(view,{attributes:true,attributeFilter:['class']}));
+ }
 })();
