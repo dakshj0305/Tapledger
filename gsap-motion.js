@@ -1,149 +1,21 @@
-/* VOLTURA GSAP motion controller — local GSAP 3.15.1 + ScrollTrigger.
-   Native scrolling remains in control. No remote runtime or scroll hijacking. */
-(() => {
-  'use strict';
-  const gsap = window.gsap;
-  const ScrollTrigger = window.ScrollTrigger;
-  if (!gsap || !ScrollTrigger) {
-    document.documentElement.dataset.gsap = 'unavailable';
-    return;
-  }
-  gsap.registerPlugin(ScrollTrigger);
-  document.documentElement.dataset.gsap = 'ready';
-
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const coarse = window.matchMedia('(hover: none), (pointer: coarse)');
-  const roots = new WeakMap();
-  const revealSelector = [
-    '.page-intro', '.balance-hero', '.stat-card', '.chart-card', '.panel',
-    '.ledger-card', '.budget-card', '.goal-card', '.settings-card',
-    '.cashflow-panel', '.overview-grid > *', '.stats-grid > *'
-  ].join(',');
-
-  function animateView(view) {
-    if (!view || view.dataset.gsapEntered === '1') return;
-    view.dataset.gsapEntered = '1';
-    if (reduce.matches) return;
-    const ctx = gsap.context(() => {
-      const intro = view.querySelector('.page-intro');
-      const balance = view.querySelector('.balance-hero');
-      const targets = [intro, balance].filter(Boolean);
-      if (targets.length) gsap.fromTo(targets,
-        { y: 12, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: .48, stagger: .07, ease: 'power2.out', clearProps: 'transform' }
-      );
-    }, view);
-    roots.set(view, ctx);
-  }
-
-  function revealWithin(scope) {
-    if (reduce.matches) return;
-    const nodes = [];
-    if (scope.matches?.(revealSelector)) nodes.push(scope);
-    nodes.push(...(scope.querySelectorAll?.(revealSelector) || []));
-    nodes.forEach(el => {
-      if (el.dataset.gsapReveal === '1') return;
-      el.dataset.gsapReveal = '1';
-      gsap.fromTo(el,
-        { y: 14, autoAlpha: .55 },
-        { y: 0, autoAlpha: 1, duration: .5, ease: 'power2.out', clearProps: 'transform',
-          scrollTrigger: { trigger: el, start: 'top 92%', once: true, invalidateOnRefresh: true } }
-      );
-    });
-  }
-
-  function refresh() {
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-  }
-
-  // View navigation: app swaps .active on the view container without a page reload.
-  document.addEventListener('click', event => {
-    const nav = event.target.closest('[data-view], .nav-item, .more-nav-item');
-    if (!nav) return;
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.view.active').forEach(view => {
-        animateView(view);
-        revealWithin(view);
-      });
-      refresh();
-    });
-  });
-
-  // A quiet tactile response for primary actions; no magnetic cursor or layout movement.
-  if (!coarse.matches && !reduce.matches) {
-    document.addEventListener('pointerover', event => {
-      const button = event.target.closest('button, [role="button"]');
-      if (!button || button.disabled || button.dataset.gsapHover === '1') return;
-      button.dataset.gsapHover = '1';
-      gsap.to(button, { scale: 1.015, duration: .16, ease: 'power1.out', overwrite: true });
-    });
-    document.addEventListener('pointerout', event => {
-      const button = event.target.closest('button, [role="button"]');
-      if (!button || !button.dataset.gsapHover) return;
-      gsap.to(button, { scale: 1, duration: .2, ease: 'power1.out', overwrite: true });
-    });
-    document.addEventListener('pointerdown', event => {
-      const button = event.target.closest('button, [role="button"]');
-      if (button && !button.disabled) gsap.to(button, { scale: .985, duration: .08, overwrite: true });
-    });
-    document.addEventListener('pointerup', event => {
-      const button = event.target.closest('button, [role="button"]');
-      if (button) gsap.to(button, { scale: 1, duration: .18, ease: 'back.out(2)', overwrite: true });
-    });
-  }
-
-  // Initial screen + dynamically mounted screens and content.
-  document.querySelectorAll('.view.active').forEach(animateView);
-  revealWithin(document);
-  const main = document.querySelector('#main-content') || document.body;
-  const observer = new MutationObserver(records => {
-    let changed = false;
-    records.forEach(record => record.addedNodes.forEach(node => {
-      if (node.nodeType !== 1) return;
-      revealWithin(node);
-      if (node.matches?.('.view.active')) animateView(node);
-      node.querySelectorAll?.('.view.active').forEach(animateView);
-      changed = true;
-    }));
-    if (changed) refresh();
-    document.querySelectorAll('.view.active').forEach(animateView);
-  });
-  observer.observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  // Existing horizontal editorial ticker: animate only if present; content remains readable.
-  const ticker = document.querySelector('[data-gsap-ticker]');
-  if (ticker && !reduce.matches) {
-    const track = ticker.querySelector('[data-gsap-ticker-track]') || ticker.firstElementChild;
-    if (track) {
-      gsap.to(track, { xPercent: -12, ease: 'none',
-        scrollTrigger: { trigger: ticker, start: 'top bottom', end: 'bottom top', scrub: .6 }
-      });
-    }
-  }
-
-  // Rebuild scroll-dependent positions when the responsive layout changes.
-  const mm = gsap.matchMedia();
-  mm.add('(min-width: 761px)', () => {
-    revealWithin(main);
-    refresh();
-    return () => ScrollTrigger.getAll().forEach(trigger => {
-      if (trigger.vars && trigger.vars.id === 'voltura-desktop-motion') trigger.kill();
-    });
-  });
-  mm.add('(max-width: 760px)', () => {
-    revealWithin(main);
-    refresh();
-  });
-  reduce.addEventListener?.('change', () => {
-    if (reduce.matches) {
-      gsap.globalTimeline.pause();
-      ScrollTrigger.disable(true);
-    } else {
-      ScrollTrigger.enable(true);
-      gsap.globalTimeline.resume();
-      refresh();
-    }
-  });
-  window.addEventListener('load', refresh, { once: true });
-  window.addEventListener('pageshow', refresh);
+/* VOLTURA finance motion — local GSAP 3.15.1 plugins; progressive enhancement only. */
+(()=>{'use strict';
+const g=window.gsap,S=window.ScrollTrigger,M=window.MotionPathPlugin,D=window.DrawSVGPlugin,F=window.Flip;
+if(!g||!S){document.documentElement.dataset.gsap='unavailable';return;}g.registerPlugin(...[S,M,D,F].filter(Boolean));document.documentElement.dataset.gsap='ready';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)'),coarse=matchMedia('(hover: none), (pointer: coarse)'),roots=new WeakMap(),refresh=()=>requestAnimationFrame(()=>S.refresh());
+const selectors='.page-intro,.balance-hero,.stat-card,.chart-card,.panel,.ledger-card,.budget-card,.goal-card,.settings-card,.cashflow-panel,.overview-grid > *,.stats-grid > *';
+function bars(chart){if(!chart||reduce.matches)return;const els=[...chart.querySelectorAll('.bar')].filter(x=>x.dataset.gsapBarReady!=='1');if(!els.length)return;els.forEach(x=>x.dataset.gsapBarReady='1');g.fromTo(els,{scaleY:0,transformOrigin:'50% 100%'},{scaleY:1,duration:.78,stagger:.035,ease:'power3.out',scrollTrigger:{trigger:chart,start:'top 88%',once:true,invalidateOnRefresh:true}});}
+function donut(ring){if(!ring||reduce.matches)return;const els=[...ring.querySelectorAll('.donut-segment')].filter(x=>x.dataset.gsapDonutReady!=='1');if(!els.length)return;els.forEach(x=>x.dataset.gsapDonutReady='1');g.fromTo(els,{strokeWidth:0,autoAlpha:.45},{strokeWidth:14,autoAlpha:1,duration:.72,stagger:.055,ease:'power2.out',scrollTrigger:{trigger:ring,start:'top 90%',once:true}});}
+function finance(scope=document){const c=scope.matches?.('#cashflowChart')?scope:scope.querySelector?.('#cashflowChart')||document.querySelector('#cashflowChart'),r=scope.matches?.('#overviewDonutRing')?scope:scope.querySelector?.('#overviewDonutRing')||document.querySelector('#overviewDonutRing'),v=scope.matches?.('#view-overview')?scope:scope.closest?.('#view-overview')||document.querySelector('#view-overview');if(c)bars(c);if(r)donut(r);const fill=v?.querySelector('#budgetProgressFill');if(fill&&!reduce.matches&&fill.dataset.gsapProgressReady!=='1'){fill.dataset.gsapProgressReady='1';g.fromTo(fill,{scaleX:0,transformOrigin:'0% 50%'},{scaleX:1,duration:.85,ease:'power2.out',scrollTrigger:{trigger:fill,start:'top 94%',once:true}});}}
+function view(v){if(!v||v.dataset.gsapEntered==='1')return;v.dataset.gsapEntered='1';if(reduce.matches)return;const els=[v.querySelector('.page-intro'),v.querySelector('.balance-hero')].filter(Boolean);if(els.length){const ctx=g.context(()=>g.fromTo(els,{y:12,autoAlpha:0},{y:0,autoAlpha:1,duration:.48,stagger:.07,ease:'power2.out',clearProps:'transform'}),v);roots.set(v,ctx);}finance(v);}
+function reveal(scope){if(reduce.matches)return;const els=[];if(scope.matches?.(selectors))els.push(scope);els.push(...(scope.querySelectorAll?.(selectors)||[]));els.forEach(el=>{if(el.dataset.gsapReveal==='1')return;el.dataset.gsapReveal='1';g.fromTo(el,{y:14,autoAlpha:.55},{y:0,autoAlpha:1,duration:.5,ease:'power2.out',clearProps:'transform',scrollTrigger:{trigger:el,start:'top 92%',once:true,invalidateOnRefresh:true}});});}
+const path=document.querySelector('#balanceFlowPath'),marker=document.querySelector('#balanceFlowMarker');if(!reduce.matches&&path&&marker&&M&&D){const tl=g.timeline({scrollTrigger:{trigger:'.balance-hero',start:'top 86%',once:true}});tl.fromTo(path,{drawSVG:'0%'},{drawSVG:'100%',duration:1.65,ease:'power2.inOut'});g.to(marker,{duration:8.5,repeat:-1,ease:'none',motionPath:{path,autoRotate:false},scrollTrigger:{trigger:'.balance-hero',start:'top 86%',once:true}});g.to(marker,{scale:1.25,duration:1.25,repeat:-1,yoyo:true,ease:'sine.inOut'});}
+if(F&&!reduce.matches)document.addEventListener('click',e=>{if(!e.target.closest('[data-range]'))return;const c=document.querySelector('#cashflowChart'),old=c?[...c.querySelectorAll('.month-bars')]:[];if(!old.length)return;const state=F.getState(old);requestAnimationFrame(()=>{const next=c?.isConnected?[...c.querySelectorAll('.month-bars')]:[];if(next.length)F.from(state,{targets:next,duration:.58,ease:'power2.inOut',absolute:true,scale:false,stagger:.025,fade:true});refresh();});},true);
+document.addEventListener('click',e=>{if(!e.target.closest('[data-view],.nav-item,.more-nav-item'))return;requestAnimationFrame(()=>{document.querySelectorAll('.view.active').forEach(v=>{view(v);reveal(v);finance(v);});refresh();});});
+if(!coarse.matches&&!reduce.matches){document.addEventListener('pointerover',e=>{const x=e.target.closest('button,[role="button"]');if(!x||x.disabled||x.dataset.gsapHover)return;x.dataset.gsapHover='1';g.to(x,{scale:1.015,duration:.16,overwrite:true});});document.addEventListener('pointerout',e=>{const x=e.target.closest('button,[role="button"]');if(x?.dataset.gsapHover)g.to(x,{scale:1,duration:.2,overwrite:true});});document.addEventListener('pointerdown',e=>{const x=e.target.closest('button,[role="button"]');if(x&&!x.disabled)g.to(x,{scale:.985,duration:.08,overwrite:true});});document.addEventListener('pointerup',e=>{const x=e.target.closest('button,[role="button"]');if(x)g.to(x,{scale:1,duration:.18,overwrite:true});});}
+document.querySelectorAll('.view.active').forEach(v=>{view(v);reveal(v);});reveal(document);finance(document);
+const main=document.querySelector('#main-content')||document.body,obs=new MutationObserver(rs=>{let changed=false;rs.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType!==1)return;reveal(n);finance(n);if(n.matches?.('.view.active'))view(n);n.querySelectorAll?.('.view.active').forEach(view);changed=true;}));if(changed)refresh();});obs.observe(main,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+const c=document.querySelector('#cashflowChart');if(c)new MutationObserver(()=>{bars(c);refresh();}).observe(c,{childList:true});const ring=document.querySelector('#overviewDonutRing');if(ring)new MutationObserver(()=>donut(ring)).observe(ring,{childList:true});
+const mm=g.matchMedia();mm.add('(min-width: 761px)',()=>{reveal(main);finance(main);refresh();});mm.add('(max-width: 760px)',()=>{reveal(main);finance(main);refresh();});
+reduce.addEventListener?.('change',()=>{if(reduce.matches){g.globalTimeline.pause();S.disable(true);}else{S.enable(true);g.globalTimeline.resume();refresh();}});addEventListener('load',refresh,{once:true});addEventListener('pageshow',refresh);
 })();
