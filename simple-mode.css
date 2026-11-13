@@ -1,0 +1,76 @@
+/* VOLTURA Simple Mode — focused everyday finance, without removing stored data. */
+:root {
+  --simple-ink: #101a2b;
+  --simple-blue: #2455dd;
+  --simple-lime: #b8f34a;
+  --simple-coral: #ff786b;
+}
+
+/* Keep the core destinations visible; secondary tools remain in the source for data compatibility. */
+.main-nav > .nav-item[data-view="goals"],
+.main-nav > .nav-item[data-view="intelligence"],
+.main-nav > .nav-item[data-view="reports"],
+.main-nav > .nav-item[data-view="automations"],
+.more-nav-item[data-view="goals"],
+.more-nav-item[data-view="intelligence"],
+.more-nav-item[data-view="reports"],
+.more-nav-item[data-view="automations"] { display: none !important; }
+
+/* A calm, compact overview: the account position and capture action lead. */
+.dashboard-masthead { align-items: end; gap: 1.5rem; }
+.dashboard-masthead .masthead-copy h1 {
+  max-width: 14ch;
+  font-size: clamp(2rem, 4.3vw, 4.25rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+.dashboard-masthead .intro-copy { max-width: 42ch; }
+.scroll-chapter-nav [data-chapter="2"] { display: none; }
+.scroll-chapter-progress { display: none; }
+.bottom-feature-grid,
+#overview-intent { display: none !important; }
+
+/* Less chrome: keep useful structure, remove ornamental panel boundaries. */
+.overview-grid { gap: clamp(1rem, 2vw, 1.75rem); }
+.overview-grid > .panel,
+.ledger-panel,
+.budget-snapshot { box-shadow: none; }
+.panel { border-color: color-mix(in srgb, currentColor 10%, transparent); }
+
+/* The quick action remains prominent without requiring a feature tour. */
+#topAddButton, #mobileAddButton { background: var(--simple-blue); }
+#topAddButton:focus-visible, #mobileAddButton:focus-visible,
+.button:focus-visible, .nav-item:focus-visible {
+  outline: 3px solid var(--simple-lime);
+  outline-offset: 3px;
+}
+
+/* Hide optional marketing/feature surfaces, not financial records or account controls. */
+#view-automations .automation-feature,
+#view-automations .shortcut-grid,
+#view-automations .nfc-instructions { }
+
+@media (max-width: 760px) {
+  .dashboard-masthead { display: block; }
+  .dashboard-masthead .masthead-index { margin-top: 1rem; }
+  .dashboard-masthead .masthead-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(2rem, 10vw, 3.1rem);
+  }
+  .scroll-chapter-nav { overflow-x: auto; scrollbar-width: none; }
+  .scroll-chapter-nav::-webkit-scrollbar { display: none; }
+  .balance-hero { gap: .85rem; }
+  .balance-main { min-width: 0; }
+  .balance-value { overflow-wrap: anywhere; }
+  .topbar-actions .today-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

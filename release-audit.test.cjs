@@ -68,7 +68,7 @@ test('visual repair layer, brand mark, and mobile navigation are complete', () =
 
 test('service worker cache version and update checks are advanced', () => {
   const worker = read('sw.js'), app = read('app.js');
-  assert.match(worker, /voltura-platform-v26\.0\.2/);
+  assert.match(worker, /voltura-platform-v26\.1\.1-gsap/);
   assert.match(worker, /'voltura\.css'/);
   assert.match(app, /updateViaCache:'none'/);
   assert.match(app, /registration\.update\(\)/);
@@ -104,9 +104,9 @@ test('all buttons declare an explicit type and SVG viewBox attributes use canoni
 });
 
 test('current app, worker and source labels agree on the release version', () => {
-  assert.match(read('index.html'), /data-build-id="VOLTURA-26\.0-UNIFIED-20261113"/);
-  assert.match(read('sw.js'), /voltura-platform-v26\.0\.2/);
-  assert.match(read('app.js'), /VOLTURA v26\.0/);
+  assert.match(read('index.html'), /data-build-id="VOLTURA-26\.1\.1-GSAP-20261113"/);
+  assert.match(read('sw.js'), /voltura-platform-v26\.1\.1-gsap/);
+  assert.match(read('app.js'), /VOLTURA v26\.1\.1/);
   assert.match(read('voltura-visual-overhaul.css'), /VOLTURA V22/);
 });
 
@@ -286,7 +286,7 @@ test('V25.2 kinetic enhancements degrade safely without Canvas 2D or ResizeObser
 
 
 test('service worker cache namespace is isolated for the hardened update', () => {
-  assert.match(read('sw.js'), /const CACHE='voltura-platform-v26\.0\.2'/);
+  assert.match(read('sw.js'), /const CACHE='voltura-platform-v26\.1\.1-gsap'/);
 });
 
 test('service worker extends fetch lifetime for cache writes and contains cache-storage failures', () => {

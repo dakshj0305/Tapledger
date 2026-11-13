@@ -1,4 +1,4 @@
-# VOLTURA release notes — current V26.0
+# VOLTURA release notes — current V26.1.1
 
 **Build:** `VOLTURA-26.0-UNIFIED-20261113`  
 **Date:** 13 November 2026  

@@ -1,5 +1,5 @@
-const CACHE='voltura-platform-v26.0.2';
-const APP_FILES=['','index.html','voltura.css','kinetic.js','dashboard-art-direction.css','motion-ui.js','scroll-story.js','liquid-metal.js','finance-core.js','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
+const CACHE='voltura-platform-v26.1.1-gsap';
+const APP_FILES=['','index.html','voltura.css','kinetic.js','dashboard-art-direction.css','simple-mode.css','motion-ui.js','scroll-story.js','gsap-motion.js','vendor/gsap/gsap.min.js','vendor/gsap/ScrollTrigger.min.js','vendor/gsap/THIRD-PARTY-NOTICE.txt','liquid-metal.js','finance-core.js','app.js','quick-boot.js','manifest.webmanifest','privacy.html','terms.html','cookies.html','legal.css','icons/icon-192.png','icons/icon-512.png','icons/icon-192-maskable.png','icons/icon-512-maskable.png','icons/voltura-mark.svg'];
 const appURL=file=>new URL(file||'./',self.registration.scope).href;
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_FILES.map(appURL)))));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting())});

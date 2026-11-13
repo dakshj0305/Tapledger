@@ -1,6 +1,6 @@
 # VOLTURA — Personal finance, made clear.
 
-**Current source release: V26.0** · 13 November 2026
+**Current source release: V26.1.1** · 13 November 2026
 
 VOLTURA is a local-first personal-finance Progressive Web App (PWA) for recording income, expenses and transfers; reviewing accounts, budgets and savings goals; and understanding cash flow. It uses static HTML, CSS and vanilla JavaScript. It has no analytics, advertising, remote fonts or third-party runtime dependencies.
 
