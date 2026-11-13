@@ -1,0 +1,5 @@
+GSAP (GreenSock Animation Platform) v3.15.1
+Copyright (c) 2008-2026 GreenSock. All rights reserved.
+License: GSAP Standard License (no-charge license).
+Official source: https://github.com/greensock/GSAP
+Documentation: https://gsap.com/docs/v3/Installation/
