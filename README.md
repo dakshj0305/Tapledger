@@ -1,21 +1,21 @@
 # VOLTURA — Personal finance, made clear.
 
-**Current source release: V26.1.1** · 13 November 2026
+**Current source release: V26.2** · 13 November 2026
 
 VOLTURA is a local-first personal-finance Progressive Web App (PWA) for recording income, expenses and transfers; reviewing accounts, budgets and savings goals; and understanding cash flow. It uses static HTML, CSS and vanilla JavaScript. It has no analytics, advertising, remote fonts or remote runtime dependencies.
 
-## Current release: V26.1.1
+## Current release: V26.2
 
-V26.1.1 carries the V26.0 unified product design forward and adds a locally hosted GSAP 3.15.1 motion enhancement. The native application remains usable without the animation layer; no CDN is required.
+V26.2 delivers a more legible, high-contrast finance dashboard with a forest-and-chartreuse palette, distinct balance tiles, clearer chart and budget panels, and more deliberate responsive spacing. It builds on the locally hosted GSAP 3.15.1 motion enhancement with a more visible dashboard entrance and chart reveal. The native application remains usable without the animation layer; no CDN is required.
 
 - `voltura.css` is the single runtime stylesheet. Rebuild it from maintained local CSS layers with `node build-css.cjs`.
-- GSAP and ScrollTrigger are served from `vendor/gsap/`; `gsap-motion.js` progressively enhances page transitions and scroll-linked details.
+- GSAP and ScrollTrigger are served from `vendor/gsap/`; `gsap-motion.js` progressively enhances the dashboard entrance, chart reveals, and scroll-linked details.
 - Motion respects the reduced-motion preference. Native scrolling and non-GSAP behavior remain the fallback.
 - NFC/URL quick-entry routes `?a=1`, `?i=1` and `?add=1` open the focused entry dialog before normal dashboard boot. Save remains disabled until local storage and handlers are ready.
 - Existing finance workflows, integer-paise arithmetic, IndexedDB V3 and legacy backup compatibility are intended to remain unchanged.
 - The Stitch references remain under `design-reference/stitch/` for traceability.
 
-See `RELEASE-REPORT-V26.1.1.md` and `QA-REPORT-V26.1.1.md` for the current release scope and verification boundaries. Older V26.0 reports are historical and do not describe the V26.1.1 motion integration.
+See `CHANGELOG-V26.2.md` for this release's visual scope. Earlier release and QA reports are historical and do not describe the V26.2 dashboard refresh.
 
 ## Run locally
 

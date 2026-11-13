@@ -29,3 +29,12 @@ test('finance animation is progressive, reduced-motion aware and uses stable cha
 test('runtime CSS is reproducible from its maintained source layers',()=>{
  const {build}=require('./build-css.cjs');assert.equal(build(),read('voltura.css'));
 });
+
+
+test('V26.2 dashboard refresh is linked, cached and has visible motion hooks',()=>{
+ const html=read('index.html'),sw=read('sw.js'),css=read('dashboard-refresh.css'),motion=read('gsap-motion.js');
+ assert.match(html,/VOLTURA-26\.2-DASHBOARD-REDESIGN/);assert.match(html,/\.\/dashboard-refresh\.css/);
+ assert.match(sw,/voltura-platform-v26\.2-dashboard-redesign/);assert.match(sw,/'dashboard-refresh\.css'/);
+ assert.match(css,/\.balance-hero/);assert.match(css,/\.cashflow-panel/);assert.match(css,/@media\s*\(max-width:\s*800px\)/);
+ assert.match(motion,/elastic\.out/);assert.match(motion,/power3\.out/);assert.match(motion,/prefers-reduced-motion: reduce/);
+});
