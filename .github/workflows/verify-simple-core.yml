@@ -97,7 +97,7 @@ jobs:
           if (!cacheList) throw new Error('Could not parse service-worker precache list');
           for (const match of cacheList[1].matchAll(/'([^']+)'/g)) {
             const file = match[1];
-            if (file && !fs.existsSync(path.join(root,file))) throw new Error('Service-worker precache asset missing: '+file);
+            if (file && file !== ',' && !fs.existsSync(path.join(root,file))) throw new Error('Service-worker precache asset missing: '+file);
           }
           console.log('Netlify package verified: '+mustExist.length+' required paths; manifest valid; service-worker precache complete.');
           NODE
