@@ -16,7 +16,7 @@ test('all bundled GSAP assets report the same version',()=>{
 });
 
 test('service worker precaches all new local GSAP assets and has a new cache namespace',()=>{
- const sw=read('sw.js');assert.match(sw,/voltura-platform-v26\.1\.2-gsap-finance-motion/);
+ const sw=read('sw.js');assert.match(sw,/voltura-platform-v26\.2-dashboard-redesign/);
  for(const file of ['gsap-motion.js','vendor/gsap/DrawSVGPlugin.min.js','vendor/gsap/MotionPathPlugin.min.js','vendor/gsap/Flip.min.js']){assert.ok(sw.includes("'"+file+"'"),'precache contains '+file);assert.ok(fs.existsSync(file),'precache target exists: '+file);}
 });
 
@@ -28,4 +28,13 @@ test('finance animation is progressive, reduced-motion aware and uses stable cha
 
 test('runtime CSS is reproducible from its maintained source layers',()=>{
  const {build}=require('./build-css.cjs');assert.equal(build(),read('voltura.css'));
+});
+
+
+test('V26.2 dashboard refresh is linked, cached and has visible motion hooks',()=>{
+ const html=read('index.html'),sw=read('sw.js'),css=read('dashboard-refresh.css'),motion=read('gsap-motion.js');
+ assert.match(html,/VOLTURA-26\.2-DASHBOARD-REDESIGN/);assert.match(html,/\.\/dashboard-refresh\.css/);
+ assert.match(sw,/voltura-platform-v26\.2-dashboard-redesign/);assert.match(sw,/'dashboard-refresh\.css'/);
+ assert.match(css,/\.balance-hero/);assert.match(css,/\.cashflow-panel/);assert.match(css,/@media\s*\(max-width:\s*800px\)/);
+ assert.match(motion,/elastic\.out/);assert.match(motion,/power3\.out/);assert.match(motion,/prefers-reduced-motion: reduce/);
 });
