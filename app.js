@@ -238,7 +238,7 @@ function applyThemePreference(value){
  document.documentElement.dataset.theme=dark?'dark':'light';
  document.documentElement.dataset.themePreference=theme;
  const themeMeta=document.querySelector('meta[name="theme-color"]');
- if(themeMeta)themeMeta.content=dark?'#101a15':'#f0eee6';
+ if(themeMeta)themeMeta.content=dark?'#101a15':'#18231d';
  const select=$('#themePreference');if(select&&select.value!==theme)select.value=theme;
  if(!systemThemeListenerInstalled&&systemQuery?.addEventListener){
   systemQuery.addEventListener('change',()=>{if(document.documentElement.dataset.themePreference==='system')applyThemePreference('system')});
@@ -249,7 +249,6 @@ async function loadUserPreferences(){
  let theme='system';
  try{const value=await getSetting('theme-pref-v1');theme=value?.value||'system'}catch(error){console.warn('Could not read display preferences:',error)}
  applyThemePreference(theme);hapticEnabled=false;
- const themeSelect=$('#themePreference');if(themeSelect)themeSelect.value=theme;
  const themeSelect=$('#themePreference');if(themeSelect)themeSelect.value=theme;
 }
 async function saveThemePreference(value){applyThemePreference(value);try{await setSetting('theme-pref-v1',value);$('#preferenceStatus').textContent='Appearance preference saved on this device.'}catch(error){console.error(error);$('#preferenceStatus').textContent='Could not save this preference.'}}
